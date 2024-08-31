@@ -3,6 +3,7 @@ import { HashRouter as Router, Route, Routes } from "react-router-dom";
 
 import Navbar from './components/Navbar';
 
+import UserSelect from './pages/UserSelect';
 import Calendar from './pages/Calendar';
 import Home from './pages/Home';
 import TaskManager from './pages/TaskManager';
@@ -12,8 +13,9 @@ function App() {
     <Router>
       <Fragment>
         <Routes>
-          <Route path="/home" element={<Home />} />  {/* Route for Home page */}
-          <Route path="/calendar" element={<Calendar />} />  {/* Route for Calendar page */}
+          <Route path="/" element={<UserSelect />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/calendar" element={<Calendar />} />
           <Route path="/tasks" element={<TaskManager />} />
         </Routes>
 

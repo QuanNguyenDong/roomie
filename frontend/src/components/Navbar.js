@@ -5,7 +5,7 @@ import { HomeIcon, CalendarIcon, ClipboardDocumentCheckIcon } from '@heroicons/r
 
 const Navbar = ({ }) => {
     const navigate = useNavigate();
-    
+
     return (
         <div className="bg-slate-100 text-black">
             <div className="h-16 flex flex-row justify-center space-x-6 sm:space-x-9 z-20">
