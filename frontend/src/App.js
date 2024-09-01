@@ -18,10 +18,7 @@ function App() {
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/tasks" element={<TaskManager />} />
         </Routes>
-
-        <div className="fixed bottom-0 w-full">
-          <Navbar />  {/* Navbar always displayed at the bottom */}
-        </div>
+        <Navbar />
       </Fragment>
     </Router>
   );
