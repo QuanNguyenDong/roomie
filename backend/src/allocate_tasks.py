@@ -9,17 +9,17 @@
 # Outputs:
 #   - List of tasks for each users
 def allocate_tasks(tasks, users):
-    total_work = 0
-    for task in tasks:
-        total_work += task["work_amount"]    
-
     task_allocations = []
+    # Create new TaskAllocation object for each user
     for user in users:
         allocation = TaskAllocation(user["user_id"])
         task_allocations.append(allocation)    
 
+    # Sort tasks in descending order based on work_amount
     tasks.sort(reverse=True, key=task_sort)
     for task in tasks:
+        # Sort all TaskAllocation objects ascending by how much work they have been assigned
+        # Assign the current task to the user with the least amount of allocated work
         task_allocations.sort(key=task_allocation_sort)        
         task_allocations[0].allocated_tasks.append(task["task_id"])
         task_allocations[0].allocated_work += task["work_amount"]                                                 
