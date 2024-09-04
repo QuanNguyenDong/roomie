@@ -17,8 +17,10 @@ export default function SignIn() {
                     username: username,
                     password: password,
                 },
+                { withCredentials: true }
             );
-            localStorage.setItem("session", JSON.stringify(response.data));
+
+            localStorage.setItem("user", JSON.stringify(response.data));
             navigate("/home", { replace: true });
         } catch (error) {
             console.error(error);
