@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 
+import Topbar from './components/Topbar';
 import Navbar from './components/Navbar';
 
 import UserSelect from './pages/UserSelect';
@@ -12,6 +13,7 @@ function App() {
   return (
     <Router>
       <Fragment>
+        <Topbar/>
         <Routes>
           <Route path="/" element={<UserSelect />} />
           <Route path="/home" element={<Home />} />
