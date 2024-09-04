@@ -1,14 +1,18 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const dotenv = require('dotenv').config();
-const app = express();
-const port = 3001;
+const dotenv = require("dotenv").config();
+const cookieSession = require("cookie-session");
+const cors = require("cors");
 
-if (!process.env.MONGO_URI) throw new Error("MONGO_URI must be defined");
+const authRouter = require("./routes/auth");
+const currentUserRouter = require("./routes/profile");
+
+if (!process.env.MONGO_URI) throw Error("MONGO_URI must be defined");
+if (!process.env.JWT_KEY) throw Error("JWT_KEY must be defined");
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
+        await mongoose.connect(`${process.env.MONGO_URI}/roomies`);
         console.log("Connected to MongoDb");
     } catch (err) {
         console.error(err);
@@ -16,7 +20,23 @@ const connectDB = async () => {
 };
 connectDB();
 
-app.use("/", (req, res) => {
+const app = express();
+const port = 3001;
+
+app.set("trust proxy", true);
+app.use(express.urlencoded({ extended: true }));
+app.use(
+    cookieSession({
+        signed: false,
+        secure: false,
+    })
+);
+app.use(cors());
+
+app.use(authRouter);
+app.use(currentUserRouter);
+
+app.use("/api", (req, res) => {
     res.send("Hello world");
 });
 
