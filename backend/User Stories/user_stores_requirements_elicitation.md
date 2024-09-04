@@ -27,7 +27,7 @@ International students, travelers, and residents of share homes.
 | **Usability**   | The UI should be intuitive for non-technical users and non-native English speakers.                    |
 | **Security**    | Data, including anonymous feedback, must be encrypted and securely stored.                             |
 | **Scalability** | Should scale effectively as the user base grows without performance degradation.                       |
-| **Localization**| Must support multiple languages for international users.                                               |
+| **Localisation**| Must support multiple languages for international users.                                               |
 
 ---
 
