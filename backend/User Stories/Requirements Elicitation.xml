@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<roomie>
+    <introduction>
+        <goal>Improve shared living arrangements by addressing key challenges such as task coordination, communication, and social interaction.</goal>
+        <targetUsers>
+            <user>International students</user>
+            <user>Travelers</user>
+            <user>Residents of share homes</user>
+        </targetUsers>
+    </introduction>
+
+    <features>
+        <feature id="1">
+            <name>Profile Creation</name>
+            <userStory>
+                <line>- As a new housemate, I want to create a profile to introduce myself and foster social connections.</line>
+                <line>- As a housemate, I want to view other housemates' profiles to connect more easily.</line>
+            </userStory>
+            <functionalRequirements>
+                <requirement>- Users can create, update, and view personal profiles with hobbies and interests.</requirement>
+                <requirement>- Profiles are accessible only to housemates within the same household.</requirement>
+            </functionalRequirements>
+            <acceptanceCriteria>
+                <criteria>- Users can create and view profiles within their household.</criteria>
+                <criteria>- Profiles are secure and visible only to housemates.</criteria>
+            </acceptanceCriteria>
+        </feature>
+
+        <feature id="2">
+            <name>Calendar Syncing</name>
+            <userStory>
+                <line>- As a housemate, I want to sync my schedule with housemates to plan around their availability.</line>
+                <line>- As a traveler, I want to update my schedule for better coordination.</line>
+            </userStory>
+            <functionalRequirements>
+                <requirement>- Integrate with calendar APIs (e.g., Google Calendar) for shared availability.</requirement>
+                <requirement>- Notify users of schedule changes and task updates.</requirement>
+            </functionalRequirements>
+            <acceptanceCriteria>
+                <criteria>- Users can sync calendars and receive notifications for changes.</criteria>
+                <criteria>- Shared calendar is easily accessible to all housemates.</criteria>
+            </acceptanceCriteria>
+        </feature>
+
+        <feature id="3">
+            <name>Chore Distribution</name>
+            <userStory>
+                <line>- As a housemate, I want chores to be distributed fairly and tracked to ensure equal contribution.</line>
+            </userStory>
+            <functionalRequirements>
+                <requirement>- Use a chore allocation algorithm to fairly distribute tasks.</requirement>
+                <requirement>- Users can view assigned tasks and mark them as completed.</requirement>
+                <requirement>- Notify users of assigned tasks and due dates.</requirement>
+            </functionalRequirements>
+            <acceptanceCriteria>
+                <criteria>- Chores are fairly assigned, and users are notified.</criteria>
+                <criteria>- Users can track completed tasks.</criteria>
+            </acceptanceCriteria>
+        </feature>
+
+        <feature id="4">
+            <name>Anonymous Feedback</name>
+            <userStory>
+                <line>- As a housemate, I want to submit anonymous feedback about housemates to avoid confrontation.</line>
+                <line>- As someone moving in, I want to view feedback on housemates for compatibility.</line>
+            </userStory>
+            <functionalRequirements>
+                <requirement>- Users can submit anonymous feedback and view cumulative ratings.</requirement>
+                <requirement>- Ratings cover categories like cleanliness and task completion.</requirement>
+            </functionalRequirements>
+            <acceptanceCriteria>
+                <criteria>- Users can submit and view anonymous feedback.</criteria>
+                <criteria>- Housemate ratings are visible but anonymous.</criteria>
+            </acceptanceCriteria>
+        </feature>
+    </features>
+
+    <nonFunctionalRequirements>
+        <category>
+            <name>Performance</name>
+            <details>Must handle concurrent users without significant delays, especially during peak times.</details>
+        </category>
+        <category>
+            <name>Usability</name>
+            <details>The UI should be intuitive for non-technical users and non-native English speakers.</details>
+        </category>
+        <category>
+            <name>Security</name>
+            <details>Data, including anonymous feedback, must be encrypted and securely stored.</details>
+        </category>
+        <category>
+            <name>Scalability</name>
+            <details>Should scale effectively as the user base grows without performance degradation.</details>
+        </category>
+        <category>
+            <name>Localization</name>
+            <details>Must support multiple languages for international users.</details>
+        </category>
+    </nonFunctionalRequirements>
+
+    <conclusion>
+        <summary>User stories and requirements address key pain points in shared living, such as scheduling, task allocation, and communication. By focusing on fair chore distribution, social integration, and anonymous feedback, the app provides a comprehensive solution to streamline household management and improve roommate interactions.</summary>
+    </conclusion>
+</roomie>
