@@ -10,7 +10,16 @@ module.exports = {
       lg: '976px',
       xl: '1440px',
     },
-    extend: {},
+    extend: {
+      fontFamily: {
+        lexend: ['Lexend', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
+      },
+      colors: {
+        secGrey: '#E3E3E3',
+        tileBlue: '#A2BACC',
+      },
+    },
   },
   plugins: [],
 }
