@@ -31,8 +31,8 @@ const Topbar = () => {
     };
 
     return (
-        <div className="flex justify-center mb-16">
-            <div className="fixed top-0 w-[500px] h-[50px] px-7 pt-4">
+        <div className="flex justify-center mb-4">
+            <div className="top-0 w-[500px] h-[50px] px-7 pt-4">
                 <div className="text-black flex flex-row justify-between">
                     <div>
                         <button onClick={() => navigate("/home")}>
@@ -64,6 +64,17 @@ const Topbar = () => {
                                         className="block w-full px-4 py-2 hover:bg-gray-100 text-left"
                                     >
                                         Dashboard
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        onClick={() => {
+                                            navigate("/tasks");
+                                            setDropdown(false);
+                                        }}
+                                        className="block w-full px-4 py-2 hover:bg-gray-100 text-left"
+                                    >
+                                        Your Tasks
                                     </button>
                                 </li>
                                 <li>

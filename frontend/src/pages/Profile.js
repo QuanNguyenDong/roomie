@@ -46,14 +46,14 @@ function Profile() {
                 </button>
             </div>
             <div className="my-6">
-                <h2 className="font-bold mb-2">A little bit about myself...</h2>
+                <p className="font-bold mb-2">A little bit about myself...</p>
                 <p>{user.desc}</p>
             </div>
             <div>
-                <h2 className="font-bold">Func facts about me</h2>
+                <p className="font-bold">Func facts about me</p>
                 {Array.from(user.answers ?? {}).map((answer, i) => (
                     <div key={i} className="p-6 my-6 bg-white border border-gray-200 rounded-lg shadow">
-                        <h2 className="font-bold">{answer.question}</h2>
+                        <p className="font-bold">{answer.question}</p>
                         <p>{answer.answer}</p>
                     </div>
                 ))}

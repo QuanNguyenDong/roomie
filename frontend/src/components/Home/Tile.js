@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import '../../index.css'
 
 import TileIcon from '../../svgs/Home/Tasks/TileIcon';
 
-const Tile = ({ }) => {
+const Tile = () => {
     return (
         <div className="bg-tileBlue text-white w-[247px] h-full rounded-3xl relative">
             <div className="p-5 h-full flex flex-col justify-between">

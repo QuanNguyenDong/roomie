@@ -44,7 +44,7 @@ function TaskManager() {
     ];
 
     return (
-        <div className="task-manager">
+        <div className="task-manager max-w-[500px] mx-auto">
             <h2>Tasks</h2>
             <div className="task-filter-buttons">
                 <button>All Tasks</button>
@@ -53,7 +53,7 @@ function TaskManager() {
             <div className="task-list">
                 {tasks.map((task, index) => (
                     <div key={index} className={`task-card ${task.priority}`}>
-                         <div className='logoicon'> <TileIcon /></div>
+                        <div className='logoicon'> <TileIcon /></div>
                         <div className="task-header">
                             <h3>{task.title}</h3>
                             <div className="task-avatar">{task.avatar}</div>
