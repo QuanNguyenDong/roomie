@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import Tile from "../components/Home/Tile";
+import Tile from '../components/Home/Tile';
+import Event from "../components/Home/Event";
 
 function Home() {
     const [user, setUser] = useState({});
@@ -31,15 +32,13 @@ function Home() {
     return (
         <div className="w-full h-full px-8 text-black font-lexend">
             <div class="flex justify-between h-10 mb-6">
-                <text className="text-4xl font-bold">
-                    Hello, {user.fullname ?? ""}!
-                </text>
+                <text className="text-4xl font-bold">Hello, {user.fullname}!</text>
                 <button className="bg-black text-xs text-white w-28 rounded-3xl">
                     Your Review
                 </button>
             </div>
-            <div class="flex justify-between h-10 mb-6">
-                <button className="bg-secGrey text-xs w-28 rounded-3xl">
+            <div class="flex justify-between h-10 mb-6 mx-8">
+                <button className="bg-white text-xs w-28 rounded-3xl">
                     My Tasks
                 </button>
                 <button className="bg-secGrey text-xs w-28 rounded-3xl">
@@ -50,7 +49,7 @@ function Home() {
                 </button>
             </div>
             <div className="flex bg-black/10 w-full h-56">
-                <Tile />
+                <Tile/>
             </div>
         </div>
     );

@@ -13,6 +13,7 @@ module.exports = {
     extend: {
       fontFamily: {
         lexend: ['Lexend', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
       },
       colors: {
         secGrey: '#E3E3E3',
