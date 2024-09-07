@@ -8,6 +8,7 @@ import UserSelect from './pages/UserSelect';
 import Calendar from './pages/Calendar';
 import Home from './pages/Home';
 import TaskManager from './pages/TaskManager';
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function AppRoutes() {
         <Route path="/home" element={<Home />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/tasks" element={<TaskManager />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       {!isUserSelectPage && <Navbar />}
     </Fragment>

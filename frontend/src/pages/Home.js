@@ -1,38 +1,35 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import getUserProfile from "../services/getUserProfile";
+import { useNavigate } from "react-router-dom";
 
 import Tile from '../components/Home/Tile';
-import Event from "../components/Home/Event";
 
 function Home() {
     const [user, setUser] = useState({});
-
-    const fetchUserProfile = async () => {
-        try {
-            const response = await axios.get(global.route + `/users/profile`, {
-                withCredentials: true,
-            });
-            const userData = response.data;
-            localStorage.setItem("user", JSON.stringify(userData));
-            setUser(userData);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    let navigate = useNavigate();
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
         if (!storedUser) {
-            fetchUserProfile();
+            getUserProfile()
+                .then((user) => {
+                    if (user) {
+                        localStorage.setItem("user", JSON.stringify(user));
+                        setUser(user);
+                    } else {
+                        navigate("/");
+                    }
+                })
+                .catch((error) => navigate("/"));
         } else {
             setUser(storedUser);
         }
-    }, []);
+    }, [navigate]);
 
     return (
-        <div className="w-full h-full px-8 text-black font-lexend">
+        <div className="max-w-[500px] mx-auto h-full px-8 text-black font-lexend">
             <div class="flex justify-between h-10 mb-6">
-                <text className="text-4xl font-bold">Hello, {user.fullname}!</text>
+                <text className="text-3xl font-bold">Hello, {user.fullname}!</text>
                 <button className="bg-black text-xs text-white w-28 rounded-3xl">
                     Your Review
                 </button>
