@@ -1,0 +1,132 @@
+.task-manager {
+    padding: 20px;
+    padding-top: 5px;
+}
+
+h2 {
+    align-self: flex-start;
+    margin-left: 5vw;
+    font-size: 40px;
+    font-weight: 700;
+}
+
+.task-filter-buttons {
+    margin-top: -45px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: flex-end;
+    //padding: 10px;
+    
+}
+
+.task-filter-buttons button {
+    padding: 10px;
+    border-radius: 12px;
+    height: 35px;
+    width: 90px;
+    cursor: pointer;
+    border: 1px solid black;
+    margin-top: -3px;
+    margin-right: 10px;
+    cursor: pointer;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.task-card {
+    display: block;
+    width: 100%;
+    background-color: #f0f0f0;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+    justify-content: space-between;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.task-card:hover{
+    transform: scale(1.02);
+}
+
+
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.task-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #7D8D9C;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #fff;
+}
+
+.task-subtext {
+    font-size: 14px;
+    color: #ffffff;
+    margin-top: 10px;
+    font-style: oblique;
+    font-weight: lighter;
+}
+
+.task-footer {
+    margin-bottom: 2px;
+    margin-top: 40px;
+    display: flex;
+    align-content: flex-start;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #ffffff;
+    z-index: 1;
+}
+
+.logoicon{
+    position: absolute;
+    bottom: 10px; /* Adjust as needed */
+    right: 20px;  /* Adjust as needed */
+    z-index: 0;
+}
+
+.task-footer p {
+    margin: 0;
+    height: fit-content;
+}
+
+.task-card.high {
+    background-color: #A2BACC; /* Muted blue tone */
+}
+
+.task-card.medium {
+    background-color: #C3B8BD; /* Muted red pink tone */
+}
+
+.task-card.low {
+    background-color: #A8B9A4; /* Muted beige tone */
+}
