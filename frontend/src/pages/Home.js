@@ -3,6 +3,7 @@ import getUserProfile from "../services/getUserProfile";
 import { useNavigate } from "react-router-dom";
 
 import Tile from '../components/Home/Tile';
+import Event from "../components/Home/Event";
 
 function Home() {
     const [user, setUser] = useState({});
@@ -27,12 +28,9 @@ function Home() {
     }, [navigate]);
 
     return (
-        <div className="max-w-[500px] mx-auto h-full px-8 text-black font-lexend">
-            <div class="flex justify-between h-10 mb-6">
-                <text className="text-3xl font-bold">Hello, {user.fullname}!</text>
-                <button className="bg-black text-xs text-white w-28 rounded-3xl">
-                    Your Review
-                </button>
+        <div className="w-full h-full text-black font-poppins">
+            <div class="flex justify-between h-10 mb-6 mx-8">
+                <text className="text-4xl font-bold font-lexend">Hello, {user.fullname}!</text>
             </div>
             <div class="flex justify-between h-10 mb-6 mx-8">
                 <button className="bg-white text-xs w-28 rounded-3xl">
@@ -45,10 +43,22 @@ function Home() {
                     Completed
                 </button>
             </div>
-            <div className="flex bg-black/10 w-full h-56">
-                <Tile/>
+            <div className="flex flex-nowrap overflow-x-auto w-100vw h-56 mb-8">
+                <div className="flex flex-nowrap space-x-6 ml-8">
+                    <Tile />
+                    <Tile />
+                    <Tile />
+                </div>
             </div>
-        </div>
+            <div className="mx-8">
+                <text className="text-xl font-semibold">Events this week</text>
+                <div className="flex flex-col space-y-4 mt-4">
+                    <Event />
+                    <Event />
+                    <Event />
+                </div>
+            </div>
+        </div> 
     );
 }
 

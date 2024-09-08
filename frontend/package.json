@@ -12,6 +12,7 @@
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
     "resolve-url-loader": "^5.0.0",
+    "s": "^1.0.0",
     "sass": "^1.78.0",
     "sass-loader": "^16.0.1",
     "save": "^2.9.0",
