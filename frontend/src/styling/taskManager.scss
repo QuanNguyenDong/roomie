@@ -1,6 +1,8 @@
 .task-manager {
-    padding: 20px;
     padding-top: 5px;
+    padding-left: 35px;
+    padding-right: 35px;
+    padding-bottom: 35px;
 }
 
 h2 {
@@ -15,8 +17,6 @@ h2 {
     margin-bottom: 25px;
     display: flex;
     justify-content: flex-end;
-    //padding: 10px;
-    
 }
 
 .task-filter-buttons button {
@@ -28,18 +28,53 @@ h2 {
     border: 1px solid black;
     margin-top: -3px;
     margin-right: 10px;
-    cursor: pointer;
-    align-items: center;
     font-size: 12px;
     font-weight: 600;
     text-align: center;
+}
+
+.dropdown-menu {
+    position: absolute;
+    width: 20%;
+    height: auto;
+    background-color: white;
+    border: 1px solid #eee;
+    margin-top: 40px;
+    border-radius: 12px;
+    z-index: 1000;
+    text-align: start;
+}
+
+.dropdown-menu ul {
+    list-style: none;
+    font-size: 12px;
+    padding: 0;
+    margin-left: 6px;
+    margin-right: 6px;
     
+}
+
+.dropdown-menu li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 6px;
+    margin-top: 6px;
+}
+
+.dropdown-menu li:last-child {
+    border-bottom: none;
+}
+
+.dropdown-menu li:hover {
+    background-color: #f0f0f0;
+    border-radius: 12px;
+    height: 60%;
 }
 
 .task-list {
     display: flex;
     flex-direction: column;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
 }
 
@@ -50,7 +85,6 @@ h2 {
     border-radius: 12px;
     padding: 30px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
-    justify-content: space-between;
     color: #fff;
     overflow: hidden;
     position: relative;
@@ -58,11 +92,9 @@ h2 {
     transition: transform 0.2s ease;
 }
 
-.task-card:hover{
+.task-card:hover {
     transform: scale(1.02);
 }
-
-
 
 .task-header {
     display: flex;
@@ -72,7 +104,7 @@ h2 {
 
 .task-header h3 {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 800;
     margin: 0;
 }
 
@@ -90,10 +122,10 @@ h2 {
 
 .task-subtext {
     font-size: 14px;
+    margin-left: 10px;
     color: #ffffff;
-    margin-top: 10px;
-    font-style: oblique;
-    font-weight: lighter;
+    margin-top: 7px;
+    font-weight: 100px;
 }
 
 .task-footer {
@@ -107,10 +139,24 @@ h2 {
     z-index: 1;
 }
 
-.logoicon{
+.task-footer p {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    height: fit-content;
+}
+
+.task-footer p svg {
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 16px;
+    height: 16px;
+}
+
+.logoicon {
     position: absolute;
-    bottom: 10px; /* Adjust as needed */
-    right: 20px;  /* Adjust as needed */
+    bottom: 10px;
+    right: 20px;
     z-index: 0;
 }
 
