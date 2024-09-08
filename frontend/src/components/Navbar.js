@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import '../index.css';
@@ -8,7 +8,7 @@ import CalendarIcon from '../svgs/Navbar/CalendarIcon';
 import TasksIcon from '../svgs/Navbar/TasksIcon';
 import SettingsIcon from '../svgs/Navbar/SettingsIcon';
 
-const Navbar = ({ }) => {
+const Navbar = () => {
     const navigate = useNavigate();
 
     return (

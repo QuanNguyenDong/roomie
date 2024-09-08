@@ -6,6 +6,7 @@ const cors = require("cors");
 
 const authRouter = require("./routes/auth");
 const currentUserRouter = require("./routes/profile");
+const homeRouter = require("./routes/home");
 
 if (!process.env.MONGO_URI) throw Error("MONGO_URI must be defined");
 if (!process.env.JWT_KEY) throw Error("JWT_KEY must be defined");
@@ -31,11 +32,17 @@ app.use(
         secure: false,
     })
 );
-app.use(cors());
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        credentials: true,
+    })
+);
 app.use(express.json());
 
 app.use(authRouter);
 app.use(currentUserRouter);
+app.use(homeRouter);
 
 app.use("/api", (req, res) => {
     res.send("Hello world");
