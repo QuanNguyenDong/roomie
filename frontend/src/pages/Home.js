@@ -28,7 +28,7 @@ function Home() {
     }, [navigate]);
 
     return (
-        <div className="w-full h-full text-black font-poppins">
+        <div className="max-w-[520px] mx-auto h-full text-black font-poppins">
             <div class="flex justify-between h-10 mb-6 mx-8">
                 <text className="text-4xl font-bold font-lexend">Hello, {user.fullname}!</text>
             </div>
