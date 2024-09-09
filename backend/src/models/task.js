@@ -3,6 +3,34 @@ const mongoose = require("mongoose");
 const taskSchema = mongoose.Schema(
     {
         // define your data
+        taskname: {
+            type: String,
+            required: true,
+        },
+        description: {
+            type: String,
+            required: true,
+        },
+        frequency: {
+            type: Number, // Frequency in days
+            required: true,
+            validate: {
+                validator: Number.isInteger,
+                message: "{VALUE} is not an integer value",
+            },
+        },
+        duration: {
+            type: Number, // Duration in minutes
+            required: true,
+            validate: {
+                validator: Number.isInteger,
+                message: "{VALUE} is not an integer value",
+            },
+        },
+        house: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "House",
+        }
     },
     {
         toJSON: {
