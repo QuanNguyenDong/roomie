@@ -35,7 +35,7 @@ const Topbar = () => {
             <div className="top-0 w-[500px] h-[50px] px-7 pt-4">
                 <div className="text-black flex flex-row justify-between">
                     <div>
-                        <button onClick={() => navigate("/home")}>
+                        <button onClick={() => navigate("/roomie")}>
                             <Hamburger className="icon" fill="#111827" />
                         </button>
                     </div>
