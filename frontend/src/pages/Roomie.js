@@ -10,12 +10,12 @@ function JoinOrCreate() {
         e.preventDefault();
         try {
             var str = code.current.value;
-            if (str.length != 5) throw Error("Code must be 5 characters");
+            if (str.length !== 5) throw Error("Code must be 5 characters");
 
             var body = { code: str };
             const res = await createHome(body);
 
-            if (res.status != 200) throw Error(res.message);
+            if (res.status !== 200) throw Error(res.message);
             window.location.reload();
         } catch (err) {
             alert(err.message);
@@ -26,12 +26,12 @@ function JoinOrCreate() {
         e.preventDefault();
         try {
             var str = code.current.value;
-            if (str.length != 5) throw Error("Code must be 5 characters");
+            if (str.length !== 5) throw Error("Code must be 5 characters");
 
             var body = { code: str };
             const res = await joinHome(body);
 
-            if (res.status != 200) throw Error(res.message);
+            if (res.status !== 200) throw Error(res.message);
             window.location.reload();
         } catch (err) {
             alert(err.message);
@@ -93,7 +93,7 @@ function Roomie() {
 
     const handleLeave = async () => {
         try {
-            const res = await leaveHome();
+            await leaveHome();
             window.location.reload();
         } catch (err) {}
     };
