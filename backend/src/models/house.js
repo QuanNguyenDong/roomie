@@ -2,10 +2,12 @@ const mongoose = require("mongoose");
 
 const houseSchema = mongoose.Schema(
     {
-        name: {
+        code: {
             type: String,
             required: true,
             unique: true,
+            maxLength: 5,
+            minLength: 5
         },
     },
     {
