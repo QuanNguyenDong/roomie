@@ -44,12 +44,16 @@ router.post(
         const joinHouse = await JoinHouse.findOne({
             user: req.currentUser?.id,
         }).populate("house");
-        if (joinHouse) return res.status(400).send({ message: "User already in a house" });
+        if (joinHouse)
+            return res.status(400).send({ message: "User already in a house" });
 
         try {
             const { code } = req.body;
             var house = await House.findOne({ code });
-            if (house) return res.status(400).send({ message: "House already exists" });
+            if (house)
+                return res
+                    .status(400)
+                    .send({ message: "House already exists" });
 
             house = await House.create({ code });
             join = await JoinHouse.create({
@@ -81,12 +85,14 @@ router.post(
         const joinHouse = await JoinHouse.findOne({
             user: req.currentUser?.id,
         }).populate("house");
-        if (joinHouse) return res.status(400).send({ message: "User already in a house" });
+        if (joinHouse)
+            return res.status(400).send({ message: "User already in a house" });
 
         try {
             const { code } = req.body;
             var house = await House.findOne({ code });
-            if (!house) return res.status(400).send({ message: "Code isn't exist" });
+            if (!house)
+                return res.status(400).send({ message: "Code isn't exist" });
 
             join = await JoinHouse.create({
                 user: user._id,
@@ -103,7 +109,14 @@ router.delete("/home/leave", currentUser, async (req, res) => {
     const user = await User.findById(req.currentUser?.id);
     if (!user) return res.status(401).send({ message: "Unauthorized" });
 
-    await JoinHouse.deleteOne({ user: req.currentUser?.id });
+    var house = await JoinHouse.findOne({
+        user: user.id,
+    });
+    house = house.house;
+
+    await JoinHouse.deleteOne({ user: user.id });
+    const count = await JoinHouse.countDocuments({ house });
+    if (count == 0) await House.deleteOne({ _id: house });
 
     res.status(200).send({ message: "User left house" });
 });

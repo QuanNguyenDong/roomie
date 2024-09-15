@@ -79,8 +79,8 @@ function JoinOrCreate() {
 }
 
 function Roomie() {
-    const [house, setHouse] = useState({});
-    const [users, setUsers] = useState([]);
+    const [house, setHouse] = useState(null);
+    const [users, setUsers] = useState(null);
 
     useEffect(() => {
         getHome()
@@ -98,9 +98,9 @@ function Roomie() {
         } catch (err) {}
     };
 
-    if (!(house && users)) return <JoinOrCreate />;
-
-    return (
+    return !house || !users ? (
+        <JoinOrCreate />
+    ) : (
         <div className="max-w-[520px] mx-auto py-10 py-auto h-full text-black font-poppins">
             <h1>Code: {house.code}</h1>
             <h1>Users: </h1>
