@@ -17,7 +17,7 @@ function TaskManager() {
             dueDate: '10 September 2024',
             frequency: 'Weekly',
             time: '30 Min',
-            priority: 'high',
+            priority: 'High',
             avatar: 'T'
         },
         {
@@ -26,7 +26,7 @@ function TaskManager() {
             dueDate: '10 September 2024',
             frequency: 'Weekly',
             time: '5 Min',
-            priority: 'high',
+            priority: 'High',
             avatar: 'V'
         },
         {
@@ -35,7 +35,7 @@ function TaskManager() {
             dueDate: '10 September 2024',
             frequency: 'Weekly',
             time: '30 Min',
-            priority: 'low',
+            priority: 'Low',
             avatar: 'R'
         },
         {
@@ -44,7 +44,7 @@ function TaskManager() {
             dueDate: '10 September 2024',
             frequency: 'Weekly',
             time: '30 Min',
-            priority: 'medium',
+            priority: 'Medium',
             avatar: 'S'
         }
     ];
