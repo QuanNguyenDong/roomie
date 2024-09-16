@@ -6,24 +6,46 @@ const validateRequest = require("../middlewares/validate-request");
 const User = require("../models/user");
 const House = require("../models/house");
 const JoinHouse = require("../models/joinHouse");
+const AnswerQuestion = require("../models/answerQuestion");
 
 const router = express.Router();
 
 router.get("/home", currentUser, async (req, res) => {
-    const joinHouse = await JoinHouse.findOne({
-        user: req.currentUser?.id,
-    }).populate("house");
+    try {
+        const { currentUser } = req;
 
-    if (!joinHouse) return res.send({});
+        const joinHouse = await JoinHouse.findOne({
+            user: currentUser?.id,
+        }).populate("house");
 
-    const house = joinHouse.house;
-    var users = await JoinHouse.find({ house: house._id }).populate("user");
-    users = users.filter((user) => user.user);
-    users = users.map((user) => user.user);
-    res.send({
-        house,
-        users,
-    });
+        if (!joinHouse) return res.status(404).send({});
+
+        const { house } = joinHouse;
+
+        let users = await JoinHouse.find({ house: house._id }).populate("user");
+        users = users.filter((user) => user.user);
+        users = users.map((user) => user.user);
+        userIds = users.map((user) => user._id);
+
+        let answers = await AnswerQuestion.find({
+            user: userIds,
+        })
+            .populate("user")
+            .populate("question");
+        answers = answers.map((item) => ({
+            fullname: item.user?.fullname,
+            question: item.question?.question,
+            answer: item.answer,
+        }));
+
+        return res.status(200).send({
+            house,
+            users,
+            answers,
+        });
+    } catch (error) {
+        return res.status(404).send(error);
+    }
 });
 
 router.post(
@@ -37,17 +59,19 @@ router.post(
     validateRequest,
     currentUser,
     async (req, res) => {
-        const user = await User.findById(req.currentUser?.id);
-        if (!user) return res.status(401).send({ message: "Unauthorized" });
-
-        // Check if user already in a house
-        const joinHouse = await JoinHouse.findOne({
-            user: req.currentUser?.id,
-        }).populate("house");
-        if (joinHouse)
-            return res.status(400).send({ message: "User already in a house" });
-
         try {
+            const user = await User.findById(req.currentUser?.id);
+            if (!user) return res.status(401).send({ message: "Unauthorized" });
+
+            // Check if user already in a house
+            const joinHouse = await JoinHouse.findOne({
+                user: req.currentUser?.id,
+            }).populate("house");
+            if (joinHouse)
+                return res
+                    .status(400)
+                    .send({ message: "User already in a house" });
+
             const { code } = req.body;
             var house = await House.findOne({ code });
             if (house)
@@ -78,17 +102,19 @@ router.post(
     validateRequest,
     currentUser,
     async (req, res) => {
-        const user = await User.findById(req.currentUser?.id);
-        if (!user) return res.status(401).send({ message: "Unauthorized" });
-
-        // Check if user already in a house
-        const joinHouse = await JoinHouse.findOne({
-            user: req.currentUser?.id,
-        }).populate("house");
-        if (joinHouse)
-            return res.status(400).send({ message: "User already in a house" });
-
         try {
+            const user = await User.findById(req.currentUser?.id);
+            if (!user) return res.status(401).send({ message: "Unauthorized" });
+
+            // Check if user already in a house
+            const joinHouse = await JoinHouse.findOne({
+                user: req.currentUser?.id,
+            }).populate("house");
+            if (joinHouse)
+                return res
+                    .status(400)
+                    .send({ message: "User already in a house" });
+
             const { code } = req.body;
             var house = await House.findOne({ code });
             if (!house)
@@ -106,19 +132,23 @@ router.post(
 );
 
 router.delete("/home/leave", currentUser, async (req, res) => {
-    const user = await User.findById(req.currentUser?.id);
-    if (!user) return res.status(401).send({ message: "Unauthorized" });
+    try {
+        const user = await User.findById(req.currentUser?.id);
+        if (!user) return res.status(401).send({ message: "Unauthorized" });
 
-    var house = await JoinHouse.findOne({
-        user: user.id,
-    });
-    house = house.house;
+        var house = await JoinHouse.findOne({
+            user: user.id,
+        });
+        house = house.house;
 
-    await JoinHouse.deleteOne({ user: user.id });
-    const count = await JoinHouse.countDocuments({ house });
-    if (count == 0) await House.deleteOne({ _id: house });
+        await JoinHouse.deleteOne({ user: user.id });
+        const count = await JoinHouse.countDocuments({ house });
+        if (count == 0) await House.deleteOne({ _id: house });
 
-    res.status(200).send({ message: "User left house" });
+        res.status(200).send({ message: "User left house" });
+    } catch (error) {
+        return res.status(404).send(error);
+    }
 });
 
 module.exports = router;

@@ -46,7 +46,7 @@ function JoinOrCreate() {
             <div class="flex flex-col items-center">
                 <form>
                     <label className="mx-auto text-sm font-medium leading-6 text-gray-900 flex flex-row items-center gap-1">
-                        Enter code to join Roomie
+                        Enter code to join HOUSE
                     </label>
                     <input
                         className="w-[280px] my-2 rounded-3xl py-1.5 px-6 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
@@ -69,7 +69,7 @@ function JoinOrCreate() {
                             onClick={handleCreate}
                             className="h-10 w-[180px] bg-black text-s text-white w-28 rounded-3xl shadow"
                         >
-                            Create a Roomie
+                            Create a HOUSE
                         </button>
                     </div>
                 </form>
@@ -81,12 +81,14 @@ function JoinOrCreate() {
 function Roomie() {
     const [house, setHouse] = useState(null);
     const [users, setUsers] = useState(null);
+    const [answers, setAnswer] = useState([]);
 
     useEffect(() => {
         getHome()
             .then((res) => {
                 setHouse(res.house);
                 setUsers(Array.from(res.users));
+                setAnswer(Array.from(res.answers));
             })
             .catch((error) => {});
     }, []);
@@ -102,18 +104,54 @@ function Roomie() {
         <JoinOrCreate />
     ) : (
         <div className="max-w-[520px] mx-auto py-10 py-auto h-full text-black font-poppins">
-            <h1>Code: {house.code}</h1>
-            <h1>Users: </h1>
+            <div class="flex justify-between h-10 mb-4">
+                <text className="text-4xl font-bold font-lexend">
+                    Your House
+                </text>
+            </div>
+            <text className="text-xl block">House code: {house.code}</text>
+            <text className="text-xl block">Users: </text>
             <ul className="mx-5">
-                {users.map((user, i) => (
-                    <li key={i} className="list-disc">
-                        {user.fullname}
+                {users.map((user, index) => (
+                    <li key={index} className="list-disc">
+                        <p>{user.fullname}</p>
                     </li>
                 ))}
             </ul>
+            <div className="my-8">
+                <div class="flex justify-between h-10 mb-6">
+                    <text className="text-4xl font-bold font-lexend">
+                        Ice-breaker Questions
+                    </text>
+                </div>
+
+                {answers.map((answer, index) => {
+                    return (
+                        <div
+                            key={index}
+                            className="py-4 px-6 my-6 bg-white border border-gray-200 rounded-lg shadow"
+                        >
+                            <p className="font-bold">{answer.question}</p>
+                            <p>{answer.answer}</p>
+                            <div class="flex items-center mt-4">
+                                <span className="mr-1 inline-flex items-center justify-center size-[25px] rounded-full bg-darkGrey leading-none">
+                                    <p className="text-sm font-semibold text-white">
+                                        {answer.fullname.substr(0, 1)}
+                                    </p>
+                                </span>
+                                <div class="mx-1 text-sm">
+                                    <p class="text-gray-900 leading-none">
+                                        {answer.fullname}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
             <button
                 onClick={handleLeave}
-                className="h-10 my-5 bg-black text-s text-white w-28 rounded-3xl shadow"
+                className="h-10 my-5 block ml-auto bg-black text-s text-white w-28 rounded-3xl shadow"
             >
                 Leave
             </button>
