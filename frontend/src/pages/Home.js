@@ -57,6 +57,7 @@ function Home() {
                     <Event />
                     <Event />
                 </div>
+                <div class="h-40"></div>
             </div>
         </div> 
     );

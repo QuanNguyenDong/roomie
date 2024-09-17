@@ -35,9 +35,9 @@ const Topbar = () => {
             <div className="top-0 w-[500px] h-[50px] px-7 pt-4">
                 <div className="text-black flex flex-row justify-between">
                     <div>
-                        <button onClick={() => navigate("/home")}>
+                        {/* <button onClick={() => navigate("/roomie")}>
                             <Hamburger className="icon" fill="#111827" />
-                        </button>
+                        </button> */}
                     </div>
 
                     <div className="relative space-x-2.5">
@@ -54,7 +54,7 @@ const Topbar = () => {
                                 dropdown ? "" : "hidden"
                             } right-0 z-10 mt-2 origin-top-right rounded-md bg-white shadow-lg`}
                         >
-                            <ul className="py-2 text-sm text-gray-700">
+                            <ul className="py-2 text-sm text-gray-700 w-28">
                                 <li>
                                     <button
                                         onClick={() => {
@@ -69,12 +69,12 @@ const Topbar = () => {
                                 <li>
                                     <button
                                         onClick={() => {
-                                            navigate("/tasks");
+                                            navigate("/roomie");
                                             setDropdown(false);
                                         }}
                                         className="block w-full px-4 py-2 hover:bg-gray-100 text-left"
                                     >
-                                        Your Tasks
+                                        House
                                     </button>
                                 </li>
                                 <li>
@@ -86,6 +86,16 @@ const Topbar = () => {
                                         className="block w-full px-4 py-2 hover:bg-gray-100 text-left"
                                     >
                                         Profile
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        onClick={() => {
+                                            setDropdown(false);
+                                        }}
+                                        className="block w-full px-4 py-2 hover:bg-gray-100 text-left"
+                                    >
+                                        Setting
                                     </button>
                                 </li>
                                 <li>

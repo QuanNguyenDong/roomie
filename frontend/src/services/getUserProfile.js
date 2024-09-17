@@ -7,7 +7,7 @@ const getUserProfile = async () => {
         });
         return res.data;
     } catch (error) {
-        console.error(error);
+        // console.error(error);
     }
 };
 

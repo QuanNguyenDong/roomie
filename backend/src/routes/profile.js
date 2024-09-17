@@ -8,11 +8,11 @@ const router = express.Router();
 
 router.get("/users/profile", currentUser, async (req, res) => {
     const user = await User.findById(req.currentUser?.id);
+    if (!user) return res.status(401).send({ message: "Unauthorized" });
+
     var answers = await AnswerQuestion.find({
         user: req.currentUser?.id,
     }).populate("question");
-
-    if (!user) return res.status(404).send({});
 
     if (answers) {
         answers = answers.map((item) => ({
