@@ -1,9 +1,23 @@
 const { format, addDays, subDays } = require('date-fns');
 const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
-const User = require("../models/user");
-const House = require("../models/house");
-const AssignTask = require("../models/assignTask")
+const User = require("./models/user");
+const House = require("./models/house");
+const AssignTask = require("./models/assignTask")
+const Task = require("./models/task");
+const JoinHouse = require('./models/joinHouse');
+
+if (!process.env.MONGO_URI) throw new Error("MONGO_URI must be defined");
+
+const connectDB = async () => {
+    try {
+        await mongoose.connect(`${process.env.MONGO_URI}/roomies`);
+        console.log("Connected to MongoDb");
+    } catch (err) {
+        console.error(err);
+    }
+};
+connectDB();
 
 // This algorithm assigns each user with a set of tasks, making sure that each user has roughly the same amount of work
 // This algorithm uses a greedy First-Fit Decreasing algorithm
@@ -16,15 +30,17 @@ const AssignTask = require("../models/assignTask")
 // Outputs:
 //   - List of tasks for each users
 const allocateTasks = async (house) => {
-    var tasks = await House.find({house: house._id}).populate("task");
-    var users = await User.find({house: house._id}).populate("user");
+    var tasks = await Task.find({house: "66d5a725fafe5e978f84e2d2"});
+    var users = await JoinHouse.find({house: "66d5a725fafe5e978f84e2d2"});
+    var assignTasks = await AssignTask.find();
+    await AssignTask.deleteMany();
+    
     let taskAllocations = [];
 
     // Create new TaskAllocation object for each user
     users.forEach(user => {
         taskAllocations.push({
-            userId: user.userId,
-            allocatedTasks: [],
+            user: user._id,
             totalDuration: 0
         });
     });
@@ -44,21 +60,17 @@ const allocateTasks = async (house) => {
             taskAllocations.sort((a, b) => taskAllocationSort(a) - taskAllocationSort(b));
 
             // Assign the current task to the user with the least amount of allocated work
-            taskAllocations[0].allocatedTasks.push({
-                taskId: task.taskId,
+            const taskAllocation = {
+                task: task._id,
+                user: taskAllocations[0].user,
+                status: "inactive",
                 assignedDate: new Date(),
-                startDate: addDays(new Date(), i)
-            });
+                startDate: addDays(new Date(), i),
+            }
+            AssignTask.create(taskAllocation);
             taskAllocations[0].totalDuration += task.duration;
         }
     });
-    
-    try {
-        const assignTask = await AssignTask.create(taskAllocations);
-        console.log(assignTask);
-    } catch (err) {
-        console.error(err);
-    }    
 };
 
 
@@ -74,3 +86,10 @@ function getLastAssignedDate(task) {
     return subDays(new Date(), 8);
 }
 
+const start = async () => 
+{
+    const house = await House.findOne({name: "Home Slice"});
+    await allocateTasks(house)
+};
+
+start();
