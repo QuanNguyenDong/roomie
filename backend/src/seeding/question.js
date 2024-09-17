@@ -53,7 +53,7 @@ const createQuestion = async () => {
         console.error(err);
     }
 };
-createQuestion();
+// createQuestion();
 
 const deleteAllData = async () => {
     try {
