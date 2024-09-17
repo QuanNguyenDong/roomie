@@ -98,16 +98,16 @@ function Calendar() {
     }
 
     return (
-        <div className="max-w-[520px] mx-auto h-full text-black font-poppins">
+        <div className="max-w-[520px] mx-auto h-full text-black">
             <div class="flex justify-between h-10 mb-6 mx-8">
                 <text className="text-4xl font-bold font-lexend">Calendar</text>
             </div>
 
             <div className="pt-4">
                 <div className="max-w-md px-4 mx-auto">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mx-6">
                         <div className="flex flex-row">
-                            <h2 className="text-xl mr-3">
+                            <h2 className="text-xl font-medium mr-2">
                                 {format(firstDayCurrentMonth, 'MMMM')}
                             </h2>
                             <h2 className="text-xl font-thin">
@@ -118,16 +118,16 @@ function Calendar() {
                             <button
                                 type="button"
                                 onClick={previousMonth}
-                                className="-my-1.5 p-1.5 text-gray-400 hover:text-gray-500"
+                                className="-my-1.5 p-1.5 text-[#111827] hover:text-gray-500"
                             >
-                                <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
+                                <ChevronLeftIcon className="w-4 h-4" aria-hidden="true" />
                             </button>
                             <button
                                 onClick={nextMonth}
                                 type="button"
-                                className="-my-1.5 -mr-1.5 ml-2 p-1.5 text-gray-400 hover:text-gray-500"
+                                className="-my-1.5 -mr-1.5 ml-2 p-1.5 text-[#111827] hover:text-gray-500"
                             >
-                                <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
+                                <ChevronRightIcon className="w-4 h-4" aria-hidden="true" />
                             </button>
                         </div>
                     </div>
