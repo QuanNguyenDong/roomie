@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import TaskManager from "./pages/TaskManager";
 import Profile from "./pages/Profile";
 import Roomie from "./pages/Roomie";
+import Prompts from "./pages/prompts";  // Import the Prompts component
 import DefaultLayout from "./layouts/DefaultLayout";
 import TopbarOnly from "./layouts/TopbarOnly";
 
@@ -62,6 +63,14 @@ function AppRoutes() {
                         <TopbarOnly>
                             <Roomie />
                         </TopbarOnly>
+                    }
+                />
+                {/* Add the Prompts route */}
+                <Route path="/prompts"
+                    element={
+                        <DefaultLayout>
+                            <Prompts />
+                        </DefaultLayout>
                     }
                 />
             </Routes>
