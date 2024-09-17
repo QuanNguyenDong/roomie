@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 function Profile() {
+    const navigate = useNavigate();
     const [user, setUser] = useState({});
 
     const fetchUserProfile = async () => {
@@ -41,7 +43,7 @@ function Profile() {
                     {user.fullname}
                 </p>
                 <h4>{user.email ?? "abc@gmail.com"}</h4>
-                <button className="my-6 bg-white text-xs text-darkGrey w-28 h-10 rounded-3xl drop-shadow-lg">
+                <button className="my-6 bg-white text-xs text-darkGrey w-28 h-10 rounded-3xl drop-shadow-lg" onClick={() => navigate('/reviews')}>
                     Your Reviews
                 </button>
             </div>
