@@ -141,6 +141,14 @@ function Calendar() {
         }));
     };
 
+    const handleMouseEnter = () => {
+        setModalState({ open: true, expanded: true });
+    };
+
+    const handleMouseLeave = () => {
+        setModalState({ open: true, expanded: false });
+    };
+
     let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
 
     const day = format(selectedDay, 'd');
@@ -254,23 +262,27 @@ function Calendar() {
                 <AnimatePresence>
                     {modalState.open && (
                         <motion.div
-                            className="fixed bottom-0 left-0 right-0 rounded-t-[2.5rem] bg-black text-white font-poppins"
+                            className="max-w-[520px] mx-auto fixed bottom-0 left-0 right-0 rounded-t-[2.5rem] bg-black text-white font-poppins"
                             initial={{ y: "100%" }}
                             animate={{ y: "0%", height: modalState.expanded ? 500 : 250 }}
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            // onMouseEnter={() => setModalState({ ...modalState, expanded: true })}
+                            // onMouseLeave={() => setModalState({ ...modalState, expanded: false })}
+                            onClick={toggleExpandModal}
                         >
-                            <div className="flex justify-between items-center px-10 pt-4">
+                            <div 
+                                className="flex justify-between items-center px-10 pt-4">
                                 <h3 className="text-md">
                                     {format(selectedDay, `eeee, `)}{dayWithSuffix} {format(selectedDay, 'MMMM')}
                                 </h3>
-                                <button onClick={toggleExpandModal} className="text-white">
+                                {/* <button onClick={toggleExpandModal} className="text-white">
                                     {modalState.expanded ? 'v' : '^'}
-                                </button>
+                                </button> */}
                                 <button onClick={closeModal} className="text-red-400">x</button>
                             </div>
 
-                            <div className="rounded-t-[2.5rem] mt-5 space-y-4 bg-white h-full pt-10 px-10 overflow-y-auto">
+                            <div className="rounded-t-[2.5rem] mt-5 space-y-4 bg-white h-full pt-10 pb-44 px-10 overflow-y-auto">
                                 {events.filter(meeting => isSameDay(parseISO(meeting.startDatetime), selectedDay)).length > 0 ? (
                                     events.filter(meeting => isSameDay(parseISO(meeting.startDatetime), selectedDay)).map(meeting => (
                                         <div key={meeting.id} className="p-4 border-l-[8px] h-24 border-[1px] border-blue-500 bg-white shadow-md rounded-2xl">
