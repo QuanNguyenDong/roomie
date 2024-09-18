@@ -1,6 +1,9 @@
 import React from 'react';
 import "../styling/taskCard.scss"
 import CloseIcon from "../svgs/TaskManagement/CloseIcon";
+import PriorityIcon from "../svgs/TaskManagement/PriorityIcon"
+import TaskFrequencyIcon from "../svgs/TaskManagement/TaskFrequencyIcon"
+import DurationIcon from "../svgs/TaskManagement/DurationIcon"
 
 function TaskModal({ task, isOpen, onClose }) {
     if (!isOpen || !task) return null; 
@@ -33,9 +36,34 @@ function TaskModal({ task, isOpen, onClose }) {
                 <div className='description'>
                     <p>{task.description}</p>
                 </div>
-                <p>Due Date: {task.dueDate}</p>
-                <p>Frequency: {task.frequency}</p>
-                <p>Time Required: {task.time}</p>
+                <div className='content'>
+                    <div className='deadline-box'>
+                       <p><span style={{ fontWeight: "550"}}>Deadline:</span>  {task.dueDate}</p>
+                       <hr style={{ border: "none", borderBottom: "0.3px dashed #000", margin: "10px 0" }} />
+                        <p><span style={{ fontWeight: "550" }}>Redistribution: </span> </p>
+                    </div>
+                    <div className='frequency-box'>
+                            <p>
+                                <span className="priority-container">
+                                    <PriorityIcon className="priority-icon" /> 
+                                    Priority: {task.priority}
+                                </span>
+                            </p>
+                            <p>
+                                <span className="priority-container">
+                                    <TaskFrequencyIcon className="priority-icon" />
+                                    Frequency: {task.frequency}
+                                </span>
+                            </p>
+                            <p>
+                                <span className="priority-container">
+                                    <DurationIcon className="priority-icon" /> 
+                                    Time Required: {task.time}
+                                </span>
+                            </p>
+                    </div>
+
+                </div>
 
             </div>
         </div>
