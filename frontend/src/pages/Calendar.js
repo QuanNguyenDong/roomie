@@ -141,13 +141,13 @@ function Calendar() {
         }));
     };
 
-    const handleMouseEnter = () => {
-        setModalState({ open: true, expanded: true });
-    };
+    // const handleMouseEnter = () => {
+    //     setModalState({ open: true, expanded: true });
+    // };
 
-    const handleMouseLeave = () => {
-        setModalState({ open: true, expanded: false });
-    };
+    // const handleMouseLeave = () => {
+    //     setModalState({ open: true, expanded: false });
+    // };
 
     let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
 
@@ -174,12 +174,12 @@ function Calendar() {
                 <div className="max-w-md px-4 mx-auto">
                     <div className="flex items-center justify-between mx-6">
                         <div className="flex flex-row">
-                            <h2 className="text-xl font-medium mr-2">
+                            <text className="text-xl font-medium mr-3">
                                 {format(firstDayCurrentMonth, 'MMMM')}
-                            </h2>
-                            <h2 className="text-xl font-thin">
+                            </text>
+                            <text className="text-xl font-thin">
                                 {format(firstDayCurrentMonth, 'yyyy')}
-                            </h2>
+                            </text>
                         </div>
                         <div className="flex flex-row">
                             <button
