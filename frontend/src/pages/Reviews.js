@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../styling/Review.css";
+import CloseIcon from '../svgs/Review/CloseIcon.js'; 
 import Tile from '../components/Review/Tile';
 import { useNavigate } from 'react-router-dom';
 
@@ -56,51 +57,51 @@ const Reviews = () => {
 
   return (
     <>
-    <div className="p-6 bg-gray-100 min-h-screen">
-        <div className="flex justify-between items-center mb-8">
+    <div className="p-8 min-h-screen">
+      <div className="flex justify-between items-center m-2">
         <div>
-          <h1 className="text-3xl font-bold">Your Reviews</h1>
+          <h3 className="text-3xl font-bold">Your Reviews</h3>
           <p className="text-gray-600">Let's see how you did...</p>
         </div>
-        {/* Close Button */}
+          
         <button
           onClick={handleClose}
-          className="text-2xl font-bold text-gray-500 hover:text-red-600"
+          className="pb-6"
         >
-          X
+        <CloseIcon />
         </button>
       </div>
       
-        <div className="flex flex-wrap p-4">
-        {/* Render the stars and tasksCompleted tiles */}
-        <div className="flex w-full mb-4">
-            <Tile
+      <div className="flex flex-wrap w-full">
+        {/* The stars and tasksCompleted tiles */}
+        <div className="flex w-full mb-2">
+          <Tile
             type="stars"
             title="Total Stars"
             stars={additionalData.stars}
             />
-            <Tile
+          <Tile
             type="tasksCompleted"
             title="Tasks Completed"
             tasksCompleted={additionalData.tasksCompleted}
             />
         </div>
 
-        {/* Render the task tiles */}
+        {/*task tiles */}
         <div className="w-full">
-            {reviewData.map((tile, index) => (
+          {reviewData.map((tile, index) => (
             <Tile
-                key={index}
-                type="task"
-                title={tile.title}
-                reviews={tile.reviews}
+              key={index}
+              type="task"
+              title={tile.title}
+              reviews={tile.reviews}
             />
-            ))}
+          ))}
         </div>
-        </div>
-       </div>
-    </>
-    );
+      </div>
+    </div>
+  </>
+);
 };
 
 export default Reviews;
