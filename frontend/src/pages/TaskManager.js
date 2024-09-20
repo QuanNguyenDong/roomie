@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import '../styling/taskManager.scss'; 
 import TileIcon from '../svgs/Home/Tasks/TileIcon.js';
 import FrequencyIcon from '../svgs/TaskManagement/FrequencyIcon.js';
+import TaskModal from './TaskCard.js'; 
 
 function TaskManager() {
-    const [priorityFilter, setPriorityFilter] = useState('All'); // State for filtering tasks by priority
-    const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false); // State to control dropdown visibility
+    const [selectedTask, setSelectedTask] = useState(null); 
+    const [priorityFilter, setPriorityFilter] = useState('All'); 
+    const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false); 
 
-    // Sample task data
+    
     const tasks = [
         {
             title: 'Vacuum Living Room',
@@ -15,7 +17,7 @@ function TaskManager() {
             dueDate: '10 September 2024',
             frequency: 'Weekly',
             time: '30 Min',
-            priority: 'high',
+            priority: 'High',
             avatar: 'T'
         },
         {
@@ -24,7 +26,7 @@ function TaskManager() {
             dueDate: '10 September 2024',
             frequency: 'Weekly',
             time: '5 Min',
-            priority: 'high',
+            priority: 'High',
             avatar: 'V'
         },
         {
@@ -33,7 +35,7 @@ function TaskManager() {
             dueDate: '10 September 2024',
             frequency: 'Weekly',
             time: '30 Min',
-            priority: 'low',
+            priority: 'Low',
             avatar: 'R'
         },
         {
@@ -42,26 +44,31 @@ function TaskManager() {
             dueDate: '10 September 2024',
             frequency: 'Weekly',
             time: '30 Min',
-            priority: 'medium',
+            priority: 'Medium',
             avatar: 'S'
         }
     ];
 
-    
     const handleFilterChange = (priority) => {
         setPriorityFilter(priority);
         setPriorityDropdownOpen(false); 
     };
 
-    
     const togglePriorityDropdown = () => {
         setPriorityDropdownOpen(!isPriorityDropdownOpen);
     };
 
-    
     const filteredTasks = tasks.filter((task) => {
         return priorityFilter === 'All' || task.priority === priorityFilter.toLowerCase();
     });
+
+    const openTaskModal = (task) => {
+        setSelectedTask(task); 
+    };
+
+    const closeTaskModal = () => {
+        setSelectedTask(null);
+    };
 
     return (
         <div className="task-manager max-w-[500px] mx-auto">
@@ -82,7 +89,7 @@ function TaskManager() {
             </div>
             <div className="task-list">
                 {filteredTasks.map((task, index) => (
-                    <div key={index} className={`task-card ${task.priority}`}>
+                    <div key={index} className={`task-card ${task.priority}`} onClick={() => openTaskModal(task)}>
                         <div className='logoicon'> <TileIcon /></div>
                         <div className="task-header">
                             <h3>{task.title}</h3>
@@ -96,11 +103,14 @@ function TaskManager() {
                     </div>
                 ))}
             </div>
+            <TaskModal task={selectedTask} isOpen={!!selectedTask} onClose={closeTaskModal} />
         </div>
     );
 }
 
 export default TaskManager;
+
+
 
 /*
 
