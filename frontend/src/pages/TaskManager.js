@@ -8,7 +8,12 @@ function TaskManager() {
     const [selectedTask, setSelectedTask] = useState(null); 
     const [priorityFilter, setPriorityFilter] = useState('All'); 
     const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false); 
-
+    
+    const priorityColors = {
+        'High': '#426DA0',
+        'Medium': '#736B6F',
+        'Low': '#495247'
+    };
     
     const tasks = [
         {
@@ -90,7 +95,7 @@ function TaskManager() {
             <div className="task-list">
                 {filteredTasks.map((task, index) => (
                     <div key={index} className={`task-card ${task.priority}`} onClick={() => openTaskModal(task)}>
-                        <div className='logoicon'> <TileIcon /></div>
+                        <div className='logoicon'> <TileIcon fill={priorityColors[task.priority]} /></div>
                         <div className="task-header">
                             <h3>{task.title}</h3>
                             <div className="task-avatar">{task.avatar}</div>
