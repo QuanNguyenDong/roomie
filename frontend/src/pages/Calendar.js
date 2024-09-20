@@ -121,9 +121,20 @@ function Calendar() {
         end: endOfMonth(firstDayCurrentMonth),
     });
 
-    const handleMonthChange = (direction) => {
-        const newMonth = add(firstDayCurrentMonth, { months: direction });
-        setCurrentMonth(format(newMonth, 'MMM-yyyy'));
+    const handleDatesChange = (direction) => {
+        if (modalState.expanded && modalState.open) {
+            const newSelectedDay = add(selectedDay, { days: direction * 7 });
+            setSelectedDay(newSelectedDay);
+
+            const newMonth = format(newSelectedDay, 'MMM-yyyy');
+            if (newMonth !== currentMonth) {
+                setCurrentMonth(newMonth);
+            }
+            
+        } else {
+            const newMonth = add(firstDayCurrentMonth, { months: direction });
+            setCurrentMonth(format(newMonth, 'MMM-yyyy'));
+        }
     };
 
     return (
@@ -146,13 +157,13 @@ function Calendar() {
                         <div className="flex flex-row">
                             <button
                                 type="button"
-                                onClick={() => handleMonthChange(-1)}
+                                onClick={() => handleDatesChange(-1)}
                                 className="-my-1.5 p-1.5 text-[#111827] hover:text-gray-500"
                             >
                                 <ChevronLeftIcon className="w-4 h-4" aria-hidden="true" />
                             </button>
                             <button
-                                onClick={() => handleMonthChange(1)}
+                                onClick={() => handleDatesChange(1)}
                                 type="button"
                                 className="-my-1.5 -mr-1.5 ml-2 p-1.5 text-[#111827] hover:text-gray-500"
                             >
@@ -236,7 +247,7 @@ function Calendar() {
                             onClick={toggleExpandModal}
                         >
                             <div 
-                                className="flex justify-between items-center px-10 pt-4">
+                                className="flex justify-between items-center px-10 pt-4 cursor-pointer">
                                 <h3 className="text-md">
                                     {format(selectedDay, `eeee, `)}{dayWithSuffix} {format(selectedDay, 'MMMM')}
                                 </h3>
