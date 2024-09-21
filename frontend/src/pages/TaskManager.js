@@ -64,7 +64,7 @@ function TaskManager() {
     };
 
     const filteredTasks = tasks.filter((task) => {
-        return priorityFilter === 'All' || task.priority === priorityFilter.toLowerCase();
+        return priorityFilter === 'All' || task.priority === priorityFilter;
     });
 
     const openTaskModal = (task) => {
@@ -77,7 +77,7 @@ function TaskManager() {
 
     return (
         <div className="task-manager max-w-[500px] mx-auto">
-            <h2>Tasks</h2>
+            <h2 style={{fontSize:"32px", fontWeight:"600"}}>Tasks</h2>
             <div className="task-filter-buttons">
                 <button onClick={() => setPriorityFilter('All')}>All Tasks</button>
                 <button onClick={togglePriorityDropdown}>Priority</button>
