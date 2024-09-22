@@ -30,8 +30,8 @@ connectDB();
 // Outputs:
 //   - List of tasks for each users
 const allocateTasks = async (house) => {
-    var tasks = await Task.find({house: "66d5a725fafe5e978f84e2d2"});
-    var users = await JoinHouse.find({house: "66d5a725fafe5e978f84e2d2"});
+    var tasks = await Task.find({house: "66e96c9b1cb10cee92bf5572"});
+    var users = await JoinHouse.find({house: "66e96c9b1cb10cee92bf5572"});    
     var assignTasks = await AssignTask.find();
     await AssignTask.deleteMany();
     
@@ -40,7 +40,7 @@ const allocateTasks = async (house) => {
     // Create new TaskAllocation object for each user
     users.forEach(user => {
         taskAllocations.push({
-            user: user._id,
+            user: user.user,
             totalDuration: 0
         });
     });
@@ -88,7 +88,7 @@ function getLastAssignedDate(task) {
 
 const start = async () => 
 {
-    const house = await House.findOne({name: "Home Slice"});
+    const house = '66e96c9b1cb10cee92bf5572';
     await allocateTasks(house)
 };
 

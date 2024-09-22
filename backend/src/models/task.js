@@ -27,6 +27,11 @@ const taskSchema = mongoose.Schema(
                 message: "{VALUE} is not an integer value",
             },
         },
+        priority: {
+            type: String,
+            required: true,
+            enum: ['Low', 'Medium', 'High'], // Enum values
+        },
         house: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "House",
