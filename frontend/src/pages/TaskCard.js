@@ -2,7 +2,7 @@ import React from 'react';
 import "../styling/taskCard.scss"
 import CloseIcon from "../svgs/TaskManagement/CloseIcon";
 
-function TaskModal({ task, isOpen, onClose }) {
+function TaskModal({ task, isOpen, onClose, dueDate }) {
     if (!isOpen || !task) return null; 
 
     const getPriorityClass = (priority) => {
@@ -35,7 +35,7 @@ function TaskModal({ task, isOpen, onClose }) {
                 </div>
                 <p>Due Date: {task.dueDate}</p>
                 <p>Frequency: {task.frequency}</p>
-                <p>Time Required: {task.time}</p>
+                <p>Time Required: {task.duration} minutes</p>
 
             </div>
         </div>

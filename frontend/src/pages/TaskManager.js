@@ -25,10 +25,10 @@ function TaskManager() {
             const dueDatesMap = {};
             const taskAvatarMap = {};
             for (let task of fetchedTasks) {
-                const dueDate = await getTaskDueDate(task);
-                dueDatesMap[task._id] = dueDate;
+                const dueDate = await getTaskDueDate(task);                
+                dueDatesMap[task.taskId] = dueDate;
                 const taskAvatar = await getTaskAvatar(task);
-                taskAvatarMap[task._id] = taskAvatar;
+                taskAvatarMap[task.taskId] = taskAvatar;
             }
             setDueDates(dueDatesMap); // Update state with due dates                        
             setTaskAvatars(taskAvatarMap);
@@ -49,7 +49,8 @@ function TaskManager() {
         return priorityFilter === 'All' || task.priority === priorityFilter.toLowerCase();
     });    
     
-    const openTaskModal = (task) => {
+    const openTaskModal = async (task) => {
+        task.dueDate = await getTaskDueDate(task);        
         setSelectedTask(task); 
     };
 
@@ -61,7 +62,7 @@ function TaskManager() {
     const calculateDueDate = (startDate, frequency) => {
         const start = new Date(startDate);
         const dueDate = new Date(start);
-        dueDate.setDate(start.getDate() + frequency); // Add frequency (in days) to start date
+        dueDate.setDate(start.getDate() + frequency); // Add frequency (in days) to start date        
         return dueDate.toDateString(); // Return a human-readable format
     };
 
@@ -72,7 +73,7 @@ function TaskManager() {
                 return calculateDueDate(activeAssignment.startDate, task.frequency); // Calculate due date
             }
         } catch (err) {
-            console.error(`Error fetching active assignment for task ${task._id}`, err);
+            console.error(`Error fetching active assignment for task ${task.taskId}`, err);
         }
         return new Date().toDateString(); // Fallback if no active assignment
     };
@@ -82,12 +83,12 @@ function TaskManager() {
             const activeAssignment = await getActiveTaskAssignment(task.taskId);
             if (activeAssignment)
             {
-                const user = await getUser(activeAssignment.user);
+                const user = await getUser(activeAssignment.user);                
 
                 return user.fullname.charAt(0).toUpperCase();
             }
         } catch (err) {
-
+            console.error(err);
         }
         return '';
     };
@@ -116,11 +117,11 @@ function TaskManager() {
                         <div className='logoicon'> <TileIcon /></div>
                         <div className="task-header">
                             <h3>{task.taskname}</h3>
-                            <div className="task-avatar">{taskAvatars[task._id]}</div>
+                            <div className="task-avatar">{taskAvatars[task.taskId]}</div>
                         </div>
                         <p className="task-subtext">{task.description}</p>
                         <div className="task-footer">
-                            <p>{dueDates[task._id]} <FrequencyIcon /> {task.frequency} days</p>
+                            <p>{dueDates[task.taskId]} <FrequencyIcon /> {task.frequency} days</p>
                             <p>{task.duration} minutes</p>
                         </div>
                     </div>

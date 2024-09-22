@@ -44,12 +44,10 @@ router.get("/tasks/assigned", currentUser, async (req, res) => {
         return;
     }
 
-    const assignedTasks = await AssignTask.find({ user: req.currentUser?.id });
-    
+    const assignedTasks = await AssignTask.find({ user: req.currentUser?.id });        
 
     // Extract task IDs from assigned tasks
-    const taskIds = assignedTasks.map(task => task.taskId); // Assuming `taskId` field exists in AssignTask    
-
+    const taskIds = assignedTasks.map(task => task.taskId); // Assuming `taskId` field exists in AssignTask        
     // Find the tasks whose IDs match the ones in assignedTasks
     const tasks = await Task.find({ task: { $in: taskIds } }); // Use `find` with `$in` for multiple IDs    
     res.send({ tasks });

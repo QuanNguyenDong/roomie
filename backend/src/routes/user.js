@@ -2,6 +2,7 @@ const express = require("express");
 const currentUser = require("../middlewares/current-user");
 
 const User = require("../models/user");
+const { model } = require("mongoose");
 
 const router = express.Router();
 
@@ -23,3 +24,5 @@ router.get("/users", currentUser, async (req, res) => {
     const { username, email, _id, desc, fullname } = user;  // Specify the fields you want
     return res.status(200).send({ user: { username, email, _id, desc, fullname } });    
 });
+
+module.exports = router;
