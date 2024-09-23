@@ -14,13 +14,14 @@ function TaskManager() {
 
     useEffect(() => {
         getAllActiveTaskAssignment().then((fetchedTasks) => {
-            fetchedTasks = fetchedTasks.map((task) => {
-                task["dueDate"] = calculateDueDate(
-                    task.startDate,
-                    task.frequency
-                );
-                return task;
-            });
+            if (fetchedTasks)
+                fetchedTasks = fetchedTasks.map((task) => {
+                    task["dueDate"] = calculateDueDate(
+                        task.startDate,
+                        task.frequency
+                    );
+                    return task;
+                });
             setTasks(fetchedTasks || []);
         });
     }, []);
