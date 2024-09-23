@@ -1,144 +1,136 @@
-import React, { useState, useEffect } from 'react';
-import '../styling/taskManager.scss'; 
-import TileIcon from '../svgs/Home/Tasks/TileIcon.js';
-import FrequencyIcon from '../svgs/TaskManagement/FrequencyIcon.js';
-import TaskModal from './TaskCard.js'; 
-import { getTasks } from '../services/Task/getTasks.js'
-import getActiveTaskAssignment from '../services/Task/getActiveTaskAssignment.js';
-import getUser from '../services/User/getUser.js';
-import PriorityDropdown from "../svgs/TaskManagement/PriorityDropdown.js"
+import React, { useState, useEffect } from "react";
+import "../styling/taskManager.scss";
+import TileIcon from "../svgs/Home/Tasks/TileIcon.js";
+import FrequencyIcon from "../svgs/TaskManagement/FrequencyIcon.js";
+import TaskModal from "./TaskCard.js";
+import { getAllActiveTaskAssignment } from "../services/Task/getActiveTaskAssignment.js";
+import PriorityDropdown from "../svgs/TaskManagement/PriorityDropdown.js";
 
 function TaskManager() {
     const [tasks, setTasks] = useState([]); // Store fetched tasks
-    const [selectedTask, setSelectedTask] = useState(null); 
-    const [priorityFilter, setPriorityFilter] = useState('All'); 
-    const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false); 
-
+    const [selectedTask, setSelectedTask] = useState(null);
+    const [priorityFilter, setPriorityFilter] = useState("All");
+    const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false);
 
     useEffect(() => {
-        const fetchTasks = async () => {
-            const fetchedTasks = await getTasks(); // Fetch tasks asynchronously
-            const tasksWithDetails = await Promise.all(fetchedTasks.map(async (task) => {
-                const dueDate = await getTaskDueDate(task); // Fetch due date
-                const assignedTo = await getTaskAvatar(task); // Fetch assigned person's avatar or name
-                return { ...task, dueDate, assignedTo }; // Add new field (assignedTo) and due date to the task object
-            }));
-    
-            setTasks(tasksWithDetails); // Update state with tasks that include due dates and assigned persons
-        };
-        
-        fetchTasks(); // Fetch tasks on component mount
+        getAllActiveTaskAssignment().then((fetchedTasks) => {
+            fetchedTasks = fetchedTasks.map((task) => {
+                task["dueDate"] = calculateDueDate(
+                    task.startDate,
+                    task.frequency
+                );
+                return task;
+            });
+            setTasks(fetchedTasks || []);
+        });
     }, []);
-    
+
     const priorityColors = {
-        'High': '#426DA0',
-        'Medium': '#736B6F',
-        'Low': '#495247'
+        High: "#426DA0",
+        Medium: "#736B6F",
+        Low: "#495247",
     };
-    
 
     const handleFilterChange = (priority) => {
         setPriorityFilter(priority);
-        setPriorityDropdownOpen(false); 
+        setPriorityDropdownOpen(false);
     };
 
     const togglePriorityDropdown = () => {
         setPriorityDropdownOpen(!isPriorityDropdownOpen);
     };
-    
+
     const filteredTasks = tasks.filter((task) => {
-        return priorityFilter === 'All' || task.priority === priorityFilter.toLowerCase();
-    });    
-    
+        return (
+            priorityFilter === "All" ||
+            task.priority.toLowerCase() === priorityFilter.toLowerCase()
+        );
+    });
+
     const openTaskModal = async (task) => {
-        task.dueDate = await getTaskDueDate(task);        
-        setSelectedTask(task); 
+        setSelectedTask(task);
     };
 
     const closeTaskModal = () => {
         setSelectedTask(null);
     };
 
-    // Helper function to calculate due date based on start date and frequency
     const calculateDueDate = (startDate, frequency) => {
         const start = new Date(startDate);
         const dueDate = new Date(start);
-        dueDate.setDate(start.getDate() + frequency); // Add frequency (in days) to start date        
+        dueDate.setDate(start.getDate() + frequency); // Add frequency (in days) to start date
         return dueDate.toDateString(); // Return a human-readable format
     };
 
-    const getTaskDueDate = async (task) => {
-        try {
-            const activeAssignment = await getActiveTaskAssignment(task.taskId); // Fetch active assignment for the task
-            if (activeAssignment) {
-                return calculateDueDate(activeAssignment.startDate, task.frequency); // Calculate due date
-            }
-        } catch (err) {
-            console.error(`Error fetching active assignment for task ${task.taskId}`, err);
-        }
-        return new Date().toDateString(); // Fallback if no active assignment
-    };
-
-    const getTaskAvatar = async (task) => {
-        try{
-            const activeAssignment = await getActiveTaskAssignment(task.taskId);
-            if (activeAssignment)
-            {
-                const user = await getUser(activeAssignment.user);                
-
-                return user.fullname.charAt(0).toUpperCase();
-            }
-        } catch (err) {
-            console.error(err);
-        }
-        return '';
-    };
-
-
     return (
         <div className="task-manager max-w-[500px] mx-auto">
-            <h2 style={{fontSize:"32px", fontWeight:"600"}}>Tasks</h2>
-                <div className="task-filter-buttons">
-                    <button onClick={() => setPriorityFilter('All')}>All Tasks</button>
-                    <button onClick={togglePriorityDropdown} className="priority-button">
-                        <span className="priority-text">Priority</span>
-                        <PriorityDropdown className="priority-icon" />
-                    </button>
+            <h2 style={{ fontSize: "32px", fontWeight: "600" }}>Tasks</h2>
+            <div className="task-filter-buttons">
+                <button onClick={() => setPriorityFilter("All")}>
+                    All Tasks
+                </button>
+                <button
+                    onClick={togglePriorityDropdown}
+                    className="priority-button"
+                >
+                    <span className="priority-text">Priority</span>
+                    <PriorityDropdown className="priority-icon" />
+                </button>
 
-                    {isPriorityDropdownOpen && (
-                        <div className="dropdown-menu">
-                            <ul>
-                                <li onClick={() => handleFilterChange('High')}>High</li>
-                                <li onClick={() => handleFilterChange('Medium')}>Medium</li>
-                                <li onClick={() => handleFilterChange('Low')}>Low</li>
-                            </ul>
-                        </div>
-                    )}
-                </div>
+                {isPriorityDropdownOpen && (
+                    <div className="dropdown-menu">
+                        <ul>
+                            <li onClick={() => handleFilterChange("High")}>
+                                High
+                            </li>
+                            <li onClick={() => handleFilterChange("Medium")}>
+                                Medium
+                            </li>
+                            <li onClick={() => handleFilterChange("Low")}>
+                                Low
+                            </li>
+                        </ul>
+                    </div>
+                )}
+            </div>
             <div className="task-list">
                 {filteredTasks.map((task, index) => (
-                    <div key={index} className={`task-card ${task.priority}`} onClick={() => openTaskModal(task)}>
-                        <div className='logoicon'> <TileIcon fill={priorityColors[task.priority]} /></div>
+                    <div
+                        key={index}
+                        className={`task-card ${task.priority}`}
+                        onClick={() => openTaskModal(task)}
+                    >
+                        <div className="logoicon">
+                            {" "}
+                            <TileIcon fill={priorityColors[task.priority]} />
+                        </div>
                         <div className="task-header">
                             <h3>{task.taskname}</h3>
-                            <div className="task-avatar">{task.assignedTo}</div>
+                            <div className="task-avatar">
+                                {task.fullname.charAt(0).toUpperCase()}
+                            </div>
                         </div>
                         <p className="task-subtext">{task.description}</p>
                         <div className="task-footer">
-                            <p>{task.dueDate} <FrequencyIcon /> {task.frequency} days</p>
+                            <p>
+                                {task.dueDate}
+                                <FrequencyIcon /> {task.frequency} days
+                            </p>
                             <p>{task.duration} minutes</p>
                         </div>
                     </div>
                 ))}
             </div>
-            <TaskModal task={selectedTask} isOpen={!!selectedTask} onClose={closeTaskModal} />
+            <TaskModal
+                task={selectedTask}
+                isOpen={!!selectedTask}
+                onClose={closeTaskModal}
+            />
         </div>
     );
 }
 
 export default TaskManager;
-
-
 
 /*
 
