@@ -78,7 +78,7 @@ function TaskManager() {
 
     return (
         <div className="task-manager max-w-[500px] mx-auto">
-            <h2 style={{fontSize:"32px", fontWeight:"600"}}>Tasks</h2>
+            <h2 className="text-4xl font-bold font-lexend">Tasks</h2>
                 <div className="task-filter-buttons">
                     <button onClick={() => setPriorityFilter('All')}>All Tasks</button>
                     <button onClick={togglePriorityDropdown} className="priority-button">
