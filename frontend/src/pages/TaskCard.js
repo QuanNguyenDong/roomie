@@ -97,7 +97,7 @@ function TaskModal({ task, isOpen, onClose }) {
                             <span className="icon-text-container">
                                 <span className="icon-text-label">
                                 <TaskFrequencyIcon /> 
-                                Frequency: {task.frequency}
+                                Frequency: {task.frequency} days
                                 </span>
                                 {/* <span className="icon-text-date">
                                     {task.dueDate}

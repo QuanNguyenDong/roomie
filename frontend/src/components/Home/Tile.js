@@ -17,7 +17,7 @@ const Tile = ({ task }) => {
                 </div>
                 <div>
                     <div className="flex flex-row justify-between">
-                        <text className="text-xs ">10 September</text>
+                        <text className="text-xs ">{task.dueDate}</text>
                         <text className="text-xs font-medium">{task.duration} minutes</text>
                     </div>
                 </div>

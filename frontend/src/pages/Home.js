@@ -6,10 +6,11 @@ import Tile from '../components/Home/Tile';
 import Event from "../components/Home/Event";
 
 import { getTasksForUser } from '../services/Task/getTasks';
+import getActiveTaskAssignment from '../services/Task/getActiveTaskAssignment.js';
 
 function Home() {
     const [user, setUser] = useState({});
-    const [tasks, setTasks] = useState([]);
+    const [tasks, setTasks] = useState([]);    
     let navigate = useNavigate();
 
     useEffect(() => {
@@ -28,14 +29,38 @@ function Home() {
         } else {
             setUser(storedUser);
         }   
-        const fetchTasks = async () =>{
-            const fetchedTasks = await getTasksForUser(); // Fetch tasks asynchronously  
-            console.log(fetchedTasks);          
-            setTasks(fetchedTasks || []); // Set tasks or empty array if none
+        const fetchTasks = async () => {
+            const fetchedTasks = await getTasksForUser(); // Fetch tasks asynchronously        
+            const tasksWithDueDates = await Promise.all(fetchedTasks.map(async (task) => {
+                const dueDate = await getTaskDueDate(task); // Fetch due date
+                return { ...task, dueDate }; // Return task with due date
+            }));
+    
+            setTasks(tasksWithDueDates); // Update state with tasks that include due dates
         };
-
-        fetchTasks();        
+    
+        fetchTasks(); // Fetch tasks on component mount 
     }, [navigate]);
+
+    // Helper function to calculate due date based on start date and frequency
+    const calculateDueDate = (startDate, frequency) => {
+        const start = new Date(startDate);
+        const dueDate = new Date(start);
+        dueDate.setDate(start.getDate() + frequency); // Add frequency (in days) to start date        
+        return dueDate.toDateString(); // Return a human-readable format
+    };
+
+    const getTaskDueDate = async (task) => {
+        try {
+            const activeAssignment = await getActiveTaskAssignment(task.taskId); // Fetch active assignment for the task
+            if (activeAssignment) {
+                return calculateDueDate(activeAssignment.startDate, task.frequency); // Calculate due date
+            }
+        } catch (err) {
+            console.error(`Error fetching active assignment for task ${task.taskId}`, err);
+        }
+        return new Date().toDateString(); // Fallback if no active assignment
+    };
 
     return (
         <div className="max-w-[520px] mx-auto h-full text-black font-poppins">

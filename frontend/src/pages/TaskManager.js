@@ -13,28 +13,21 @@ function TaskManager() {
     const [selectedTask, setSelectedTask] = useState(null); 
     const [priorityFilter, setPriorityFilter] = useState('All'); 
     const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false); 
-    const [dueDates, setDueDates] = useState({}); // Store due dates for tasks
-    const [taskAvatars, setTaskAvatars] = useState({});
 
 
     useEffect(() => {
         const fetchTasks = async () => {
             const fetchedTasks = await getTasks(); // Fetch tasks asynchronously
-            setTasks(fetchedTasks || []); // Set tasks or empty array if none
-            
-            // Fetch due dates for each task
-            const dueDatesMap = {};
-            const taskAvatarMap = {};
-            for (let task of fetchedTasks) {
-                const dueDate = await getTaskDueDate(task);                
-                dueDatesMap[task.taskId] = dueDate;
-                const taskAvatar = await getTaskAvatar(task);
-                taskAvatarMap[task.taskId] = taskAvatar;
-            }
-            setDueDates(dueDatesMap); // Update state with due dates                        
-            setTaskAvatars(taskAvatarMap);
+            const tasksWithDetails = await Promise.all(fetchedTasks.map(async (task) => {
+                const dueDate = await getTaskDueDate(task); // Fetch due date
+                const assignedTo = await getTaskAvatar(task); // Fetch assigned person's avatar or name
+                return { ...task, dueDate, assignedTo }; // Add new field (assignedTo) and due date to the task object
+            }));
+    
+            setTasks(tasksWithDetails); // Update state with tasks that include due dates and assigned persons
         };
-        fetchTasks();
+        
+        fetchTasks(); // Fetch tasks on component mount
     }, []);
     
     const priorityColors = {
@@ -128,11 +121,11 @@ function TaskManager() {
                         <div className='logoicon'> <TileIcon fill={priorityColors[task.priority]} /></div>
                         <div className="task-header">
                             <h3>{task.taskname}</h3>
-                            <div className="task-avatar">{taskAvatars[task.taskId]}</div>
+                            <div className="task-avatar">{task.assignedTo}</div>
                         </div>
                         <p className="task-subtext">{task.description}</p>
                         <div className="task-footer">
-                            <p>{dueDates[task.taskId]} <FrequencyIcon /> {task.frequency} days</p>
+                            <p>{task.dueDate} <FrequencyIcon /> {task.frequency} days</p>
                             <p>{task.duration} minutes</p>
                         </div>
                     </div>
