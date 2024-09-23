@@ -103,7 +103,7 @@ function Roomie() {
     return !house || !users ? (
         <JoinOrCreate />
     ) : (
-        <div className="max-w-[520px] mx-auto py-10 py-auto h-full text-black font-poppins">
+        <div className="mx-8 py-10 py-auto h-full text-black font-poppins">
             <div class="flex justify-between h-10 mb-4">
                 <text className="text-4xl font-bold font-lexend">
                     Your House
@@ -135,14 +135,14 @@ function Roomie() {
                             <p>{answer.answer}</p>
                             <div class="flex items-center mt-4">
                                 <span className="mr-1 inline-flex items-center justify-center size-[25px] rounded-full bg-darkGrey leading-none">
-                                    <p className="text-sm font-semibold text-white">
+                                    <text className="text-sm font-semibold text-white">
                                         {answer.fullname.substr(0, 1)}
-                                    </p>
+                                    </text>
                                 </span>
                                 <div class="mx-1 text-sm">
-                                    <p class="text-gray-900 leading-none">
+                                    <text class="text-gray-900 leading-none">
                                         {answer.fullname}
-                                    </p>
+                                    </text>
                                 </div>
                             </div>
                         </div>

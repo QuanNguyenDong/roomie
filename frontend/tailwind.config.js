@@ -20,6 +20,9 @@ module.exports = {
         darkGrey: '#7D8D9C',
         tileBlue: '#A2BACC',
       },
+      borderRadius : {
+        'reviews': '22px',
+      }
     },
   },
   plugins: [],

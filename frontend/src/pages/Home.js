@@ -64,10 +64,10 @@ function Home() {
 
     return (
         <div className="max-w-[520px] mx-auto h-full text-black font-poppins">
-            <div class="flex justify-between h-10 mb-6 mx-8">
+            <div className="flex justify-between h-10 mb-6 mx-8">
                 <text className="text-4xl font-bold font-lexend">Hello, {user.fullname}!</text>
             </div>
-            <div class="flex justify-between h-10 mb-6 mx-8">
+            <div className="flex justify-between h-10 mb-6 mx-8">
                 <button className="bg-white text-xs w-28 rounded-3xl">
                     My Tasks
                 </button>
@@ -94,7 +94,6 @@ function Home() {
                     <Event />
                     <Event />
                 </div>
-                <div class="h-40"></div>
             </div>
         </div> 
     );
