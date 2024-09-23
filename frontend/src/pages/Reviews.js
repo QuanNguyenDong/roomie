@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "../styling/Review.css";
 import CloseIcon from '../svgs/Review/CloseIcon.js'; 
 import Tile from '../components/Review/Tile';
 import { useNavigate } from 'react-router-dom';
 
-  
 const Reviews = () => {
     //this data needs to be calculated from other tables
   const additionalData = {
