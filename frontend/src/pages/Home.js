@@ -6,7 +6,7 @@ import Tile from '../components/Home/Tile';
 import Event from "../components/Home/Event";
 
 import { getTasksForUser } from '../services/Task/getTasks';
-import getActiveTaskAssignment from '../services/Task/getActiveTaskAssignment.js';
+import {getActiveTaskAssignment} from '../services/Task/getActiveTaskAssignment.js';
 
 function Home() {
     const [user, setUser] = useState({});
