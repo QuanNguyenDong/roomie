@@ -57,7 +57,7 @@ const Reviews = () => {
 
   return (
     <>
-    <div className="p-8 min-h-screen">
+    <div className="max-w-[500px] h-full mx-auto p-8">
       <div className="flex justify-between items-center m-2">
         <div>
           <h3 className="text-3xl font-bold">Your Reviews</h3>
@@ -74,7 +74,7 @@ const Reviews = () => {
       
       <div className="flex flex-wrap w-full">
         {/* The stars and tasksCompleted tiles */}
-        <div className="flex w-full mb-2">
+        <div className="flex w-full justify-between">
           <Tile
             type="stars"
             title="Total Stars"

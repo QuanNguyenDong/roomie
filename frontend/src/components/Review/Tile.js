@@ -14,7 +14,7 @@ const sliderSettings = {
   const Tile = ({ type, title, reviews, stars, tasksCompleted }) => {
     if (type === 'task') {
       return (
-        <div className="bg-white border rounded-reviews p-6 m-2 w-full">
+        <div className="bg-white border rounded-reviews p-6 m-2">
           <h3 className="text-xl font-semibold">{title}</h3>
           {reviews.length > 0 ? (
             // Render the Slider for task tiles
