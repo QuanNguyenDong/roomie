@@ -1,5 +1,4 @@
-import React, { useEffect, useState, Fragment } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -18,7 +17,6 @@ import {
     startOfWeek,
     endOfWeek,
 } from 'date-fns';
-import getUserProfile from "../services/getUserProfile";
 
 const events = [
     { id: 1, name: 'Leslie Alexander', imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2024-09-11T13:00', endDatetime: '2024-09-11T14:30' },
@@ -48,30 +46,9 @@ const getDaySuffix = (day) => {
 };
 
 function Calendar() {
-    let navigate = useNavigate();
-
-    let [user, setUser] = useState({});
     let [selectedDay, setSelectedDay] = useState(startOfToday());
     let [currentMonth, setCurrentMonth] = useState(format(startOfToday(), 'MMM-yyyy'));
     let [modalState, setModalState] = useState({ open: false, expanded: false });
-
-    useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
-        if (!storedUser) {
-            getUserProfile()
-                .then((user) => {
-                    if (user) {
-                        localStorage.setItem("user", JSON.stringify(user));
-                        setUser(user);
-                    } else {
-                        navigate("/");
-                    }
-                })
-                .catch((error) => navigate("/"));
-        } else {
-            setUser(storedUser);
-        }
-    }, [navigate]);
 
     const handleDayClick = (day) => {
         if (!modalState.open) {
@@ -139,7 +116,7 @@ function Calendar() {
 
     return (
         <div className="max-w-[520px] mx-auto h-full text-black">
-            <div class="flex justify-between h-10 mb-6 mx-8">
+            <div className="flex justify-between h-10 mb-6 mx-8">
                 <text className="text-4xl font-bold font-lexend">Calendar</text>
             </div>
 
@@ -277,9 +254,7 @@ function Calendar() {
                         </motion.div>
                     )}
                 </AnimatePresence>
-
             </div>
-            <div className="h-40"></div>
         </div>
     );
 }

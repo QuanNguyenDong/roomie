@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import Roomie from "./pages/Roomie";
 import DefaultLayout from "./layouts/DefaultLayout";
 import TopbarOnly from "./layouts/TopbarOnly";
+import Reviews from "./pages/Reviews";
 import CreateTask from "./pages/CreateTask";
 
 function App() {
@@ -70,6 +71,13 @@ function AppRoutes() {
                         <TopbarOnly>
                             <Roomie />
                         </TopbarOnly>
+                    }
+                />
+                <Route path="/reviews"
+                    element={
+                        <DefaultLayout>
+                            <Reviews />
+                        </DefaultLayout>
                     }
                 />
             </Routes>

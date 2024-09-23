@@ -3,10 +3,11 @@ import Topbar from "../components/Topbar";
 
 function DefaultLayout({ children }) {
     return (
-        <div>
+        <div className="max-w-[520px] mx-auto min-h-full bg-[#f9f9f9]">
             <Topbar />
             {children}
             <Navbar />
+            <div className="h-24"></div>
         </div>
     );
 }

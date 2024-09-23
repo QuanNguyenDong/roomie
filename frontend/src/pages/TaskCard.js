@@ -109,7 +109,7 @@ function TaskModal({ task, isOpen, onClose }) {
                             <span className="icon-text-container">
                                 <span className="icon-text-label">
                                 <DurationIcon /> 
-                                Time Required: {task.time}
+                                Time Required: {task.duration} minutes
                                 </span>
                                 {/* <span className="icon-text-date">
                                     {task.dueDate}
