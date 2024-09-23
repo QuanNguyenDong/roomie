@@ -6,6 +6,7 @@ import TaskModal from './TaskCard.js';
 import { getTasks } from '../services/Task/getTasks.js'
 import getActiveTaskAssignment from '../services/Task/getActiveTaskAssignment.js';
 import getUser from '../services/User/getUser.js';
+import PriorityDropdown from "../svgs/TaskManagement/PriorityDropdown.js"
 
 function TaskManager() {
     const [tasks, setTasks] = useState([]); // Store fetched tasks
@@ -35,6 +36,13 @@ function TaskManager() {
         };
         fetchTasks();
     }, []);
+    
+    const priorityColors = {
+        'High': '#426DA0',
+        'Medium': '#736B6F',
+        'Low': '#495247'
+    };
+    
 
     const handleFilterChange = (priority) => {
         setPriorityFilter(priority);
@@ -96,25 +104,28 @@ function TaskManager() {
 
     return (
         <div className="task-manager max-w-[500px] mx-auto">
-            <h2>Tasks</h2>
-            <div className="task-filter-buttons">
-                <button onClick={() => setPriorityFilter('All')}>All Tasks</button>
-                <button onClick={togglePriorityDropdown}>Priority</button>
+            <h2 style={{fontSize:"32px", fontWeight:"600"}}>Tasks</h2>
+                <div className="task-filter-buttons">
+                    <button onClick={() => setPriorityFilter('All')}>All Tasks</button>
+                    <button onClick={togglePriorityDropdown} className="priority-button">
+                        <span className="priority-text">Priority</span>
+                        <PriorityDropdown className="priority-icon" />
+                    </button>
 
-                {isPriorityDropdownOpen && (
-                    <div className="dropdown-menu">
-                        <ul>
-                            <li onClick={() => handleFilterChange('High')}>High</li>
-                            <li onClick={() => handleFilterChange('Medium')}>Medium</li>
-                            <li onClick={() => handleFilterChange('Low')}>Low</li>
-                        </ul>
-                    </div>
-                )}
-            </div>
+                    {isPriorityDropdownOpen && (
+                        <div className="dropdown-menu">
+                            <ul>
+                                <li onClick={() => handleFilterChange('High')}>High</li>
+                                <li onClick={() => handleFilterChange('Medium')}>Medium</li>
+                                <li onClick={() => handleFilterChange('Low')}>Low</li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
             <div className="task-list">
                 {filteredTasks.map((task, index) => (
                     <div key={index} className={`task-card ${task.priority}`} onClick={() => openTaskModal(task)}>
-                        <div className='logoicon'> <TileIcon /></div>
+                        <div className='logoicon'> <TileIcon fill={priorityColors[task.priority]} /></div>
                         <div className="task-header">
                             <h3>{task.taskname}</h3>
                             <div className="task-avatar">{taskAvatars[task.taskId]}</div>

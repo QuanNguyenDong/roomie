@@ -24,7 +24,7 @@ const Tile = ({ task }) => {
             </div>
 
             <div className="absolute bottom-3 right-3">
-                <TileIcon />
+                <TileIcon fill="#426DA0" />
             </div>
         </div>
     );
