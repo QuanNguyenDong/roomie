@@ -1,53 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styling/taskManager.scss'; 
 import TileIcon from '../svgs/Home/Tasks/TileIcon.js';
 import FrequencyIcon from '../svgs/TaskManagement/FrequencyIcon.js';
 import TaskModal from './TaskCard.js'; 
+import { getTasks } from '../services/Task/getTasks.js'
+import getActiveTaskAssignment from '../services/Task/getActiveTaskAssignment.js';
+import getUser from '../services/User/getUser.js';
+import PriorityDropdown from "../svgs/TaskManagement/PriorityDropdown.js"
 
 function TaskManager() {
+    const [tasks, setTasks] = useState([]); // Store fetched tasks
     const [selectedTask, setSelectedTask] = useState(null); 
     const [priorityFilter, setPriorityFilter] = useState('All'); 
     const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false); 
+    const [dueDates, setDueDates] = useState({}); // Store due dates for tasks
+    const [taskAvatars, setTaskAvatars] = useState({});
 
+
+    useEffect(() => {
+        const fetchTasks = async () => {
+            const fetchedTasks = await getTasks(); // Fetch tasks asynchronously
+            setTasks(fetchedTasks || []); // Set tasks or empty array if none
+            
+            // Fetch due dates for each task
+            const dueDatesMap = {};
+            const taskAvatarMap = {};
+            for (let task of fetchedTasks) {
+                const dueDate = await getTaskDueDate(task);                
+                dueDatesMap[task.taskId] = dueDate;
+                const taskAvatar = await getTaskAvatar(task);
+                taskAvatarMap[task.taskId] = taskAvatar;
+            }
+            setDueDates(dueDatesMap); // Update state with due dates                        
+            setTaskAvatars(taskAvatarMap);
+        };
+        fetchTasks();
+    }, []);
     
-    const tasks = [
-        {
-            title: 'Vacuum Living Room',
-            description: 'Please make sure you get behind the couch too!',
-            dueDate: '10 September 2024',
-            frequency: 'Weekly',
-            time: '30 Min',
-            priority: 'High',
-            avatar: 'T'
-        },
-        {
-            title: 'Take Out Trash',
-            description: 'Please make sure you get behind the couch too!',
-            dueDate: '10 September 2024',
-            frequency: 'Weekly',
-            time: '5 Min',
-            priority: 'High',
-            avatar: 'V'
-        },
-        {
-            title: 'Water Plants',
-            description: 'Please make sure you get behind the couch too!',
-            dueDate: '10 September 2024',
-            frequency: 'Weekly',
-            time: '30 Min',
-            priority: 'Low',
-            avatar: 'R'
-        },
-        {
-            title: 'Clean Bathroom',
-            description: 'Please make sure you get behind the couch too!',
-            dueDate: '10 September 2024',
-            frequency: 'Weekly',
-            time: '30 Min',
-            priority: 'Medium',
-            avatar: 'S'
-        }
-    ];
+    const priorityColors = {
+        'High': '#426DA0',
+        'Medium': '#736B6F',
+        'Low': '#495247'
+    };
+    
 
     const handleFilterChange = (priority) => {
         setPriorityFilter(priority);
@@ -57,12 +52,13 @@ function TaskManager() {
     const togglePriorityDropdown = () => {
         setPriorityDropdownOpen(!isPriorityDropdownOpen);
     };
-
+    
     const filteredTasks = tasks.filter((task) => {
         return priorityFilter === 'All' || task.priority === priorityFilter.toLowerCase();
-    });
-
-    const openTaskModal = (task) => {
+    });    
+    
+    const openTaskModal = async (task) => {
+        task.dueDate = await getTaskDueDate(task);        
         setSelectedTask(task); 
     };
 
@@ -70,35 +66,74 @@ function TaskManager() {
         setSelectedTask(null);
     };
 
+    // Helper function to calculate due date based on start date and frequency
+    const calculateDueDate = (startDate, frequency) => {
+        const start = new Date(startDate);
+        const dueDate = new Date(start);
+        dueDate.setDate(start.getDate() + frequency); // Add frequency (in days) to start date        
+        return dueDate.toDateString(); // Return a human-readable format
+    };
+
+    const getTaskDueDate = async (task) => {
+        try {
+            const activeAssignment = await getActiveTaskAssignment(task.taskId); // Fetch active assignment for the task
+            if (activeAssignment) {
+                return calculateDueDate(activeAssignment.startDate, task.frequency); // Calculate due date
+            }
+        } catch (err) {
+            console.error(`Error fetching active assignment for task ${task.taskId}`, err);
+        }
+        return new Date().toDateString(); // Fallback if no active assignment
+    };
+
+    const getTaskAvatar = async (task) => {
+        try{
+            const activeAssignment = await getActiveTaskAssignment(task.taskId);
+            if (activeAssignment)
+            {
+                const user = await getUser(activeAssignment.user);                
+
+                return user.fullname.charAt(0).toUpperCase();
+            }
+        } catch (err) {
+            console.error(err);
+        }
+        return '';
+    };
+
+
     return (
         <div className="task-manager max-w-[500px] mx-auto">
-            <h2>Tasks</h2>
-            <div className="task-filter-buttons">
-                <button onClick={() => setPriorityFilter('All')}>All Tasks</button>
-                <button onClick={togglePriorityDropdown}>Priority</button>
+            <h2 style={{fontSize:"32px", fontWeight:"600"}}>Tasks</h2>
+                <div className="task-filter-buttons">
+                    <button onClick={() => setPriorityFilter('All')}>All Tasks</button>
+                    <button onClick={togglePriorityDropdown} className="priority-button">
+                        <span className="priority-text">Priority</span>
+                        <PriorityDropdown className="priority-icon" />
+                    </button>
 
-                {isPriorityDropdownOpen && (
-                    <div className="dropdown-menu">
-                        <ul>
-                            <li onClick={() => handleFilterChange('High')}>High</li>
-                            <li onClick={() => handleFilterChange('Medium')}>Medium</li>
-                            <li onClick={() => handleFilterChange('Low')}>Low</li>
-                        </ul>
-                    </div>
-                )}
-            </div>
+                    {isPriorityDropdownOpen && (
+                        <div className="dropdown-menu">
+                            <ul>
+                                <li onClick={() => handleFilterChange('High')}>High</li>
+                                <li onClick={() => handleFilterChange('Medium')}>Medium</li>
+                                <li onClick={() => handleFilterChange('Low')}>Low</li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
             <div className="task-list">
                 {filteredTasks.map((task, index) => (
                     <div key={index} className={`task-card ${task.priority}`} onClick={() => openTaskModal(task)}>
-                        <div className='logoicon'> <TileIcon /></div>
+                        <div className='logoicon'> <TileIcon fill={priorityColors[task.priority]} /></div>
                         <div className="task-header">
-                            <h3>{task.title}</h3>
-                            <div className="task-avatar">{task.avatar}</div>
+                            <h3>{task.taskname}</h3>
+                            <div className="task-avatar">{taskAvatars[task.taskId]}</div>
                         </div>
                         <p className="task-subtext">{task.description}</p>
                         <div className="task-footer">
-                            <p>{task.dueDate} <FrequencyIcon /> {task.frequency}</p>
-                            <p>{task.time}</p>
+                            <p>{dueDates[task.taskId]} <FrequencyIcon /> {task.frequency} days</p>
+                            <p>{task.duration} minutes</p>
                         </div>
                     </div>
                 ))}

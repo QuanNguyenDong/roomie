@@ -7,6 +7,7 @@ import HomeIcon from '../svgs/Navbar/HomeIcon';
 import CalendarIcon from '../svgs/Navbar/CalendarIcon';
 import TasksIcon from '../svgs/Navbar/TasksIcon';
 import SettingsIcon from '../svgs/Navbar/SettingsIcon';
+import PlusIcon from "../svgs/Navbar/PlusIcon";
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -21,6 +22,9 @@ const Navbar = () => {
                         </button>
                         <button onClick={() => navigate('/calendar')}>
                             <CalendarIcon fill="white" />
+                        </button>
+                        <button onClick={() => navigate('/create-task')}>
+                            <PlusIcon fill="white" />
                         </button>
                         <button onClick={() => navigate('/tasks')}>
                             <TasksIcon fill="white" />

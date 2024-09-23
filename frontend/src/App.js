@@ -14,6 +14,7 @@ import Roomie from "./pages/Roomie";
 import DefaultLayout from "./layouts/DefaultLayout";
 import TopbarOnly from "./layouts/TopbarOnly";
 import Reviews from "./pages/Reviews";
+import CreateTask from "./pages/CreateTask";
 
 function App() {
     return (
@@ -48,6 +49,13 @@ function AppRoutes() {
                     element={
                         <DefaultLayout>
                             <TaskManager />
+                        </DefaultLayout>
+                    }
+                />
+                 <Route path="/create-task"
+                    element={
+                        <DefaultLayout>
+                            <CreateTask />
                         </DefaultLayout>
                     }
                 />
