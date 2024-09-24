@@ -1,0 +1,127 @@
+/* Center layout for the page, with enough space for the nav bar */
+.prompts-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px; 
+    padding-bottom: 120px; 
+    background-color: #f7f7f7;
+    min-height: 100vh;
+  }
+  
+  /* Container for prompts */
+  .prompts-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+  }
+  
+  /* Heading style */
+  .prompts-container h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 10px; 
+    color: #333;
+  }
+  
+  /* Subtitle style */
+  .prompts-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 20px; 
+    color: #666;
+  }
+  
+  /* Prompt list styling */
+  .prompt-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    gap: 15px;
+  }
+  
+  /* Checkbox style */
+  .checkbox-style {
+    margin-right: 15px;
+  }
+  
+  /* Prompt item styling */
+  .prompt-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .prompt-item:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Answer button styling */
+  .answer-btn {
+    margin-top: 30px;
+    padding: 12px 25px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+  
+  .answer-btn:hover {
+    background-color: #42474d;
+  }
+  
+  /* Answer box styling */
+  .answer-box {
+    margin-top: 30px;
+    text-align: left;
+  }
+  
+  /* Prompt title in answer box */
+  .prompt-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+  
+  /* Textarea styling */
+  .answer-textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: none;
+    height: 120px;
+    font-size: 16px;
+  }
+  
+  /* Next button styling */
+  .next-btn {
+    margin-top: 15px;
+    padding: 12px 25px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+  
+  .next-btn:hover {
+    background-color: #42474d;
+  }
+  

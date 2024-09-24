@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import '../styling/prompts.css'; // Ensure the correct path to CSS
 
-// List of prompts
 const promptsData = [
   "If your room could talk, what secrets would it share?",
   "Weirdest thing you found in your room",
@@ -20,7 +20,6 @@ const Prompts = () => {
   const [currentPrompt, setCurrentPrompt] = useState('');
   const [answers, setAnswers] = useState({});
 
-  // Handle selecting or unselecting a prompt
   const togglePromptSelection = (prompt) => {
     const selectedIndex = selectedPrompts.indexOf(prompt);
     let newSelectedPrompts = [...selectedPrompts];
@@ -47,36 +46,49 @@ const Prompts = () => {
   };
 
   return (
-    <div className="prompts-container">
-      <h1>Prompts</h1>
-      <div className="prompt-list">
-        {promptsData.map((prompt, index) => (
-          <div key={index} className="prompt-item">
-            <input
-              type="checkbox"
-              checked={selectedPrompts.includes(prompt)}
-              onChange={() => togglePromptSelection(prompt)}
-            />
-            <label>{prompt}</label>
-          </div>
-        ))}
-      </div>
-      
-      {showAnswerButton && (
-        <button onClick={() => setCurrentPrompt(selectedPrompts[0])}>
-          Answer Selected Prompts
-        </button>
-      )}
-
-      {currentPrompt && (
-        <div className="answer-box">
-          <h2>{currentPrompt}</h2>
-          <form onSubmit={handleAnswerSubmit}>
-            <textarea name="answer" placeholder="Type your answer here..." required />
-            <button type="submit">Next</button>
-          </form>
+    <div className="prompts-page-container">
+      <div className="prompts-container">
+        <h1>Prompts</h1>
+        {/* New text added here */}
+        <p className="prompts-subtitle">
+          Choose up to 3 questions for your roomies to get to know you!
+        </p>
+        
+        <div className="prompt-list">
+          {promptsData.map((prompt, index) => (
+            <div key={index} className="prompt-item" onClick={() => togglePromptSelection(prompt)}>
+              <input
+                type="checkbox"
+                className="checkbox-style"
+                checked={selectedPrompts.includes(prompt)}
+                onChange={() => togglePromptSelection(prompt)}
+              />
+              <label className="prompt-label">{prompt}</label>
+            </div>
+          ))}
         </div>
-      )}
+        
+        {showAnswerButton && (
+          <button className="answer-btn" onClick={() => setCurrentPrompt(selectedPrompts[0])}>
+            Answer Selected Prompts
+          </button>
+        )}
+
+        {currentPrompt && (
+          <div className="answer-box">
+            <h2 className="prompt-title">{currentPrompt}</h2>
+            <form onSubmit={handleAnswerSubmit}>
+              <textarea 
+                name="answer" 
+                placeholder="Type your answer here..." 
+                required 
+                className="answer-textarea"
+              />
+              <button type="submit" className="next-btn">Next</button>
+            </form>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
