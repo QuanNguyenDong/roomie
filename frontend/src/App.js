@@ -1,9 +1,5 @@
 import React, { Fragment } from "react";
-import {
-    BrowserRouter as Router,
-    Route,
-    Routes,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import UserSelect from "./pages/UserSelect";
 import Calendar from "./pages/Calendar";
@@ -11,9 +7,11 @@ import Home from "./pages/Home";
 import TaskManager from "./pages/TaskManager";
 import Profile from "./pages/Profile";
 import Roomie from "./pages/Roomie";
-import Prompts from "./pages/prompts";  // Import the Prompts component
+import Prompts from "./pages/prompts"; // Import the Prompts component
 import DefaultLayout from "./layouts/DefaultLayout";
 import TopbarOnly from "./layouts/TopbarOnly";
+import Reviews from "./pages/Reviews";
+import CreateTask from "./pages/CreateTask";
 
 function App() {
     return (
@@ -30,35 +28,48 @@ function AppRoutes() {
         <Fragment>
             <Routes>
                 <Route path="/" element={<UserSelect />} />
-                <Route path="/home"
+                <Route
+                    path="/home"
                     element={
                         <DefaultLayout>
                             <Home />
                         </DefaultLayout>
                     }
                 />
-                <Route path="/calendar"
+                <Route
+                    path="/calendar"
                     element={
                         <DefaultLayout>
                             <Calendar />
                         </DefaultLayout>
                     }
                 />
-                <Route path="/tasks"
+                <Route
+                    path="/tasks"
                     element={
                         <DefaultLayout>
                             <TaskManager />
                         </DefaultLayout>
                     }
                 />
-                <Route path="/profile"
+                <Route
+                    path="/create-task"
+                    element={
+                        <DefaultLayout>
+                            <CreateTask />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/profile"
                     element={
                         <DefaultLayout>
                             <Profile />
                         </DefaultLayout>
                     }
                 />
-                <Route path="/roomie"
+                <Route
+                    path="/roomie"
                     element={
                         <TopbarOnly>
                             <Roomie />
@@ -66,10 +77,19 @@ function AppRoutes() {
                     }
                 />
                 {/* Add the Prompts route */}
-                <Route path="/prompts"
+                <Route
+                    path="/prompts"
                     element={
                         <DefaultLayout>
                             <Prompts />
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/reviews"
+                    element={
+                        <DefaultLayout>
+                            <Reviews />
                         </DefaultLayout>
                     }
                 />

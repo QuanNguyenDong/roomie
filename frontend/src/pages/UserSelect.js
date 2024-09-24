@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import getUserProfile from "../services/getUserProfile";
+import getUserProfile from "../services/User/getUserProfile";
 
 export default function SignIn() {
     let navigate = useNavigate();
