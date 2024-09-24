@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import '../styling/prompts.css'; // Ensure the correct path to CSS
-
+import '../styling/prompts.css';
 const promptsData = [
   "If your room could talk, what secrets would it share?",
   "Weirdest thing you found in your room",
@@ -13,17 +12,14 @@ const promptsData = [
   "Unusual house warming gift",
   "Your dream home",
 ];
-
 const Prompts = () => {
   const [selectedPrompts, setSelectedPrompts] = useState([]);
   const [showAnswerButton, setShowAnswerButton] = useState(false);
   const [currentPrompt, setCurrentPrompt] = useState('');
   const [answers, setAnswers] = useState({});
-
   const togglePromptSelection = (prompt) => {
     const selectedIndex = selectedPrompts.indexOf(prompt);
     let newSelectedPrompts = [...selectedPrompts];
-
     if (selectedIndex === -1) {
       if (selectedPrompts.length < 3) {
         newSelectedPrompts.push(prompt);
@@ -31,11 +27,9 @@ const Prompts = () => {
     } else {
       newSelectedPrompts.splice(selectedIndex, 1);
     }
-
     setSelectedPrompts(newSelectedPrompts);
     setShowAnswerButton(newSelectedPrompts.length > 0);
   };
-
   const handleAnswerSubmit = (e) => {
     e.preventDefault();
     if (currentPrompt) {
@@ -44,7 +38,6 @@ const Prompts = () => {
       setCurrentPrompt(nextPrompt || '');
     }
   };
-
   return (
     <div className="prompts-page-container">
       <div className="prompts-container">
@@ -73,7 +66,6 @@ const Prompts = () => {
             Answer Selected Prompts
           </button>
         )}
-
         {currentPrompt && (
           <div className="answer-box">
             <h2 className="prompt-title">{currentPrompt}</h2>
@@ -92,5 +84,4 @@ const Prompts = () => {
     </div>
   );
 };
-
 export default Prompts;

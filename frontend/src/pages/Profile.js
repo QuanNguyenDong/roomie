@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 function Profile() {
+    const navigate = useNavigate();
     const [user, setUser] = useState({});
 
     const fetchUserProfile = async () => {
@@ -27,21 +29,21 @@ function Profile() {
     }, []);
 
     return (
-        <div className="max-w-[500px] h-full px-7 mx-auto text-black font-lexend">
+        <div className="px-7 text-black font-lexend">
             <div className="flex flex-col items-center justify-center">
                 <span className="inline-flex items-center justify-center size-[99px] rounded-full bg-darkGrey text-lg font-semibold text-white leading-none">
-                    <p className="text-3xl">
+                    <span className="text-3xl">
                         {user.fullname
                             ?.split(" ")
                             .map((word) => word[0])
                             .join("")}
-                    </p>
+                    </span>
                 </span>
                 <p className="mt-4 mb-1 text-3xl font-bold">
                     {user.fullname}
                 </p>
                 <h4>{user.email ?? "abc@gmail.com"}</h4>
-                <button className="my-6 bg-white text-xs text-darkGrey w-28 h-10 rounded-3xl drop-shadow-lg">
+                <button className="my-6 bg-white text-xs text-darkGrey w-28 h-10 rounded-3xl drop-shadow-lg" onClick={() => navigate('/reviews')}>
                     Your Reviews
                 </button>
             </div>
@@ -58,7 +60,6 @@ function Profile() {
                     </div>
                 ))}
             </div>
-            <div className="h-40"></div>
         </div>
     );
 }

@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import getUserProfile from "../services/getUserProfile";
-
+import getUserProfile from '../services/User/getUserProfile';
 export default function SignIn() {
     let navigate = useNavigate();
-
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-
     useEffect(() => {
         getUserProfile()
             .then((user) => {
@@ -19,7 +16,6 @@ export default function SignIn() {
             })
             .catch((error) => {});
     }, [navigate]);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -31,7 +27,6 @@ export default function SignIn() {
                 },
                 { withCredentials: true }
             );
-
             localStorage.setItem("user", JSON.stringify(response.data));
             // Change: Navigate to the Prompts page after sign-in
             navigate("/prompts", { replace: true });
@@ -39,7 +34,6 @@ export default function SignIn() {
             alert("Invalid username or password");
         }
     };
-
     return (
         <div className="flex flex-col justify-center py-6">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -71,7 +65,6 @@ export default function SignIn() {
                             />
                         </div>
                     </div>
-
                     <div>
                         <div className="flex items-center justify-between">
                             <label
@@ -94,7 +87,6 @@ export default function SignIn() {
                             />
                         </div>
                     </div>
-
                     <div>
                         <button
                             type="submit"

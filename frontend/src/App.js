@@ -4,7 +4,6 @@ import {
     Route,
     Routes,
 } from "react-router-dom";
-
 import UserSelect from "./pages/UserSelect";
 import Calendar from "./pages/Calendar";
 import Home from "./pages/Home";
@@ -14,7 +13,6 @@ import Roomie from "./pages/Roomie";
 import Prompts from "./pages/prompts";  // Import the Prompts component
 import DefaultLayout from "./layouts/DefaultLayout";
 import TopbarOnly from "./layouts/TopbarOnly";
-
 function App() {
     return (
         <Router>
@@ -22,10 +20,8 @@ function App() {
         </Router>
     );
 }
-
 function AppRoutes() {
     global.route = "http://localhost:3001";
-
     return (
         <Fragment>
             <Routes>
@@ -77,5 +73,4 @@ function AppRoutes() {
         </Fragment>
     );
 }
-
 export default App;
