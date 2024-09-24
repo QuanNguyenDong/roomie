@@ -124,9 +124,9 @@ function Calendar() {
                 <div className="max-w-md px-4 mx-auto">
                     <div className="flex items-center justify-between mx-6">
                         <div className="flex flex-row">
-                            <text className="text-xl font-medium mr-3">
+                            <span className="text-xl font-medium mr-3">
                                 {format(firstDayCurrentMonth, 'MMMM')}
-                            </text>
+                            </span>
                             <text className="text-xl font-thin">
                                 {format(firstDayCurrentMonth, 'yyyy')}
                             </text>
