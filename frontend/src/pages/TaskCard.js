@@ -40,9 +40,9 @@ function TaskModal({ task, isOpen, onClose }) {
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}> 
                 <div className="header" style={{ background: getHeaderGradient(task.priority) }}> 
-                    <div className='task-avatar2'>{task.avatar}</div>
+                    <div className='task-avatar2'>{task.fullname.charAt(0).toUpperCase()}</div>
                     <button className="close-button" onClick={onClose}><CloseIcon /></button>
-                    <h1>{task.title}</h1>
+                    <h1>{task.taskname}</h1>
                     <div className={`priority-tag ${getPriorityClass(task.priority)}`}>
                         <p style={{marginTop: "10px"}}>{task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}</p>
                     </div>
@@ -97,7 +97,7 @@ function TaskModal({ task, isOpen, onClose }) {
                             <span className="icon-text-container">
                                 <span className="icon-text-label">
                                 <TaskFrequencyIcon /> 
-                                Frequency: {task.frequency}
+                                Frequency: {task.frequency} days
                                 </span>
                                 {/* <span className="icon-text-date">
                                     {task.dueDate}
