@@ -1,22 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styling/prompts.css';
-const promptsData = [
-  "If your room could talk, what secrets would it share?",
-  "Weirdest thing you found in your room",
-  "Your favorite movie",
-  "Your hobbies",
-  "A non-negotiable",
-  "The vibe I'm looking for",
-  "One thing I'll never forget",
-  "My fight or flight",
-  "Unusual house warming gift",
-  "Your dream home",
-];
+import getQuestions from '../services/Question/getQuestions';
+
 const Prompts = () => {
+  const [prompts, setPrompts] = useState([]);
   const [selectedPrompts, setSelectedPrompts] = useState([]);
   const [showAnswerButton, setShowAnswerButton] = useState(false);
   const [currentPrompt, setCurrentPrompt] = useState('');
   const [answers, setAnswers] = useState({});
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const questions = await getQuestions();
+        setPrompts(questions);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      }
+    };
+
+    fetchQuestions();
+}, []);
+
   const togglePromptSelection = (prompt) => {
     const selectedIndex = selectedPrompts.indexOf(prompt);
     let newSelectedPrompts = [...selectedPrompts];
@@ -48,7 +53,7 @@ const Prompts = () => {
         </p>
         
         <div className="prompt-list">
-          {promptsData.map((prompt, index) => (
+          {prompts.map((prompt, index) => (
             <div key={index} className="prompt-item" onClick={() => togglePromptSelection(prompt)}>
               <input
                 type="checkbox"
@@ -56,7 +61,7 @@ const Prompts = () => {
                 checked={selectedPrompts.includes(prompt)}
                 onChange={() => togglePromptSelection(prompt)}
               />
-              <label className="prompt-label">{prompt}</label>
+              <label className="prompt-label">{prompt.question}</label>
             </div>
           ))}
         </div>
@@ -68,7 +73,7 @@ const Prompts = () => {
         )}
         {currentPrompt && (
           <div className="answer-box">
-            <h2 className="prompt-title">{currentPrompt}</h2>
+            <h2 className="prompt-title">{currentPrompt.question}</h2>
             <form onSubmit={handleAnswerSubmit}>
               <textarea 
                 name="answer" 
