@@ -95,7 +95,7 @@ function TaskManager() {
                 )}
             </div>
             <div className="task-list">
-                {filteredTasks.map((task, index) => (
+                {filteredTasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate)).map((task, index) => (
                     <div
                         key={index}
                         className={`task-card ${task.priority}`}
