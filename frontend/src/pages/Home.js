@@ -67,7 +67,8 @@ function Home() {
             </div>
             <div className="flex flex-nowrap overflow-x-auto w-100vw h-56 mb-8">
                 <div className="flex flex-nowrap space-x-6 ml-8">
-                    {tasks.map((task, index) => (
+                {tasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate)) // Sort by dueDate
+                    .map((task, index) => (
                         <Tile key={index} task={task} />
                     ))}
                 </div>
