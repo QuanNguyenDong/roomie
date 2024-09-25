@@ -66,12 +66,22 @@ function Home() {
                 </button>
             </div>
             <div className="flex flex-nowrap overflow-x-auto w-100vw h-56 mb-8">
-                <div className="flex flex-nowrap space-x-6 ml-8">
-                {tasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate)) // Sort by dueDate
-                    .map((task, index) => (
-                        <Tile key={index} task={task} />
-                    ))}
-                </div>
+                {tasks.length == 0 ? (
+                    <div className="bg-secGrey text-center text-xl w-full py-24 mx-8 rounded-3xl">
+                        <span>You don't have any tasks</span>
+                    </div>
+                ) : (
+                    <div className="flex flex-nowrap space-x-6 ml-8">
+                        {tasks
+                            .sort(
+                                (a, b) =>
+                                    new Date(a.dueDate) - new Date(b.dueDate)
+                            ) // Sort by dueDate
+                            .map((task, index) => (
+                                <Tile key={index} task={task} />
+                            ))}
+                    </div>
+                )}
             </div>
             <div className="mx-8">
                 <text className="text-xl font-semibold">Events this week</text>

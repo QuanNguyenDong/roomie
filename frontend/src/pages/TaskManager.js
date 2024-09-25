@@ -95,32 +95,41 @@ function TaskManager() {
                 )}
             </div>
             <div className="task-list">
-                {filteredTasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate)).map((task, index) => (
-                    <div
-                        key={index}
-                        className={`task-card ${task.priority}`}
-                        onClick={() => openTaskModal(task)}
-                    >
-                        <div className="logoicon">
-                            {" "}
-                            <TileIcon fill={priorityColors[task.priority]} />
-                        </div>
-                        <div className="task-header">
-                            <h3>{task.taskname}</h3>
-                            <div className="task-avatar">
-                                {task.fullname.charAt(0).toUpperCase()}
+                {filteredTasks.length == 0 && (
+                    <div className="bg-secGrey text-center text-xl w-full py-24 rounded-3xl">
+                        <span>You don't have any tasks</span>
+                    </div>
+                )}
+                {filteredTasks
+                    .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
+                    .map((task, index) => (
+                        <div
+                            key={index}
+                            className={`task-card ${task.priority}`}
+                            onClick={() => openTaskModal(task)}
+                        >
+                            <div className="logoicon">
+                                {" "}
+                                <TileIcon
+                                    fill={priorityColors[task.priority]}
+                                />
+                            </div>
+                            <div className="task-header">
+                                <h3>{task.taskname}</h3>
+                                <div className="task-avatar">
+                                    {task.fullname.charAt(0).toUpperCase()}
+                                </div>
+                            </div>
+                            <p className="task-subtext">{task.description}</p>
+                            <div className="task-footer">
+                                <p>
+                                    {task.dueDate}
+                                    <FrequencyIcon /> {task.frequency} days
+                                </p>
+                                <p>{task.duration} minutes</p>
                             </div>
                         </div>
-                        <p className="task-subtext">{task.description}</p>
-                        <div className="task-footer">
-                            <p>
-                                {task.dueDate}
-                                <FrequencyIcon /> {task.frequency} days
-                            </p>
-                            <p>{task.duration} minutes</p>
-                        </div>
-                    </div>
-                ))}
+                    ))}
             </div>
             <TaskModal
                 task={selectedTask}
