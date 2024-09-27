@@ -37,30 +37,30 @@ function TaskModal({ task, isOpen, onClose }) {
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-overlay text-black" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}> 
                 <div className="header" style={{ background: getHeaderGradient(task.priority) }}> 
                     <div className='task-avatar2'>{task.fullname.charAt(0).toUpperCase()}</div>
                     <button className="close-button" onClick={onClose}><CloseIcon /></button>
-                    <h1>{task.taskname}</h1>
+                    <text className='text-3xl font-bold'>{task.taskname}</text>
                     <div className={`priority-tag ${getPriorityClass(task.priority)}`}>
-                        <p style={{marginTop: "10px"}}>{task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}</p>
+                        <p>{task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}</p>
                     </div>
                 </div>
 
-                <h2>Description</h2>
+                <text class="text-3xl font-lato ml-10 mb-4 mt-0 font-light">Description</text>
                 <div className='description'>
-                    <p>{task.description}</p>
+                    <p class="font-sans font-extralight text-sm">{task.description}</p>
                 </div>
                 <div className='content'>
                     <div className='deadline-box'>
                     <p>
                             <span className="icon-text-container">
-                                <span className="icon-text-label">
+                                <span className="icon-text-label font-lato font-bold">
                                     <DeadlineIcon /> 
                                     Deadline:
                                 </span>
-                                <span className="icon-text-date">
+                                <span className="font-sans font-extralight">
                                     {task.dueDate}
                                 </span>
                             </span>
@@ -69,7 +69,7 @@ function TaskModal({ task, isOpen, onClose }) {
                         <hr style={{ border: "none", borderBottom: "0.3px dashed #000", margin: "10px 0" }} />
                         <p>
                             <span className="icon-text-container">
-                                <span className="icon-text-label">
+                                <span className="icon-text-label font-lato font-bold">
                                 <PuzzleIcon /> 
                                     Redistribution:
                                 </span>
