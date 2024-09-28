@@ -7,10 +7,12 @@ import { getAllActiveTaskAssignment } from "../services/Task/getActiveTaskAssign
 import PriorityDropdown from "../svgs/TaskManagement/PriorityDropdown.js";
 
 function TaskManager() {
-    const [tasks, setTasks] = useState([]); // Store fetched tasks
+    const [tasks, setTasks] = useState([]); 
     const [selectedTask, setSelectedTask] = useState(null);
     const [priorityFilter, setPriorityFilter] = useState("All");
     const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false);
+
+
 
     useEffect(() => {
         getAllActiveTaskAssignment().then((fetchedTasks) => {
@@ -27,9 +29,9 @@ function TaskManager() {
     }, []);
 
     const priorityColors = {
-        High: "#426DA0",
-        Medium: "#736B6F",
-        Low: "#495247",
+        High: "#661717",
+        Medium: "#703320",
+        Low: "#243327",
     };
 
     const handleFilterChange = (priority) => {

@@ -44,7 +44,7 @@ const Tile = ({ task }) => {
             </div>
 
             <div className="absolute bottom-3 right-3">
-                <TileIcon fill="#426DA0" />
+                <TileIcon fill={"#426DA0"}/>
             </div>
             <TaskModal
                 task={selectedTask}
