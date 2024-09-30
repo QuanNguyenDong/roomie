@@ -13,12 +13,12 @@ router.get("/reviews", currentUser, async (req, res) => {
         return;
     }
 
-    const reviews = await Review.find({ user: req.currentUser?.id }).populate('task', 'name');
+    const reviews = await Review.find({ user: req.currentUser?.id }).populate('task', 'taskname');    
 
     // Map the data to match the required structure
     const reviewDataMap = reviews.reduce((acc, review) => {
-        const taskName = review.task.name;
-        const reviewText = { reviewText: review.review };
+        const taskName = review.task.taskname;
+        const reviewText = { reviewText: review.reviewText };
 
         // Find the task in the accumulator or create a new entry if it doesn't exist
         const taskEntry = acc.find(entry => entry.title === taskName);
@@ -32,8 +32,7 @@ router.get("/reviews", currentUser, async (req, res) => {
         }
 
         return acc;
-    }, []);
-
+    }, []);    
     res.send({ reviewData: reviewDataMap });
 });
 
