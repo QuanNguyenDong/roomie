@@ -22,6 +22,7 @@ module.exports = {
       },
       borderRadius : {
         'reviews': '22px',
+        'submission': '50px',
       }
     },
   },
