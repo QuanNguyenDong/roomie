@@ -11,20 +11,20 @@ const Tile = ({ task }) => {
                 <div className="flex flex-row justify-between">
                     <div className="w-1/2">
                         <text className="text-base font-semibold">
-                            {task.taskname}
+                            {task?.taskname || "Task Name"}
                         </text>
                     </div>
                     <div className="bg-[#7D8D9C] w-8 h-8 rounded-full mt-2 flex items-center justify-center">
                         <text className="text-base font-semibold">
-                            {task.fullname.charAt(0).toUpperCase()}
+                            {task?.fullname?.charAt(0).toUpperCase() || 'T'}
                         </text>
                     </div>
                 </div>
                 <div>
                     <div className="flex flex-row justify-between">
-                        <text className="text-xs ">{task.dueDate}</text>
+                        <text className="text-xs ">{task?.dueDate || "No due date"}</text>
                         <text className="text-xs font-medium">
-                            {task.duration} minutes
+                            {task?.duration ? `${task.duration} minutes` : "Duration unknown"}
                         </text>
                     </div>
                 </div>
