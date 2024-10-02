@@ -56,14 +56,14 @@ describe('Home Component', () => {
         <Home />
       </MemoryRouter>
     );
-
-    // Debugging: Print out the rendered DOM to check if the tasks are present
-    console.log(screen.debug());
-
-    // Wait for tasks to show up with a more flexible matcher
+  
+    // Wait for tasks to show up
     await waitFor(() => {
-      expect(screen.getByText((content) => content.includes('Task 1'))).toBeInTheDocument();
-      expect(screen.getByText((content) => content.includes('Task 2'))).toBeInTheDocument();
+      const task1 = screen.getByText(/Task 1/i);  
+      const task2 = screen.getByText(/Task 2/i);  
+      
+      expect(task1).toBeInTheDocument();
+      expect(task2).toBeInTheDocument();
     });
   });
-});
+  });
