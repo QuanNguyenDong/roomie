@@ -63,10 +63,9 @@ const Reviews = () => {
           <p className="text-gray-600">Let's see how you did...</p>
         </div>
           
-        <button
-          onClick={handleClose}
-          className="pb-6"
-        >
+        <button data-testid="close-button" 
+        onClick={handleClose} 
+        className="pb-6">
         <CloseIcon />
         </button>
       </div>
