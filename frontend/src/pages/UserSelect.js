@@ -9,6 +9,7 @@ export default function SignIn() {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState(""); // Add state for error message
 
     useEffect(() => {
         getUserProfile()
@@ -18,7 +19,9 @@ export default function SignIn() {
                     navigate("/home");
                 }
             })
-            .catch((error) => {});
+            .catch((error) => {
+                console.log("Error fetching user profile:", error);
+            });
     }, [navigate]);
 
     const handleSubmit = async (e) => {
@@ -36,7 +39,7 @@ export default function SignIn() {
             localStorage.setItem("user", JSON.stringify(response.data));
             navigate("/home", { replace: true });
         } catch (error) {
-            alert("Invalid username or password");
+            setErrorMessage("Invalid username or password"); // Update state with error message
         }
     };
 
@@ -73,14 +76,12 @@ export default function SignIn() {
                     </div>
 
                     <div>
-                        <div className="flex items-center justify-between">
-                            <label
-                                htmlFor="password"
-                                className="text-sm font-medium leading-6 text-gray-900 flex flex-row items-center gap-1"
-                            >
-                                Password
-                            </label>
-                        </div>
+                        <label
+                            htmlFor="password"
+                            className="text-sm font-medium leading-6 text-gray-900 flex flex-row items-center gap-1"
+                        >
+                            Password
+                        </label>
                         <div className="mt-2">
                             <input
                                 id="password"
@@ -95,6 +96,9 @@ export default function SignIn() {
                         </div>
                     </div>
                     <div>
+                        {errorMessage && ( // Conditionally render error message if it exists
+                            <p className="text-red-500">{errorMessage}</p>
+                        )}
                         <button className="block ml-auto mb-2" onClick={() => navigate("/signup")}>
                             Sign up
                         </button>
