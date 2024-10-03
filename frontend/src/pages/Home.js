@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import getUserProfile from "../services/User/getUserProfile";
 import { useNavigate } from "react-router-dom";
 
-import Tile from '../components/Home/Tile';
+import Tile from "../components/Home/Tile";
 import Event from "../components/Home/Event";
 
-import { getTasksForUser } from '../services/Task/getTasks';
+import { getUserTask } from "../services/Task/getTasks";
 
 function Home() {
     const [user, setUser] = useState({});
@@ -20,29 +20,41 @@ function Home() {
                     if (user) {
                         localStorage.setItem("user", JSON.stringify(user));
                         setUser(user);
-                    } else {
-                        navigate("/");
-                    }
+                    } else navigate("/");
                 })
                 .catch((error) => navigate("/"));
-        } else {
-            setUser(storedUser);
-        }   
-        const fetchTasks = async () =>{
-            const fetchedTasks = await getTasksForUser(); // Fetch tasks asynchronously  
-            console.log(fetchedTasks);          
-            setTasks(fetchedTasks || []); // Set tasks or empty array if none
-        };
+        } else setUser(storedUser);
 
-        fetchTasks();        
+        getUserTask()
+            .then((tasks) => {
+                if (!tasks) return;
+                tasks.map((task) => {
+                    task.dueDate = calculateDueDate(
+                        task?.startDate,
+                        task?.frequency
+                    );
+                    return task;
+                });
+                setTasks(tasks);
+            })
+            .catch((error) => {});
     }, [navigate]);
+
+    const calculateDueDate = (startDate, frequency) => {
+        const start = new Date(startDate);
+        const dueDate = new Date(start);
+        dueDate.setDate(start.getDate() + frequency);
+        return dueDate.toDateString();
+    };
 
     return (
         <div className="max-w-[520px] mx-auto h-full text-black font-poppins">
-            <div class="flex justify-between h-10 mb-6 mx-8">
-                <text className="text-4xl font-bold font-lexend">Hello, {user.fullname}!</text>
+            <div className="flex justify-between h-10 mb-6 mx-8">
+                <text className="text-4xl font-bold font-lexend">
+                    Hello, {user.fullname}!
+                </text>
             </div>
-            <div class="flex justify-between h-10 mb-6 mx-8">
+            <div className="flex justify-between h-10 mb-6 mx-8">
                 <button className="bg-white text-xs w-28 rounded-3xl">
                     My Tasks
                 </button>
@@ -54,13 +66,22 @@ function Home() {
                 </button>
             </div>
             <div className="flex flex-nowrap overflow-x-auto w-100vw h-56 mb-8">
-                <div className="flex flex-nowrap space-x-6 ml-8">
-                    {tasks.map((task, index) => (
-                        <Tile 
-                        key={index}
-                        task={task} />
-                    ))}
-                </div>
+                {tasks.length == 0 ? (
+                    <div className="bg-secGrey text-center text-xl w-full py-24 mx-8 rounded-3xl">
+                        <span>You don't have any tasks</span>
+                    </div>
+                ) : (
+                    <div className="flex flex-nowrap space-x-6 ml-8">
+                        {tasks
+                            .sort(
+                                (a, b) =>
+                                    new Date(a.dueDate) - new Date(b.dueDate)
+                            ) // Sort by dueDate
+                            .map((task, index) => (
+                                <Tile key={index} task={task} />
+                            ))}
+                    </div>
+                )}
             </div>
             <div className="mx-8">
                 <text className="text-xl font-semibold">Events this week</text>
@@ -69,9 +90,8 @@ function Home() {
                     <Event />
                     <Event />
                 </div>
-                <div class="h-40"></div>
             </div>
-        </div> 
+        </div>
     );
 }
 

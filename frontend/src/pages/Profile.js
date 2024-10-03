@@ -29,15 +29,15 @@ function Profile() {
     }, []);
 
     return (
-        <div className="max-w-[500px] h-full px-7 mx-auto text-black font-lexend">
+        <div className="px-7 text-black font-lexend">
             <div className="flex flex-col items-center justify-center">
                 <span className="inline-flex items-center justify-center size-[99px] rounded-full bg-darkGrey text-lg font-semibold text-white leading-none">
-                    <p className="text-3xl">
+                    <span className="text-3xl">
                         {user.fullname
                             ?.split(" ")
                             .map((word) => word[0])
                             .join("")}
-                    </p>
+                    </span>
                 </span>
                 <p className="mt-4 mb-1 text-3xl font-bold">
                     {user.fullname}
@@ -63,7 +63,6 @@ function Profile() {
                     </div>
                 ))}
             </div>
-            <div className="h-40"></div>
         </div>
     );
 }

@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "../styling/Review.css";
 import CloseIcon from '../svgs/Review/CloseIcon.js'; 
 import Tile from '../components/Review/Tile';
 import { useNavigate } from 'react-router-dom';
 import getReviews from "../services/Review/getReviews.js";
 
-  
 const Reviews = () => {
   const [reviewData, setReviewData] = useState([]); // Store fetched tasks
 

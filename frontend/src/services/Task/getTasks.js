@@ -12,15 +12,15 @@ const getTasks = async() => {
     }
 };
 
-const getTasksForUser = async() => {
+const getUserTask = async() => {
     try{
         const res = await axios.get(global.route + `/tasks/assigned`, {
             withCredentials: true,
         });              
-        return res.data.tasks;
+        return res.data.assignedTasks;
     } catch (error) {
         console.error(error); 
     }    
 };
 
-export { getTasks, getTasksForUser };
+export { getUserTask };

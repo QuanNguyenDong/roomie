@@ -16,6 +16,8 @@ import TopbarOnly from "./layouts/TopbarOnly";
 import Reviews from "./pages/Reviews";
 import CreateTask from "./pages/CreateTask";
 import ReviewModal from "./pages/ReviewSubmissionModal";
+import Signup from "./pages/Signup";
+
 
 function App() {
     return (
@@ -32,49 +34,57 @@ function AppRoutes() {
         <Fragment>
             <Routes>
                 <Route path="/" element={<UserSelect />} />
-                <Route path="/home"
+                <Route path="/signup" element={<Signup />} />
+                <Route
+                    path="/home"
                     element={
                         <DefaultLayout>
                             <Home />
                         </DefaultLayout>
                     }
                 />
-                <Route path="/calendar"
+                <Route
+                    path="/calendar"
                     element={
                         <DefaultLayout>
                             <Calendar />
                         </DefaultLayout>
                     }
                 />
-                <Route path="/tasks"
+                <Route
+                    path="/tasks"
                     element={
                         <DefaultLayout>
                             <TaskManager />
                         </DefaultLayout>
                     }
                 />
-                 <Route path="/create-task"
+                <Route
+                    path="/create-task"
                     element={
                         <DefaultLayout>
                             <CreateTask />
                         </DefaultLayout>
                     }
                 />
-                <Route path="/profile"
+                <Route
+                    path="/profile"
                     element={
                         <DefaultLayout>
                             <Profile />
                         </DefaultLayout>
                     }
                 />
-                <Route path="/roomie"
+                <Route
+                    path="/roomie"
                     element={
                         <TopbarOnly>
                             <Roomie />
                         </TopbarOnly>
                     }
                 />
-                <Route path="/reviews"
+                <Route
+                    path="/reviews"
                     element={
                         <DefaultLayout>
                             <Reviews />

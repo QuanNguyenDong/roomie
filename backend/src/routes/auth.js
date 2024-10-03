@@ -23,27 +23,30 @@ router.post(
     ],
     validateRequest,
     async (req, res) => {
-        const { username, password, fullname, email, desc } = req.body;
-
-        const user = await User.create({
-            username,
-            password,
-            fullname,
-            email,
-            desc,
-        });
-
-        const userJwt = jwt.sign(
-            {
-                id: user.id,
-                username: user.username,
-            },
-            process.env.JWT_KEY,
-            { expiresIn: "14d" }
-        );
-
-        req.session = { jwt: userJwt };
-        res.status(201).json(user);
+        try {
+            const { username, password, fullname, desc } = req.body;
+    
+            const user = await User.create({
+                username,
+                password,
+                fullname,
+                desc,
+            });
+    
+            const userJwt = jwt.sign(
+                {
+                    id: user.id,
+                    username: user.username,
+                },
+                process.env.JWT_KEY,
+                { expiresIn: "14d" }
+            );
+    
+            req.session = { jwt: userJwt };
+            return res.status(201).json(user);
+        } catch (err) {
+            return res.status(400).json({ message: err.message });
+        }
     }
 );
 

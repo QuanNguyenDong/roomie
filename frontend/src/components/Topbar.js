@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 import "../index.css";
 
-import Hamburger from "../svgs/Topbar/Hamburger";
 import Notif from "../svgs/Topbar/Notif";
 import Profile from "../svgs/Topbar/Profile";
 import axios from "axios";
