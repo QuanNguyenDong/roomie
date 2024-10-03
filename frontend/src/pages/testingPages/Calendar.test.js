@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect'; // This is crucial for Jest DOM matchers
+import '@testing-library/jest-dom';
 import Calendar from '../Calendar'; // Correct relative path to Calendar.js
 
 describe('Calendar Component', () => {
