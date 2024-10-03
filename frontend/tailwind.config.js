@@ -22,7 +22,11 @@ module.exports = {
       },
       borderRadius : {
         'reviews': '22px',
-      }
+        'submission': '50px',
+      },
+      fontSize: {
+        'xxs': '0.9rem',
+      },
     },
   },
   plugins: [],

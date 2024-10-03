@@ -3,8 +3,19 @@ import "../styling/Review.css";
 import CloseIcon from '../svgs/Review/CloseIcon.js'; 
 import Tile from '../components/Review/Tile';
 import { useNavigate } from 'react-router-dom';
+import getReviews from "../services/Review/getReviews.js";
 
 const Reviews = () => {
+  const [reviewData, setReviewData] = useState([]); // Store fetched tasks
+
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      const fetchedReviews = await getReviews(); // Fetch reviews asynchronously
+      setReviewData(fetchedReviews || []); // Set reviews or empty array if none
+    };
+    fetchReviews();
+  }, []);
     //this data needs to be calculated from other tables
   const additionalData = {
     stars: 100,
@@ -12,6 +23,7 @@ const Reviews = () => {
   };  
 
 //need a reivew data table
+/*
   const reviewData = [
     {
       title: 'Clean Backyard',
@@ -47,6 +59,7 @@ const Reviews = () => {
        reviews: [],
     },
   ];
+  */
 
   const navigate = useNavigate();
 

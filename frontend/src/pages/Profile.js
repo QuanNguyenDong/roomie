@@ -46,6 +46,9 @@ function Profile() {
                 <button className="my-6 bg-white text-xs text-darkGrey w-28 h-10 rounded-3xl drop-shadow-lg" onClick={() => navigate('/reviews')}>
                     Your Reviews
                 </button>
+                <button className="my-6 bg-white text-xs text-darkGrey w-28 h-10 rounded-3xl drop-shadow-lg" onClick={() => navigate('/reviewModal')}>
+                    Submit Reviews
+                </button>
             </div>
             <div className="my-6">
                 <p className="font-bold mb-2">A little bit about myself...</p>
