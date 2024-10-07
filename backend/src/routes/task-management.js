@@ -15,7 +15,7 @@ router.post("/tasks/create", currentUser, async (req, res) => {
         return;
     }
 
-    const { title, description, frequency, time, priority } = req.body;
+    const { taskname, description, frequency, duration, priority } = req.body;
 
     const joinHouse = await JoinHouse.findOne({ user: req.currentUser?.id });
     if (!joinHouse) {
@@ -24,10 +24,10 @@ router.post("/tasks/create", currentUser, async (req, res) => {
     }
 
     const task = await Task.create({
-        title,
+        taskname,
         description,
         frequency,
-        time,
+        duration,
         priority,
         house: joinHouse.house,
     });

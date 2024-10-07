@@ -18,6 +18,8 @@ import TaskFrequencyIcon from "../svgs/TaskManagement/TaskFrequencyIcon";
 import DurationIcon from "../svgs/TaskManagement/DurationIcon";
 import DropdownIcon from "../svgs/Navbar/DropdownIcon";
 
+import createTask from '../services/Task/CreateTask';
+
 const Navbar = () => {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,20 +29,26 @@ const Navbar = () => {
     const inputRef = useRef(null);
     const [selectedPriority, setSelectedPriority] = useState("Select");
     const [selectedTime, setSelectedTime] = useState("Select");
-    const [selectedFrequency, setSelectedFrequency] = useState("Select");
+    const [selectedTimeValue, setSelectedTimeValue] = useState(0);
+    const [selectedFrequencyValue, setSelectedFrequencyValue] = useState(0); // Numeric value as int
+    const [selectedFrequency, setSelectedFrequency] = useState('Select'); // Display text
+    const [taskName, setTaskName] = useState('');
+    const [description, setDescription] = useState('');
 
     const handleSelect = (option) => {
       setSelectedPriority(option); 
       setPriorityOpen(false); 
     };
 
-    const handleTimeSelect = (option) => {
-      setSelectedTime(option);
+    const handleTimeSelect = (value, displayText) => {
+      setSelectedTimeValue(value);
+      setSelectedTime(displayText);
       setTimeOpen(false); 
     };
   
-    const handleFrequencySelect = (option) => {
-      setSelectedFrequency(option);
+    const handleFrequencySelect = (value, displayText) => {
+      setSelectedFrequencyValue(value);
+      setSelectedFrequency(displayText);
       setFrequencyOpen(false); 
     };  
   
@@ -61,6 +69,26 @@ const Navbar = () => {
             document.body.style.overflow = 'auto';
         };
     }, [isModalOpen]);
+
+    const handleSubmit = () => {
+      const taskData = {
+          taskname: taskName,
+          description: description,
+          priority: selectedPriority,
+          frequency: selectedFrequencyValue,
+          duration: selectedTimeValue,
+      };
+      
+      // You can replace the above line with any logic to send taskData to your backend or handle it as needed
+      createTask(taskData);
+      // Reset the form after submission
+      setTaskName('');
+      setDescription('');
+      setSelectedPriority('Select');
+      setSelectedFrequency('Select');
+      setSelectedTime('Select');
+      toggleModal();
+  };
 
 
     return (
@@ -115,6 +143,8 @@ const Navbar = () => {
                            placeholder="Task Name..."
                            className="w-full text-black bg-transparent focus:outline-none"
                            ref={inputRef}
+                           value={taskName} // Bind the input value to the state
+                           onChange={(e) => setTaskName(e.target.value)}
                          />
                        </h1>
                      </div>
@@ -127,6 +157,8 @@ const Navbar = () => {
                          placeholder="Type a description..."
                          className="w-full text-[14px] bg-transparent focus:outline-none"
                          rows={3}
+                         value={description}
+                         onChange={(e) => setDescription(e.target.value)}
                        />
                      </div>
                  
@@ -180,9 +212,9 @@ const Navbar = () => {
                              {/* Dropdown List */}
                              {isFrequencyOpen && (
                                <ul className="absolute right-0 mt-2 w-32 p-2 bg-white text-black rounded-lg shadow-lg z-20">
-                                 <li className="p-2 hover:bg-gray-100 cursor-pointer text-[14px]" onClick={() => handleFrequencySelect('Daily')}>Daily</li>
-                                 <li className="p-2 hover:bg-gray-100 cursor-pointer text-[14px]" onClick={() => handleFrequencySelect('Weekly')}>Weekly</li>
-                                 <li className="p-2 hover:bg-gray-100 cursor-pointer text-[14px]" onClick={() => handleFrequencySelect('Monthly')}>Monthly</li>
+                                 <li className="p-2 hover:bg-gray-100 cursor-pointer text-[14px]" onClick={() => handleFrequencySelect(1, 'Daily')}>Daily</li>
+                                 <li className="p-2 hover:bg-gray-100 cursor-pointer text-[14px]" onClick={() => handleFrequencySelect(7, 'Weekly')}>Weekly</li>
+                                 <li className="p-2 hover:bg-gray-100 cursor-pointer text-[14px]" onClick={() => handleFrequencySelect(30, 'Monthly')}>Monthly</li>
                                </ul>
                              )}
                            </div>
@@ -207,9 +239,9 @@ const Navbar = () => {
                              {/* Dropdown List */}
                              {isTimeOpen && (
                                <ul className="absolute right-0 mt-2 w-32 p-2 bg-white text-black rounded-lg shadow-lg z-20">
-                                 <li className="p-2 hover:bg-gray-100 cursor-pointer text-[14px]" onClick={() => handleTimeSelect('30 Mins')}>30 Mins</li>
-                                 <li className="p-2 hover:bg-gray-100 cursor-pointer text-[14px]" onClick={() => handleTimeSelect('60 Mins')}>60 Mins</li>
-                                 <li className="p-2 hover:bg-gray-100 cursor-pointer text-[14px]" onClick={() => handleTimeSelect('90 Mins')}>90 Mins</li>
+                                 <li className="p-2 hover:bg-gray-100 cursor-pointer text-[14px]" onClick={() => handleTimeSelect(30, '30 Mins')}>30 Mins</li>
+                                 <li className="p-2 hover:bg-gray-100 cursor-pointer text-[14px]" onClick={() => handleTimeSelect(60, '60 Mins')}>60 Mins</li>
+                                 <li className="p-2 hover:bg-gray-100 cursor-pointer text-[14px]" onClick={() => handleTimeSelect(90, '90 Mins')}>90 Mins</li>
                                </ul>
                              )}
                            </div>
@@ -220,10 +252,9 @@ const Navbar = () => {
             
                      <div className="absolute right-14">
                        <button
-                        //  onClick={handleSubmit}
-                        className="bg-none text-black py-1 px-4 rounded-lg text-[12px] border border-black border-solid hover:bg-slate-950 hover:text-white"
->
-                         Submit
+                          onClick={handleSubmit}
+                          className="bg-none text-black py-1 px-4 rounded-lg text-[12px] border border-black border-solid hover:bg-slate-950 hover:text-white">
+                          Submit
                        </button>
                      </div>
                    </div>
