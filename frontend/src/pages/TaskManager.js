@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../styling/taskManager.scss";
 import TileIcon from "../svgs/Home/Tasks/TileIcon.js";
 import FrequencyIcon from "../svgs/TaskManagement/FrequencyIcon.js";
@@ -12,6 +12,9 @@ function TaskManager() {
     const [priorityFilter, setPriorityFilter] = useState("All");
     const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false);
 
+    const dropdownRef = useRef(null);
+    const priorityButtonRef = useRef(null);
+
     useEffect(() => {
         getAllActiveTaskAssignment().then((fetchedTasks) => {
             if (fetchedTasks)
@@ -24,6 +27,22 @@ function TaskManager() {
                 });
             setTasks(fetchedTasks || []);
         });
+
+        const handleClickOutside = (event) => {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target) &&
+                !priorityButtonRef.current.contains(event.target)
+            ) {
+                setPriorityDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
     }, []);
 
     const priorityColors = {
@@ -72,6 +91,7 @@ function TaskManager() {
                 </button>
                 <button
                     onClick={togglePriorityDropdown}
+                    ref={priorityButtonRef}
                     className="priority-button"
                 >
                     <span className="priority-text">Priority</span>
@@ -79,7 +99,7 @@ function TaskManager() {
                 </button>
 
                 {isPriorityDropdownOpen && (
-                    <div className="dropdown-menu">
+                    <div ref={dropdownRef} className="dropdown-menu">
                         <ul>
                             <li onClick={() => handleFilterChange("High")}>
                                 High
