@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import CloseIcon from '../svgs/Review/CloseIcon.js'; 
 import StarRating from "../components/common/StarRating.js"; 
 import Progressbar from "../components/common/Progressbar.js";
+import axios from "axios";
 
 const ReviewModal = () => {
     const [modalState, setModalState] = useState({ open: true });
