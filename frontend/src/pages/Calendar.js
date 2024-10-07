@@ -19,17 +19,6 @@ import {
 } from 'date-fns';
 
 import { getAllActiveTaskAssignment } from "../services/Task/getActiveTaskAssignment.js";
-
-// const events = [
-//     { id: 1, name: 'Leslie Alexander', imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2024-09-11T13:00', endDatetime: '2024-09-11T14:30' },
-//     { id: 2, name: 'Michael Foster', imageUrl: 'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2024-09-11T13:00', endDatetime: '2024-09-11T14:30' },
-//     { id: 3, name: 'Dries Vincent', imageUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2024-09-11T13:00', endDatetime: '2024-09-11T14:30' },
-//     { id: 45, name: 'Michael Foster', imageUrl: 'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2024-09-11T13:00', endDatetime: '2024-09-11T14:30' },
-//     { id: 5, name: 'John Doe', imageUrl: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2022-05-22T12:00', endDatetime: '2022-05-22T13:30' },
-//     { id: 6, name: 'Jane Smith', imageUrl: 'https://images.unsplash.com/photo-1530577197743-7adf14294584?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2022-05-25T10:00', endDatetime: '2022-05-25T11:30' },
-//     { id: 7, name: 'Samuel Green', imageUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2022-05-30T15:00', endDatetime: '2022-05-30T16:30' },
-//     { id: 8, name: 'Nina Brown', imageUrl: 'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2022-06-02T09:00', endDatetime: '2022-06-02T10:30' },
-// ];
   
 let colClasses = ['', 'col-start-2', 'col-start-3', 'col-start-4', 'col-start-5', 'col-start-6', 'col-start-7'];
 

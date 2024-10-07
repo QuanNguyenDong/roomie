@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState } from "react";
 import "../styling/Review.css";
 import CloseIcon from '../svgs/Review/CloseIcon.js'; 
 import Tile from '../components/Review/Tile';

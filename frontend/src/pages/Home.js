@@ -10,6 +10,9 @@ import { getUserTask } from "../services/Task/getTasks";
 function Home() {
     const [user, setUser] = useState({});
     const [tasks, setTasks] = useState([]);
+
+    let [taskFilter, setTaskFilter] = useState("all");
+
     let navigate = useNavigate();
 
     useEffect(() => {
@@ -55,13 +58,22 @@ function Home() {
                 </text>
             </div>
             <div className="flex justify-between h-10 mb-6 mx-8">
-                <button className="bg-white text-xs w-28 rounded-3xl">
+                <button
+                    className={`${taskFilter === "all" ? "bg-white border-2" : "bg-secGrey"
+                        } text-black text-xs w-28 rounded-3xl`}
+                    onClick={() => setTaskFilter("all")}>
                     My Tasks
                 </button>
-                <button className="bg-secGrey text-xs w-28 rounded-3xl">
+                <button
+                    className={`${taskFilter === "upcoming" ? "bg-white border-2" : "bg-secGrey"
+                        } text-black text-xs w-28 rounded-3xl`}
+                    onClick={() => setTaskFilter("upcoming")}>
                     Upcoming
                 </button>
-                <button className="bg-secGrey text-xs w-28 rounded-3xl">
+                <button
+                    className={`${taskFilter === "completed" ? "bg-white border-2" : "bg-secGrey "
+                        } text-black text-xs w-28 rounded-3xl`}
+                    onClick={() => setTaskFilter("completed")}>
                     Completed
                 </button>
             </div>
