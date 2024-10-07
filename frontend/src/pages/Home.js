@@ -50,6 +50,19 @@ function Home() {
         return dueDate.toDateString();
     };
 
+    const filteredTasks = tasks.filter((task) => {
+        const today = new Date();
+        const taskDueDate = new Date(task.dueDate);
+
+        if (taskFilter === "upcoming") {
+            return taskDueDate > today && !task.completed;
+        } else if (taskFilter === "completed") {
+            return today > taskDueDate;
+        } else {
+            return true;
+        }
+    });
+
     return (
         <div className="max-w-[520px] mx-auto h-full text-black font-poppins">
             <div className="flex justify-between h-10 mb-6 mx-8">
@@ -78,13 +91,13 @@ function Home() {
                 </button>
             </div>
             <div className="flex flex-nowrap overflow-x-auto w-100vw h-56 mb-8">
-                {tasks.length == 0 ? (
+                {filteredTasks.length == 0 ? (
                     <div className="bg-secGrey text-center text-xl w-full py-24 mx-8 rounded-3xl">
                         <span>You don't have any tasks</span>
                     </div>
                 ) : (
                     <div className="flex flex-nowrap space-x-6 ml-8">
-                        {tasks
+                        {filteredTasks
                             .sort(
                                 (a, b) =>
                                     new Date(a.dueDate) - new Date(b.dueDate)
