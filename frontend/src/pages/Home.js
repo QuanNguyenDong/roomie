@@ -59,19 +59,19 @@ function Home() {
             </div>
             <div className="flex justify-between h-10 mb-6 mx-8">
                 <button
-                    className={`${taskFilter === "all" ? "bg-white border-2" : "bg-secGrey"
+                    className={`${taskFilter === "all" ? "bg-white" : "bg-secGrey"
                         } text-black text-xs w-28 rounded-3xl`}
                     onClick={() => setTaskFilter("all")}>
                     My Tasks
                 </button>
                 <button
-                    className={`${taskFilter === "upcoming" ? "bg-white border-2" : "bg-secGrey"
+                    className={`${taskFilter === "upcoming" ? "bg-white" : "bg-secGrey"
                         } text-black text-xs w-28 rounded-3xl`}
                     onClick={() => setTaskFilter("upcoming")}>
                     Upcoming
                 </button>
                 <button
-                    className={`${taskFilter === "completed" ? "bg-white border-2" : "bg-secGrey "
+                    className={`${taskFilter === "completed" ? "bg-white" : "bg-secGrey "
                         } text-black text-xs w-28 rounded-3xl`}
                     onClick={() => setTaskFilter("completed")}>
                     Completed
