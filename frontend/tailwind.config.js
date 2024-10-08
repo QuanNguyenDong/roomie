@@ -14,6 +14,7 @@ module.exports = {
       fontFamily: {
         lexend: ['Lexend', 'sans-serif'],
         poppins: ['Poppins', 'sans-serif'],
+        lato: ['Lato', 'sans-serif'],
       },
       colors: {
         secGrey: '#E3E3E3',
