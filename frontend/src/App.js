@@ -15,7 +15,9 @@ import DefaultLayout from "./layouts/DefaultLayout";
 import TopbarOnly from "./layouts/TopbarOnly";
 import Reviews from "./pages/Reviews";
 import CreateTask from "./pages/CreateTask";
+import ReviewModal from "./pages/ReviewSubmissionModal";
 import Signup from "./pages/Signup";
+
 
 function App() {
     return (
@@ -86,6 +88,13 @@ function AppRoutes() {
                     element={
                         <DefaultLayout>
                             <Reviews />
+                        </DefaultLayout>
+                    }
+                />
+                <Route path="/reviewModal"
+                    element={
+                        <DefaultLayout>
+                            <ReviewModal />
                         </DefaultLayout>
                     }
                 />

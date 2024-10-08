@@ -6,6 +6,24 @@ function Profile() {
     const navigate = useNavigate();
     const [user, setUser] = useState({});
 
+    const signout = async () => {
+        try {
+            const res = await axios.post(
+                global.route + `/users/signout`,
+                {},
+                {
+                    withCredentials: true,
+                }
+            );
+            if (res.status === 200) {
+                localStorage.removeItem("user");
+                navigate("/");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const fetchUserProfile = async () => {
         try {
             const response = await axios.get(global.route + `/users/profile`, {
@@ -46,6 +64,9 @@ function Profile() {
                 <button className="my-6 bg-white text-xs text-darkGrey w-28 h-10 rounded-3xl drop-shadow-lg" onClick={() => navigate('/reviews')}>
                     Your Reviews
                 </button>
+                <button className="mb-3 bg-white text-xs text-darkGrey w-28 h-10 rounded-3xl drop-shadow-lg" onClick={() => navigate('/reviewModal')}>
+                    Submit Reviews
+                </button>
             </div>
             <div className="my-6">
                 <p className="font-bold mb-2">A little bit about myself...</p>
@@ -59,6 +80,14 @@ function Profile() {
                         <p>{answer.answer}</p>
                     </div>
                 ))}
+            </div>
+            
+            <div className="m-6 text-center">
+                <button
+                    className="bg-secGrey text-red-600 text-xs w-28 h-10 rounded-3xl drop-shadow-lg"
+                    onClick={() => signout()}>
+                    Log out
+                </button>    
             </div>
         </div>
     );
