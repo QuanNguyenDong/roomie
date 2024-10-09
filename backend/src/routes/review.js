@@ -36,4 +36,23 @@ router.get("/reviews", currentUser, async (req, res) => {
     res.send({ reviewData: reviewDataMap });
 });
 
+router.post("/reviews", currentUser, async (req, res) => {
+    const user = await User.findById(req.currentUser?.id);
+    if (!user) {
+        res.status(401).send({ message: "Unauthorized" });
+        return;
+    }
+
+    let reviews = req.body;
+
+    reviews = reviews.map(({ taskId, userId, reviewText }) => ({
+        task: taskId,
+        user: userId,
+        reviewText
+    }));
+
+    const insertedReviews = await Review.insertMany(reviews);
+    res.send(insertedReviews);
+});
+
 module.exports = router;

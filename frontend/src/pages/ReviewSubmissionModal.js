@@ -5,16 +5,21 @@ import axios from "axios";
 import CloseIcon from '../svgs/Review/CloseIcon.js'; 
 import StarRating from "../components/common/StarRating.js"; 
 import Progressbar from "../components/common/Progressbar.js";
-import axios from "axios";
+
+import { getAllActiveTaskAssignment } from "../services/Task/getActiveTaskAssignment.js";
+import createReviews from "../services/Review/createReviews.js";
 
 const ReviewModal = () => {
     const [modalState, setModalState] = useState({ open: true });
     const [currentUserIndex, setCurrentUserIndex] = useState(0);
-    const [reviews, setReviews] = useState({});
+    const [reviews, setReviews] = useState([]);
     const navigate = useNavigate();
-    const [user, setUser] = useState({});
+    const [user, setUser] = useState({});    
+    const [users, setUsers] = useState([]);
+    const [activeTasks, setActiveTasks] = useState([]);
+    const [tasks, setTasks] = useState([]);
 
-    //Get logged in user
+    // Get logged in user
     const fetchUserProfile = async () => {
         try {
             const response = await axios.get(global.route + `/users/reviewModal`, {
@@ -35,48 +40,49 @@ const ReviewModal = () => {
         } else {
             setUser(storedUser);
         }
+
+        const fetchActiveTasks = async () => {
+            const fetchedActiveTasks = await getAllActiveTaskAssignment();
+            setActiveTasks(fetchedActiveTasks || []);
+
+            // Extract unique users
+            const uniqueUsers = (fetchedActiveTasks || []).reduce((acc, activeTask) => {
+                if (!acc.some(u => u.userId === activeTask.userId)) {
+                    acc.push({ userId: activeTask.userId, fullname: activeTask.fullname });
+                }
+                return acc;
+            }, []);
+            setUsers(uniqueUsers || []);
+
+            // Extract unique tasks
+            const uniqueTasks = (fetchedActiveTasks || []).reduce((acc, activeTask) => {
+                if (!acc.some(task => task.taskId === activeTask.taskId)) {
+                    acc.push({ taskId: activeTask.taskId, taskname: activeTask.taskname });
+                }
+                return acc;
+            }, []);
+            setTasks(uniqueTasks || []);
+        };
+
+        fetchActiveTasks();
     }, []);
 
-    const users = [
-        { userId: "1", fullname: "Trish Manjunath" },
-        { userId: "2", fullname: "Jane Smith" },
-        { userId: "3", fullname: "Alice Johnson" },
-        { userId: "4", fullname: "Bob Brown" },
-        { userId: "5", fullname: "Charlie Davis" },
-    ];
-
-    const tasks = [
-        { taskId: "1", taskname: "Kitchen Cleaning" },
-        { taskId: "2", taskname: "Vacuum" },
-        { taskId: "3", taskname: "Cook Chicken" },
-        { taskId: "4", taskname: "Wipe TV" },
-        { taskId: "5", taskname: "Clean Backyard" },
-    ];
-
-    // Assignments based on the schema
-    const assignments = [
-        { userId: "1", taskId: "1", status: "active" },
-        { userId: "1", taskId: "2", status: "active" },
-        { userId: "2", taskId: "3", status: "inactive" },
-        { userId: "3", taskId: "4", status: "active" },
-        { userId: "3", taskId: "5", status: "completed" },
-        { userId: "4", taskId: "1", status: "active" },
-        { userId: "5", taskId: "4", status: "completed" },
-        { userId: "5", taskId: "1", status: "completed" },
-        { userId: "5", taskId: "2", status: "completed" },
-        { userId: "5", taskId: "3", status: "completed" },
-        { userId: "5", taskId: "5", status: "completed" },
-    ];
-
-    // Get the current user and their assigned tasks
     const currentUser = users[currentUserIndex];
-    const userTasks = assignments
-        .filter((assign) => assign.userId === currentUser.userId)
-        .map((assign) => tasks.find((task) => task.taskId === assign.taskId));
+    const userTasks = activeTasks
+    .filter((assign) => assign.userId === currentUser?.userId)
+    .reduce((acc, assign) => {
+        const task = tasks.find((task) => task?.taskId === assign.taskId);
+        if (task && !acc.some((t) => t.taskId === task.taskId)) {
+            acc.push(task);  // Only add unique tasks
+        }
+        return acc;
+    }, []);
+
 
     const handleClose = () => {
-        setModalState({ open: false }); // Close the modal
-        navigate('/profile'); // Navigate to profile page
+        setModalState({ open: false });                
+        navigate('/profile');   
+        createReviews(reviews);
     };
 
     const handleNext = () => {
@@ -85,15 +91,35 @@ const ReviewModal = () => {
         }
     };
 
-    const handleReviewChange = (taskId, value) => {
-        // TODO: write to database
-        setReviews((prev) => ({ ...prev, [taskId]: value }));
+    const handleReviewChange = (taskId, userId, reviewText) => {
+        setReviews((prevReviews) => {
+            // Check if a review for this userId and taskId already exists
+            const existingReviewIndex = prevReviews.findIndex(
+                (review) => review.userId === userId && review.taskId === taskId
+            );
+    
+            // If it exists, update the review text
+            if (existingReviewIndex !== -1) {
+                const updatedReviews = [...prevReviews];  // Create a new array to avoid mutation
+                updatedReviews[existingReviewIndex].reviewText = reviewText;
+                return updatedReviews;
+            }
+    
+            // If it doesn't exist, add a new review object
+            return [...prevReviews, { userId, taskId, reviewText }];
+        });
+    };
+
+    const renderUserInitials = (fullname) => {
+        return fullname
+            ?.split(" ")
+            .map((word) => word[0])
+            .join("") || "U";  // Fallback to 'U' if fullname is not defined
     };
 
     return (
         <>
             {modalState.open && (
-                // TODO: remove z component later
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="bg-white w-full h-full max-w-lg rounded-lg relative flex flex-col">
                         {/* Upper White Section */}
@@ -102,29 +128,20 @@ const ReviewModal = () => {
                             <div className="flex justify-between items-center m-2 mb-4">
                                 <div>
                                     <h1 className="text-4xl font-bold m-0 p-0">Review</h1>
-                                    <h2 className="text-4xl font-bold m-0 p-0">{currentUser.fullname}</h2>
+                                    <h2 className="text-4xl font-bold m-0 p-0">{currentUser?.fullname}</h2>
                                 </div>
-                                {/* Close Icon */}
-                                <button
-                                    onClick={handleClose}
-                                    className="pb-6"
-                                >
+                                <button onClick={handleClose} className="pb-6">
                                     <CloseIcon />
                                 </button>
                             </div>
                             <div className="flex flex-col justify-center items-center mt-6">
-                                {/*Profile Photo */}
                                 <span className="inline-flex items-center justify-center size-[75px] rounded-full bg-darkGrey text-lg font-semibold text-white leading-none">
                                     <p className="text-3xl">
-                                        {user.fullname
-                                            ?.split(" ")
-                                            .map((word) => word[0])
-                                            .join("")}
+                                        {renderUserInitials(user?.fullname)}
                                     </p>
                                 </span>
-                                {/*Star Rating System*/}
-                                <div className = "m-1">
-                                    <StarRating iconSize={36} initialRating={0} readOnly={false}/>
+                                <div className="m-1">
+                                    <StarRating iconSize={36} initialRating={0} readOnly={false} />
                                 </div>
                             </div>
                         </div>
@@ -135,18 +152,21 @@ const ReviewModal = () => {
 
                             {/* Scrollable Reviews Container */}
                             <div className="flex-grow overflow-y-auto bg-black p-5">
-                                {userTasks.map((task) => (
-                                    //White tiles
-                                    <div key={task.taskId} className="mb-5 bg-[#F9F9F9] pt-2 pl-10 pr-10 rounded-2xl">
-                                        <h3 className="text-lg font-semibold text-black">{task.taskname}</h3>
-                                        <textarea
-                                            rows="2"
-                                            placeholder="Write your review..."
-                                            className="w-full text-sm bg-transparent mt-2 resize-none"
-                                            onChange={(e) => handleReviewChange(task.taskId, e.target.value)}
-                                        />
-                                    </div>
-                                ))}
+                                {userTasks.length > 0 ? (
+                                    userTasks.map((task) => (
+                                        <div key={task.taskId} className="mb-5 bg-[#F9F9F9] pt-2 pl-10 pr-10 rounded-2xl">
+                                            <h3 className="text-lg font-semibold text-black">{task?.taskname}</h3>
+                                            <textarea
+                                                rows="2"
+                                                placeholder="Write your review..."
+                                                className="w-full text-sm bg-transparent mt-2 resize-none"
+                                                onChange={(e) => handleReviewChange(task.taskId, currentUser?.userId, e.target.value)}
+                                            />
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-white">No tasks assigned to this user.</p>
+                                )}
                             </div>
 
                             {/* Navigation Buttons */}
