@@ -19,7 +19,7 @@ import {
 } from 'date-fns';
 
 import { getAllActiveTaskAssignment } from "../services/Task/getActiveTaskAssignment.js";
-  
+
 let colClasses = ['', 'col-start-2', 'col-start-3', 'col-start-4', 'col-start-5', 'col-start-6', 'col-start-7'];
 
 function classNames(...classes) {
@@ -175,7 +175,7 @@ function Calendar() {
                             key={user}
                             onClick={() => filterTasksByUser(user)}
                             className="w-20 h-6 rounded-3xl text-white text-sm font-semibold"
-                            style={{ backgroundColor: selectedUser === user ? '#cdcdcd' : bgColor }}
+                            style={{ backgroundColor: selectedUser === user ? bgColor : '#cdcdcd' }}
                         >
                             {capitalizeFirstLetter(user)}
                         </button>
