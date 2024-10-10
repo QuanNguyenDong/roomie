@@ -97,13 +97,13 @@ const Navbar = () => {
                 <div className="bg-black text-white rounded-[50px]">
                     <div className="h-16 flex flex-row justify-center space-x-16 sm:space-x-16 z-20">
                         <button onClick={() => navigate('/home')}>
-                            <HomeIcon className='icon' fill="white" />
+                            <HomeIcon fill="white" />
                         </button>
                         <button onClick={() => navigate('/calendar')}>
                             <CalendarIcon fill="white" />
                         </button>
                         <button onClick={toggleModal}>
-                            <PlusIcon fill="white" />
+                          <PlusIcon fill="white" />
                         </button>
                         <button onClick={() => navigate('/tasks')}>
                             <TasksIcon fill="white" />

@@ -36,22 +36,54 @@ const getDaySuffix = (day) => {
     }
 };
 
+const buttonColors = [
+    "#3176A8", "#42A079", "#7742A0", "#A04842", "#A07542",
+    "#DA70D6", "#8A2BE2", "#20B2AA", "#FF6347", "#4682B4"
+];
+
+const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 function Calendar() {
     const [tasks, setTasks] = useState([]);
+    const [filteredTasks, setFilteredTasks] = useState([]);
+    const [selectedUser, setSelectedUser] = useState('All');
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
         getAllActiveTaskAssignment().then((fetchedTasks) => {
             if (fetchedTasks) {
+                console.log(fetchedTasks);
                 fetchedTasks = fetchedTasks.map((task) => {
+                    task["dueDate"] = calculateDueDate(
+                        task.startDate,
+                        task.frequency
+                    );
+
                     var endDate = new Date(task.startDate);
                     endDate.setTime(endDate.getTime() + task.duration * 60 * 1000);
                     task["endDate"] = endDate.toISOString();
                     return task;
                 });
+
+                const uniqueUsers = ['All', ...new Set(fetchedTasks.map(task => task.username))];
+                setUsers(uniqueUsers);
             }
             setTasks(fetchedTasks || []);
+            setFilteredTasks(fetchedTasks || []);
         });
     }, []);
+
+    const filterTasksByUser = (user) => {
+        setSelectedUser(user);
+        if (user === 'All') {
+            setFilteredTasks(tasks);
+        } else {
+            const filtered = tasks.filter(task => task.username === user);
+            setFilteredTasks(filtered);
+        }
+    };
 
     let [selectedDay, setSelectedDay] = useState(startOfToday());
     let [currentMonth, setCurrentMonth] = useState(format(startOfToday(), 'MMM-yyyy'));
@@ -88,6 +120,13 @@ function Calendar() {
     // const handleMouseLeave = () => {
     //     setModalState({ open: true, expanded: false });
     // };
+
+    const calculateDueDate = (startDate, frequency) => {
+        const start = new Date(startDate);
+        const dueDate = new Date(start);
+        dueDate.setDate(start.getDate() + frequency);
+        return dueDate.toISOString();
+    };
 
     let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
 
@@ -127,6 +166,23 @@ function Calendar() {
                 <text className="text-4xl font-bold font-lexend">Calendar</text>
             </div>
 
+            <div className="flex overflow-x-auto mx-8 space-x-2 mb-4 scrollbar-hide">
+                {users.map((user, idx) => {
+                    const bgColor = buttonColors[idx % buttonColors.length];
+
+                    return (
+                        <button
+                            key={user}
+                            onClick={() => filterTasksByUser(user)}
+                            className="w-20 h-6 rounded-3xl text-white text-sm font-semibold"
+                            style={{ backgroundColor: selectedUser === user ? '#cdcdcd' : bgColor }}
+                        >
+                            {capitalizeFirstLetter(user)}
+                        </button>
+                    );
+                })}
+            </div>
+
             <div className="pt-4">
                 <div className="max-w-md px-4 mx-auto">
                     <div className="flex items-center justify-between mx-6">
@@ -155,6 +211,7 @@ function Calendar() {
                             </button>
                         </div>
                     </div>
+
                     <div className="relative grid grid-cols-7 mt-10 text-xs font-semibold leading-6 text-center text-black z-2"
                         style={{ zIndex: 1 }}>
                         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((dayName, idx) => (
@@ -207,8 +264,8 @@ function Calendar() {
                                 </button>
                                 
                                 <div className="w-1 h-1 mx-auto mt-1">
-                                    {tasks.some((event) =>
-                                        isSameDay(parseISO(event.startDate), day)
+                                    {filteredTasks.some((event) =>
+                                        isSameDay(parseISO(event.dueDate), day)
                                     ) && (
                                             <div className="`w-1 h-1 rounded-full bg-sky-500"/>
                                         )}
@@ -223,7 +280,7 @@ function Calendar() {
                         <motion.div
                             className="max-w-[520px] mx-auto fixed bottom-0 left-0 right-0 rounded-t-[2.5rem] bg-black text-white font-poppins"
                             initial={{ y: "100%" }}
-                            animate={{ y: "0%", height: modalState.expanded ? "60%" : "33%" }}
+                            animate={{ y: "0%", height: modalState.expanded ? "56%" : "33%" }}
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                             // onMouseEnter={() => setModalState({ ...modalState, expanded: true })}
@@ -242,8 +299,8 @@ function Calendar() {
                             </div>
 
                             <div className="rounded-t-[2.5rem] mt-5 space-y-4 bg-white h-full pt-10 pb-44 px-10 overflow-y-auto">
-                                {tasks.filter(event => isSameDay(parseISO(event.startDate), selectedDay)).length > 0 ? (
-                                    tasks.filter(event => isSameDay(parseISO(event.startDate), selectedDay)).map(event => (
+                                {filteredTasks.filter(event => isSameDay(parseISO(event.dueDate), selectedDay)).length > 0 ? (
+                                    filteredTasks.filter(event => isSameDay(parseISO(event.dueDate), selectedDay)).map(event => (
                                         <div key={event.id} className="p-4 border-l-[8px] h-24 border-[1px] border-blue-500 bg-white shadow-md rounded-2xl">
                                             <div className="flex items-center space-x-4">
                                                 {/* <img src={event.imageUrl} alt={event.name} className="w-12 h-12 rounded-full" /> */}
@@ -254,7 +311,7 @@ function Calendar() {
                                                 </div>
                                                 <div>
                                                     <h4 className="text-lg font-bold text-black">{event.taskname}</h4>
-                                                    <p className="text-sm text-black">{format(parseISO(event.startDate), 'p')} - {format(parseISO(event.endDate), 'p')}</p>
+                                                    <p className="text-sm text-black">{format(parseISO(event.dueDate), 'p')} - {format(parseISO(event.endDate), 'p')}</p>
                                                 </div>
                                             </div>
                                         </div>
