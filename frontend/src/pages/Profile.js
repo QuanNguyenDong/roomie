@@ -84,7 +84,7 @@ function Profile() {
             
             <div className="m-6 text-center">
                 <button
-                    className="bg-secGrey text-red-600 text-xs w-28 h-10 rounded-3xl drop-shadow-lg"
+                    className="bg-white text-red-600 text-xs w-28 h-10 rounded-3xl drop-shadow-lg"
                     onClick={() => signout()}>
                     Log out
                 </button>    

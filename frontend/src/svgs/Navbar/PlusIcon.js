@@ -1,22 +1,24 @@
 import React from "react";
 
-function Icon() {
+const Icon = (props) => {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      fill="none"
-      viewBox="0 0 20 20"
-    >
-      <path
-        stroke="#fff"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2.5"
-        d="M10 2v16m8-8H2"
-      ></path>
-    </svg>
+    <div className="transition-opacity duration-10 opacity-100 hover:opacity-50">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        fill="none"
+        viewBox="0 0 20 20"
+      >
+        <path
+          stroke={props.fill}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2.5"
+          d="M10 2v16m8-8H2"
+        ></path>
+      </svg>
+    </div>
   );
 }
 
