@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import '../styling/prompts.css';
 import getQuestions from '../services/Question/getQuestions';
+import createAnswers from '../services/Prompt/createAnswers';
+import { useNavigate } from "react-router-dom";
 
 const Prompts = () => {
+  let navigate = useNavigate();
   const [prompts, setPrompts] = useState([]);
   const [selectedPrompts, setSelectedPrompts] = useState([]);
   const [showAnswerButton, setShowAnswerButton] = useState(false);
   const [currentPrompt, setCurrentPrompt] = useState('');
-  const [answers, setAnswers] = useState({});
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -20,7 +22,7 @@ const Prompts = () => {
     };
 
     fetchQuestions();
-}, []);
+  }, []);
 
   const togglePromptSelection = (prompt) => {
     const selectedIndex = selectedPrompts.indexOf(prompt);
@@ -35,12 +37,20 @@ const Prompts = () => {
     setSelectedPrompts(newSelectedPrompts);
     setShowAnswerButton(newSelectedPrompts.length > 0);
   };
-  const handleAnswerSubmit = (e) => {
+
+  const handleAnswerSubmit = async (e) => {
     e.preventDefault();
-    if (currentPrompt) {
-      setAnswers({ ...answers, [currentPrompt]: e.target.answer.value });
-      const nextPrompt = selectedPrompts[selectedPrompts.indexOf(currentPrompt) + 1];
-      setCurrentPrompt(nextPrompt || '');
+
+    const answers = selectedPrompts.map(prompt => ({
+      question: prompt.questionId,
+      answer: prompt.answer
+    }))
+    
+    try {
+      await createAnswers({ answers });
+      navigate("/home");
+    } catch (e) {
+      alert("Failed to submit answers!")
     }
   };
   return (
@@ -72,18 +82,31 @@ const Prompts = () => {
           </button>
         )}
         {currentPrompt && (
-          <div className="answer-box">
-            <h2 className="prompt-title">{currentPrompt.question}</h2>
-            <form onSubmit={handleAnswerSubmit}>
-              <textarea 
-                name="answer" 
-                placeholder="Type your answer here..." 
-                required 
-                className="answer-textarea"
-              />
-              <button type="submit" className="next-btn">Next</button>
-            </form>
-          </div>
+          <form onSubmit={handleAnswerSubmit}>
+            <div className="answer-box">
+              {selectedPrompts.map((prompt, id) => (
+                <div key={id} className="mb-4">
+                  <h2 className="prompt-title">{prompt.question}</h2>
+                  <textarea 
+                    name={prompt.questionId}
+                    placeholder="Type your answer here..."
+                    value={prompt.answer}
+                    onChange={(e) => {
+                      const { name, value } = e.target;
+                      const modified = selectedPrompts.map(prompt => {
+                        if (prompt.questionId === name) prompt.answer = value;
+                        return prompt;
+                      })
+                      setSelectedPrompts(prev => prev = modified);
+                    }}
+                    required 
+                    className="answer-textarea"
+                  />
+                </div>
+              ))}
+            </div>
+            <button type="submit" className="next-btn">Submit</button>
+          </form>
         )}
       </div>
     </div>
