@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../styling/taskManager.scss";
 import TileIcon from "../svgs/Home/Tasks/TileIcon.js";
 import FrequencyIcon from "../svgs/TaskManagement/FrequencyIcon.js";
@@ -7,10 +7,13 @@ import { getAllActiveTaskAssignment } from "../services/Task/getActiveTaskAssign
 import PriorityDropdown from "../svgs/TaskManagement/PriorityDropdown.js";
 
 function TaskManager() {
-    const [tasks, setTasks] = useState([]); // Store fetched tasks
+    const [tasks, setTasks] = useState([]); 
     const [selectedTask, setSelectedTask] = useState(null);
     const [priorityFilter, setPriorityFilter] = useState("All");
     const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false);
+
+    const dropdownRef = useRef(null);
+    const priorityButtonRef = useRef(null);
 
     useEffect(() => {
         getAllActiveTaskAssignment().then((fetchedTasks) => {
@@ -24,12 +27,28 @@ function TaskManager() {
                 });
             setTasks(fetchedTasks || []);
         });
+
+        const handleClickOutside = (event) => {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target) &&
+                !priorityButtonRef.current.contains(event.target)
+            ) {
+                setPriorityDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
     }, []);
 
     const priorityColors = {
-        High: "#426DA0",
-        Medium: "#736B6F",
-        Low: "#495247",
+        High: "#661717",
+        Medium: "#703320",
+        Low: "#243327",
     };
 
     const handleFilterChange = (priority) => {
@@ -72,6 +91,7 @@ function TaskManager() {
                 </button>
                 <button
                     onClick={togglePriorityDropdown}
+                    ref={priorityButtonRef}
                     className="priority-button"
                 >
                     <span className="priority-text">Priority</span>
@@ -79,7 +99,7 @@ function TaskManager() {
                 </button>
 
                 {isPriorityDropdownOpen && (
-                    <div className="dropdown-menu">
+                    <div ref={dropdownRef} className="dropdown-menu">
                         <ul>
                             <li onClick={() => handleFilterChange("High")}>
                                 High
@@ -95,32 +115,41 @@ function TaskManager() {
                 )}
             </div>
             <div className="task-list">
-                {filteredTasks.map((task, index) => (
-                    <div
-                        key={index}
-                        className={`task-card ${task.priority}`}
-                        onClick={() => openTaskModal(task)}
-                    >
-                        <div className="logoicon">
-                            {" "}
-                            <TileIcon fill={priorityColors[task.priority]} />
-                        </div>
-                        <div className="task-header">
-                            <h3>{task.taskname}</h3>
-                            <div className="task-avatar">
-                                {task.fullname.charAt(0).toUpperCase()}
+                {filteredTasks.length == 0 && (
+                    <div className="bg-secGrey text-center text-xl w-full py-24 rounded-3xl">
+                        <span>You don't have any tasks</span>
+                    </div>
+                )}
+                {filteredTasks
+                    .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
+                    .map((task, index) => (
+                        <div
+                            key={index}
+                            className={`task-card ${task.priority}`}
+                            onClick={() => openTaskModal(task)}
+                        >
+                            <div className="logoicon">
+                                {" "}
+                                <TileIcon
+                                    fill={priorityColors[task.priority]}
+                                />
+                            </div>
+                            <div className="task-header">
+                                <h3>{task.taskname}</h3>
+                                <div className="task-avatar">
+                                    {task.fullname.charAt(0).toUpperCase()}
+                                </div>
+                            </div>
+                            <p className="task-subtext">{task.description}</p>
+                            <div className="task-footer">
+                                <p>
+                                    {task.dueDate}
+                                    <FrequencyIcon /> {task.frequency} days
+                                </p>
+                                <p>{task.duration} minutes</p>
                             </div>
                         </div>
-                        <p className="task-subtext">{task.description}</p>
-                        <div className="task-footer">
-                            <p>
-                                {task.dueDate}
-                                <FrequencyIcon /> {task.frequency} days
-                            </p>
-                            <p>{task.duration} minutes</p>
-                        </div>
-                    </div>
-                ))}
+                    ))}
             </div>
             <TaskModal
                 task={selectedTask}

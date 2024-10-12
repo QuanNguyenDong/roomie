@@ -10,6 +10,9 @@ import { getUserTask } from "../services/Task/getTasks";
 function Home() {
     const [user, setUser] = useState({});
     const [tasks, setTasks] = useState([]);
+
+    let [taskFilter, setTaskFilter] = useState("all");
+
     let navigate = useNavigate();
 
     useEffect(() => {
@@ -47,6 +50,19 @@ function Home() {
         return dueDate.toDateString();
     };
 
+    const filteredTasks = tasks.filter((task) => {
+        const today = new Date();
+        const taskDueDate = new Date(task.dueDate);
+
+        if (taskFilter === "upcoming") {
+            return taskDueDate > today && !task.completed;
+        } else if (taskFilter === "completed") {
+            return today > taskDueDate;
+        } else {
+            return true;
+        }
+    });
+
     return (
         <div className="max-w-[520px] mx-auto h-full text-black font-poppins">
             <div className="flex justify-between h-10 mb-6 mx-8">
@@ -55,22 +71,42 @@ function Home() {
                 </text>
             </div>
             <div className="flex justify-between h-10 mb-6 mx-8">
-                <button className="bg-white text-xs w-28 rounded-3xl">
+                <button
+                    className={`${taskFilter === "all" ? "bg-white" : "bg-secGrey"
+                        } text-black text-xs w-28 rounded-3xl`}
+                    onClick={() => setTaskFilter("all")}>
                     My Tasks
                 </button>
-                <button className="bg-secGrey text-xs w-28 rounded-3xl">
+                <button
+                    className={`${taskFilter === "upcoming" ? "bg-white" : "bg-secGrey"
+                        } text-black text-xs w-28 rounded-3xl`}
+                    onClick={() => setTaskFilter("upcoming")}>
                     Upcoming
                 </button>
-                <button className="bg-secGrey text-xs w-28 rounded-3xl">
+                <button
+                    className={`${taskFilter === "completed" ? "bg-white" : "bg-secGrey "
+                        } text-black text-xs w-28 rounded-3xl`}
+                    onClick={() => setTaskFilter("completed")}>
                     Completed
                 </button>
             </div>
             <div className="flex flex-nowrap overflow-x-auto w-100vw h-56 mb-8">
-                <div className="flex flex-nowrap space-x-6 ml-8">
-                    {tasks.map((task, index) => (
-                        <Tile key={index} task={task} />
-                    ))}
-                </div>
+                {filteredTasks.length == 0 ? (
+                    <div className="bg-secGrey text-center text-xl w-full py-24 mx-8 rounded-3xl">
+                        <span>You don't have any tasks</span>
+                    </div>
+                ) : (
+                    <div className="flex flex-nowrap space-x-6 ml-8">
+                        {filteredTasks
+                            .sort(
+                                (a, b) =>
+                                    new Date(a.dueDate) - new Date(b.dueDate)
+                            ) // Sort by dueDate
+                            .map((task, index) => (
+                                <Tile key={index} task={task} />
+                            ))}
+                    </div>
+                )}
             </div>
             <div className="mx-8">
                 <text className="text-xl font-semibold">Events this week</text>
