@@ -25,7 +25,7 @@ export default function Signup() {
                 { withCredentials: true }
             );
             localStorage.setItem("user", JSON.stringify(res.data));
-            nnavigate("/prompts", { replace: true });
+            navigate("/prompts", { replace: true });
         } catch (error) {
             var errors = error.response.data.errors;
             if (!errors) return;
