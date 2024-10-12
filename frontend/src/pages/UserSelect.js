@@ -31,7 +31,7 @@ export default function SignIn() {
             );
             localStorage.setItem("user", JSON.stringify(response.data));
             // Change: Navigate to the Prompts page after sign-in
-            navigate("/prompts", { replace: true });
+            navigate("/home", { replace: true });
         } catch (error) {
             alert("Invalid username or password");
         }
