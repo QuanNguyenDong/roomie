@@ -1,13 +1,13 @@
 import React, {useEffect, useState } from "react";
 import "../styling/Review.css";
-import CloseIcon from '../svgs/Review/CloseIcon.js'; 
+import CloseIcon from "../svgs/TaskManagement/CloseIcon.js";
 import Tile from '../components/Review/Tile';
 import { useNavigate } from 'react-router-dom';
 import getReviews from "../services/Review/getReviews.js";
 
 const Reviews = () => {
   const [reviewData, setReviewData] = useState([]); // Store fetched tasks
-
+  const [username, setUsername] = useState("Angus");
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -67,18 +67,26 @@ const Reviews = () => {
     navigate('/profile'); 
   }
 
+  const userInitial = username.charAt(0).toUpperCase();
+
   return (
     <>
     <div className="max-w-[500px] h-full mx-auto p-8">
       <div className="flex justify-between items-center m-2">
-        <div>
-          <h3 className="text-3xl font-bold">Your Reviews</h3>
-          <p className="text-gray-600">Let's see how you did...</p>
-        </div>
+      <div className="flex items-center">
+            {/* Display the initial in a styled div */}
+            <div
+              className="flex items-center justify-center bg-[#7D8D9C]
+              text-white font-regular rounded-full w-14 h-14 border-gray-300 shadow-md"
+              style={{ fontSize: '24px' }}
+            >
+              {userInitial}
+            </div>
+            <h3 className="text-2xl font-bold ml-4">Your Weekly Reviews</h3>
+          </div>
           
         <button
           onClick={handleClose}
-          className="pb-6"
         >
         <CloseIcon />
         </button>
@@ -86,7 +94,7 @@ const Reviews = () => {
       
       <div className="flex flex-wrap w-full">
         {/* The stars and tasksCompleted tiles */}
-        <div className="flex w-full justify-between">
+        <div className="flex w-full justify-between rounded-full">
           <Tile
             type="stars"
             title="Total Stars"
