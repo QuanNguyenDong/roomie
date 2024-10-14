@@ -216,11 +216,11 @@ function Calendar() {
         const hasEvents = filteredEvents.some(event => isSameDay(parseISO(event.startDate), day));
 
         if (hasTasks && hasEvents) {
-            return 'bg-gradient-to-r from-sky-500 to-purple-500 h-1 w-full';
+            return 'bg-gradient-to-r from-sky-500 to-purple-500 h-1 w-[32px]';
         } else if (hasTasks) {
-            return 'bg-sky-500 h-1 w-full';
+            return 'bg-sky-500 h-1 w-[32px]';
         } else if (hasEvents) {
-            return 'bg-purple-500 h-1 w-full';
+            return 'bg-purple-500 h-1 w-[32px]';
         }
         return 'h-1 w-full';
     };
@@ -240,7 +240,7 @@ function Calendar() {
                         <button
                             key={user}
                             onClick={() => filterByUser(user)}
-                            className="w-20 h-6 rounded-3xl text-white text-sm font-bold"
+                            className="flex items-center rounded-full bg-teal-400/10 px-6 py-1 text-xs font-medium leading-5 text-selected"
                             style={{ backgroundColor: selectedUser === user ? bgColor : '#cdcdcd' }}
                         >
                             {capitalizeFirstLetter(user)}
@@ -329,7 +329,7 @@ function Calendar() {
                                     </div>
                                 </button>
 
-                                <div className={`${getUnderline(day)} absolute w-[30px] bottom-0 left-[25%]`} />
+                                <div className={`${getUnderline(day)} absolute w-[32px] bottom-0 left-[15px]`} />
 
                             </div>
                         ))}
@@ -350,8 +350,6 @@ function Calendar() {
                             animate={{ y: "0%", height: modalState.expanded ? "56%" : "33%" }}
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                            // onMouseEnter={() => setModalState({ ...modalState, expanded: true })}
-                            // onMouseLeave={() => setModalState({ ...modalState, expanded: false })}
                             onClick={toggleExpandModal}
                         >
                             <div
