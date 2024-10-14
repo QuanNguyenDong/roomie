@@ -123,7 +123,7 @@ const ReviewModal = () => {
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="bg-white w-full h-full max-w-lg rounded-lg relative flex flex-col">
                         {/* Upper White Section */}
-                        <div className="h-1/3 py-12 px-7">
+                        <div className="h-1/3 px-7">
                             {/* Header */}
                             <div className="flex justify-between items-center m-2 mb-4">
                                 <div>
