@@ -12,7 +12,7 @@ import DurationIcon from "../svgs/TaskManagement/DurationIcon";
 const CreateTask = () => {
 
   return (
-    <div class="absolute top-0 w-full h-100vh bg-[#f6f6f6]">
+    <div class="absolute z-20 top-0 w-full h-100vh bg-[#f6f6f6]">
       <div className="header bg-gradient-to-b from-[#7D8D9C] to-[#F6F6F6]">
         <div className="task-avatar2">
           <PeopleIcon />

@@ -134,7 +134,7 @@ function Home() {
             </div>
             <div className="mx-8">
                 <text className="text-xl font-semibold">Events this week</text>
-                <div className="flex flex-col space-y-4 mt-4">
+                <div className="flex flex-col space-y-4 my-4">
                     {events.length === 0 ? (
                         <div className="bg-secGrey text-center text-xl w-full py-24 rounded-3xl">
                             <span>You don't have any events this week</span>

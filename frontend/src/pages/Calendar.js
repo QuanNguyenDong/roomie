@@ -278,19 +278,21 @@ function Calendar() {
                         </div>
                     </div>
 
-                    <div className="relative grid grid-cols-7 mt-10 text-xs font-semibold leading-6 text-center text-black z-2"
-                        style={{ zIndex: 1 }}>
+                    <div className="relative grid grid-cols-7 mt-10 text-xs font-semibold leading-6 text-center text-black">
                         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((dayName, idx) => (
                             <div
                                 key={idx}
                                 className={classNames(
-                                    modalState.open && modalState.expanded && getDay(selectedDay) === idx ? 'text-white' : 'text-black'
+                                    modalState.open && modalState.expanded && getDay(selectedDay) === idx
+                                        ? 'text-white z-10 relative'
+                                        : 'text-black z-0'
                                 )}
                             >
                                 {dayName}
                             </div>
                         ))}
                     </div>
+
                     <div className="grid grid-cols-7 mt-2 text-sm">
                         {days.map((day, dayIdx) => (
                             <div
