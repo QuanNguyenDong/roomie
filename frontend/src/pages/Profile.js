@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import LogoGrey from "../svgs/Review/LogoGrey.js"; // Ensure this is the correct path for your logo
 
 function Profile() {
     const navigate = useNavigate();
@@ -47,9 +48,9 @@ function Profile() {
     }, []);
 
     return (
-        <div className="px-7 text-black font-lexend">
-            <div className="flex flex-col items-center justify-center">
-                <span className="inline-flex items-center justify-center size-[99px] rounded-full bg-darkGrey text-lg font-semibold text-white leading-none">
+        <div className="text-black font-lexend">
+            <div className="flex flex-col items-center justify-center bg-gradient-to-b from-[#7D8D9C] to-[#F6F6F6]">
+                <span className="inline-flex items-center justify-center size-[99px] rounded-full bg-darkGrey text-lg font-semibold text-white leading-none shadow-inner shadow-[inset_0_-4px_6px_rgba(0,0,0,0.2)]">
                     <span className="text-3xl">
                         {user.fullname
                             ?.split(" ")
@@ -60,33 +61,40 @@ function Profile() {
                 <p className="mt-4 mb-1 text-3xl font-bold">
                     {user.fullname}
                 </p>
-                <h4>{user.email ?? "abc@gmail.com"}</h4>
-                <button className="my-6 bg-white text-xs text-darkGrey w-28 h-10 rounded-3xl drop-shadow-lg" onClick={() => navigate('/reviews')}>
-                    Your Reviews
-                </button>
-                <button className="mb-3 bg-white text-xs text-darkGrey w-28 h-10 rounded-3xl drop-shadow-lg" onClick={() => navigate('/reviewModal')}>
-                    Submit Reviews
-                </button>
+                <h4>{user.email ?? "youremail@gmail.com"}</h4>
+                
+                {/* Button Container */}
+                <div className="flex space-x-4 mt-6"> {/* Flex container with horizontal spacing */}
+                    <button className="bg-white text-xs text-darkGrey w-28 h-10 rounded-3xl drop-shadow-lg transform transition-transform duration-200 hover:scale-105" onClick={() => navigate('/reviews')}>
+                        Your Reviews
+                    </button>
+                    <button className="bg-white text-xs text-darkGrey w-28 h-10 rounded-3xl drop-shadow-lg transform transition-transform duration-200 hover:scale-105" onClick={() => navigate('/reviewModal')}>
+                        Submit Reviews
+                    </button>
+                </div>
             </div>
-            <div className="my-6">
-                <p className="font-bold mb-2">A little bit about myself...</p>
-                <p>{user.desc}</p>
+            <div className="my-6 mt-10 px-7">
+                <p className="font-bold text-[16px] mb-2">A little bit about myself...</p>
+                <p className="text-[14px]">{user.desc}</p>
             </div>
-            <div>
-                <p className="font-bold">Func facts about me</p>
+            <div className="px-7">
+                <p className="font-bold">Fun facts about me...</p>
                 {Array.from(user.answers ?? {}).map((answer, i) => (
-                    <div key={i} className="p-6 my-6 bg-white border border-gray-200 rounded-lg shadow">
-                        <p className="font-bold">{answer.question}</p>
-                        <p>{answer.answer}</p>
+                    <div key={i} className="relative p-6 my-6 border border-dashed border-gray-300 rounded-[20px]">
+                        <p className="font-regular text-[14px] text-center z-10 relative">{answer.question}</p>
+                        <p className="font-light text-[12px] z-10 relative">{answer.answer}</p>
+                        <div className="absolute bottom-2 right-2 opacity-60 z-0">
+                            <LogoGrey />
+                        </div>
                     </div>
                 ))}
             </div>
             
             <div className="m-6 text-center">
                 <button
-                    className="bg-white text-red-600 text-xs w-28 h-10 rounded-3xl drop-shadow-lg"
+                    className="bg-[#C40808] text-white text-[14px] w-28 h-10 rounded-3xl"
                     onClick={() => signout()}>
-                    Log out
+                    Sign Out
                 </button>    
             </div>
         </div>
