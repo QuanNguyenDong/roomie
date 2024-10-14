@@ -11,10 +11,10 @@ import createReviews from "../services/Review/createReviews.js";
 
 const ReviewModal = () => {
     const [modalState, setModalState] = useState({ open: true });
-    const [currentUserIndex, setCurrentUserIndex] = useState(0);
+    const [reviewUserIndex, setCurrentUserIndex] = useState(0);
     const [reviews, setReviews] = useState([]);
     const navigate = useNavigate();
-    const [user, setUser] = useState({});    
+    const [loggedInUser, setLoggedInUser] = useState({});    
     const [users, setUsers] = useState([]);
     const [activeTasks, setActiveTasks] = useState([]);
     const [tasks, setTasks] = useState([]);
@@ -27,7 +27,7 @@ const ReviewModal = () => {
             });
             const userData = response.data;
             localStorage.setItem("user", JSON.stringify(userData));
-            setUser(userData);
+            setLoggedInUser(userData);
         } catch (error) {
             console.error(error);
         }
@@ -38,16 +38,16 @@ const ReviewModal = () => {
         if (!storedUser || !storedUser.answers) {
             fetchUserProfile();
         } else {
-            setUser(storedUser);
+            setLoggedInUser(storedUser);
         }
 
         const fetchActiveTasks = async () => {
             const fetchedActiveTasks = await getAllActiveTaskAssignment();
             setActiveTasks(fetchedActiveTasks || []);
 
-            // Extract unique users
+            // Extract unique users, excluding the logged-in user
             const uniqueUsers = (fetchedActiveTasks || []).reduce((acc, activeTask) => {
-                if (!acc.some(u => u.userId === activeTask.userId)) {
+                if (activeTask.userId !== storedUser?.userId && !acc.some(u => u.userId === activeTask.userId)) {
                     acc.push({ userId: activeTask.userId, fullname: activeTask.fullname });
                 }
                 return acc;
@@ -67,9 +67,9 @@ const ReviewModal = () => {
         fetchActiveTasks();
     }, []);
 
-    const currentUser = users[currentUserIndex];
+    const reviewUser = users[reviewUserIndex];  // Current user being reviewed
     const userTasks = activeTasks
-    .filter((assign) => assign.userId === currentUser?.userId)
+    .filter((assign) => assign.userId === reviewUser?.userId)
     .reduce((acc, assign) => {
         const task = tasks.find((task) => task?.taskId === assign.taskId);
         if (task && !acc.some((t) => t.taskId === task.taskId)) {
@@ -86,8 +86,8 @@ const ReviewModal = () => {
     };
 
     const handleNext = () => {
-        if (currentUserIndex < users.length - 1) {
-            setCurrentUserIndex(currentUserIndex + 1);
+        if (reviewUserIndex < users.length - 1) {
+            setCurrentUserIndex(reviewUserIndex + 1);
         }
     };
 
@@ -123,21 +123,21 @@ const ReviewModal = () => {
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="bg-white w-full h-full max-w-lg rounded-lg relative flex flex-col">
                         {/* Upper White Section */}
-                        <div className="h-1/3 py-12 px-7">
+                        <div className="h-1/3 pt-6 px-7">
                             {/* Header */}
                             <div className="flex justify-between items-center m-2 mb-4">
                                 <div>
-                                    <h1 className="text-4xl font-bold m-0 p-0">Review</h1>
-                                    <h2 className="text-4xl font-bold m-0 p-0">{currentUser?.fullname}</h2>
+                                    <h1 className="text-3xl font-bold m-0 p-0">Review {reviewUser?.fullname}</h1>
+                                    {/* <h2 className="text-4xl font-bold m-0 p-0">{reviewUser?.fullname}</h2> */}
                                 </div>
-                                <button onClick={handleClose} className="pb-6">
+                                <button onClick={handleClose}>
                                     <CloseIcon />
                                 </button>
                             </div>
                             <div className="flex flex-col justify-center items-center mt-6">
                                 <span className="inline-flex items-center justify-center size-[75px] rounded-full bg-darkGrey text-lg font-semibold text-white leading-none">
                                     <p className="text-3xl">
-                                        {renderUserInitials(user?.fullname)}
+                                        {renderUserInitials(reviewUser?.fullname)}
                                     </p>
                                 </span>
                                 <div className="m-1">
@@ -160,7 +160,7 @@ const ReviewModal = () => {
                                                 rows="2"
                                                 placeholder="Write your review..."
                                                 className="w-full text-sm bg-transparent mt-2 resize-none"
-                                                onChange={(e) => handleReviewChange(task.taskId, currentUser?.userId, e.target.value)}
+                                                onChange={(e) => handleReviewChange(task.taskId, reviewUser?.userId, e.target.value)}
                                             />
                                         </div>
                                     ))
@@ -171,7 +171,7 @@ const ReviewModal = () => {
 
                             {/* Navigation Buttons */}
                             <div className="flex justify-center mt-4">
-                                {currentUserIndex < users.length - 1 ? (
+                                {reviewUserIndex < users.length - 1 ? (
                                     <button
                                         onClick={handleNext}
                                         className="mt-6 bg-white text-base font-semibold w-32 h-12 rounded-3xl"
@@ -190,7 +190,7 @@ const ReviewModal = () => {
 
                             {/* Progress Bars */}
                             <Progressbar 
-                                currentUserIndex={currentUserIndex} 
+                                currentUserIndex={reviewUserIndex} 
                                 totalUsers={users.length} 
                             />
                         </div>

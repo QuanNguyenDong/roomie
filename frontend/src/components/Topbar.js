@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import "../index.css";
 
-import Hamburger from "../svgs/Topbar/Hamburger";
+import House from "../svgs/Topbar/House";
 import Notif from "../svgs/Topbar/Notif";
 import Profile from "../svgs/Topbar/Profile";
 
@@ -16,7 +16,7 @@ const Topbar = () => {
                 <div className="text-black flex flex-row justify-between">
                     <div>
                         <button onClick={() => navigate("/roomie")}>
-                            <Hamburger className="icon" fill="#111827" />
+                            <House className="icon" fill="#111827" />
                         </button>
                     </div>
 

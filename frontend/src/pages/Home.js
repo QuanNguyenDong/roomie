@@ -6,12 +6,13 @@ import Tile from "../components/Home/Tile";
 import Event from "../components/Home/Event";
 
 import { getUserTask } from "../services/Task/getTasks";
+import { getEvents } from "../services/Event/getEvents";
 
 function Home() {
     const [user, setUser] = useState({});
     const [tasks, setTasks] = useState([]);
-
-    let [taskFilter, setTaskFilter] = useState("all");
+    const [events, setEvents] = useState([]);
+    const [taskFilter, setTaskFilter] = useState("all");
 
     let navigate = useNavigate();
 
@@ -26,7 +27,10 @@ function Home() {
                     } else navigate("/");
                 })
                 .catch((error) => navigate("/"));
-        } else setUser(storedUser);
+        } else {
+            setUser(storedUser);
+            fetchEvents(storedUser.id);
+        }
 
         getUserTask()
             .then((tasks) => {
@@ -42,6 +46,26 @@ function Home() {
             })
             .catch((error) => {});
     }, [navigate]);
+
+    const fetchEvents = async (userId) => {
+        try {
+            const fetchedEvents = await getEvents();
+            const userEvents = fetchedEvents.filter(event => event.user.id === userId);
+
+            const thisWeek = new Date();
+            const startOfWeek = new Date(thisWeek.getFullYear(), thisWeek.getMonth(), thisWeek.getDate() - thisWeek.getDay());
+            const endOfWeek = new Date(thisWeek.getFullYear(), thisWeek.getMonth(), thisWeek.getDate() + (7 - thisWeek.getDay()));
+
+            const currentWeekEvents = userEvents.filter(event => {
+                const eventStart = new Date(event.startDate);
+                return eventStart >= startOfWeek && eventStart <= endOfWeek;
+            });
+
+            setEvents(currentWeekEvents);
+        } catch (error) {
+            console.error("Failed to fetch events:", error);
+        }
+    };
 
     const calculateDueDate = (startDate, frequency) => {
         const start = new Date(startDate);
@@ -101,7 +125,7 @@ function Home() {
                             .sort(
                                 (a, b) =>
                                     new Date(a.dueDate) - new Date(b.dueDate)
-                            ) // Sort by dueDate
+                            )
                             .map((task, index) => (
                                 <Tile key={index} task={task} />
                             ))}
@@ -110,10 +134,16 @@ function Home() {
             </div>
             <div className="mx-8">
                 <text className="text-xl font-semibold">Events this week</text>
-                <div className="flex flex-col space-y-4 mt-4">
-                    <Event />
-                    <Event />
-                    <Event />
+                <div className="flex flex-col space-y-4 my-4">
+                    {events.length === 0 ? (
+                        <div className="bg-secGrey text-center text-xl w-full py-24 rounded-3xl">
+                            <span>You don't have any events this week</span>
+                        </div>
+                    ) : (
+                        events.map((event, index) => (
+                            <Event key={index} event={event} username={event.user.username} eventname={event.eventname} startDate={event.startDate} endDate={event.endDate} />
+                        ))
+                    )}
                 </div>
             </div>
         </div>

@@ -8,6 +8,8 @@ const authRouter = require("./routes/auth");
 const currentUserRouter = require("./routes/profile");
 const homeRouter = require("./routes/home");
 const taskRouter = require("./routes/task-management");
+const questionRouter = require("./routes/question");
+const eventRouter = require("./routes/event");
 const reviewRouter = require("./routes/review");
 
 if (!process.env.MONGO_URI) throw Error("MONGO_URI must be defined");
@@ -46,6 +48,8 @@ app.use(authRouter);
 app.use(currentUserRouter);
 app.use(homeRouter);
 app.use(taskRouter);
+app.use(questionRouter);
+app.use(eventRouter);
 app.use(reviewRouter);
 
 app.use("/api", (req, res) => {
