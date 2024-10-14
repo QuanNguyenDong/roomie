@@ -349,7 +349,7 @@ function Calendar() {
                         <motion.div
                             className="max-w-[520px] mx-auto fixed bottom-0 left-0 right-0 rounded-t-[2.5rem] bg-black text-white font-poppins"
                             initial={{ y: "100%" }}
-                            animate={{ y: "0%", height: modalState.expanded ? "56%" : "33%" }}
+                            animate={{ y: "0%", height: modalState.expanded ? "55%" : "33%" }}
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                             onClick={toggleExpandModal}

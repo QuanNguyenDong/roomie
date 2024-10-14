@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 import getHome from "../services/Home/getHome";
@@ -69,16 +70,16 @@ function JoinOrCreate() {
                     <div class="flex flex-col items-center my-10">
                         <button
                             onClick={handleJoin}
-                            className="h-10 w-[180px] bg-black text-s text-white w-28 rounded-3xl shadow"
+                            className="w-28 h-10 bg-black text-s text-white rounded-3xl shadow"
                         >
                             Join
                         </button>
                         <text className="my-4">OR</text>
                         <button
                             onClick={handleCreate}
-                            className="h-10 w-[180px] bg-black text-s text-white w-28 rounded-3xl shadow"
+                            className="w-28 h-10 bg-black text-s text-white rounded-3xl shadow"
                         >
-                            Create a HOUSE
+                            Create
                         </button>
                     </div>
                 </form>
@@ -92,6 +93,8 @@ function Roomie() {
     const [users, setUsers] = useState(null);
     const [answers, setAnswer] = useState([]);
     const [isExpanded, setIsExpanded] = useState(true);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         getHome()
@@ -108,6 +111,10 @@ function Roomie() {
             await leaveHome();
             window.location.reload();
         } catch (err) { }
+    };
+
+    const handleUserClick = (user) => {
+        navigate('/icebreakers', { state: { user } });
     };
 
     const toggleExpand = () => {
@@ -142,15 +149,15 @@ function Roomie() {
                         Leave
                     </button>
                     <button onClick={toggleExpand}>
-                            <ChevronDownIcon
-                                className={`transform transition-transform ${isExpanded ? "rotate-180" : ""}`}
-                                width="24" />
+                        <ChevronDownIcon
+                            className={`transform transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                            width="24" />
                     </button>
                 </div>
             </div>
 
             <motion.div
-                initial={{ height: 0 }}
+                initial={{ height: "auto" }}
                 animate={{ height: isExpanded ? "auto" : 0 }}
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
@@ -160,7 +167,9 @@ function Roomie() {
                         const bgColor = labelColours[idx % labelColours.length];
                         return (
                             <div key={idx}>
-                                <button className="text-left flex flex-row">
+                                <button
+                                    className="text-left flex flex-row"
+                                    onClick={() => handleUserClick(user)}>
                                     <div className="flex flex-row justify-between">
                                         <div className="flex flex-row">
                                             <div
@@ -179,44 +188,6 @@ function Roomie() {
                     })}
                 </div>
             </motion.div>
-
-            {/* <div className="my-8">
-                <div class="flex justify-between h-10 mb-6">
-                    <text className="text-4xl font-bold font-lexend">
-                        Ice-breaker Questions
-                    </text>
-                </div>
-
-                {answers.map((answer, index) => {
-                    return (
-                        <div
-                            key={index}
-                            className="py-4 px-6 my-6 bg-white border border-gray-200 rounded-lg shadow"
-                        >
-                            <p className="font-bold">{answer.question}</p>
-                            <p>{answer.answer}</p>
-                            <div class="flex items-center mt-4">
-                                <span className="mr-1 inline-flex items-center justify-center size-[25px] rounded-full bg-darkGrey leading-none">
-                                    <text className="text-sm font-semibold text-white">
-                                        {answer.fullname.substr(0, 1)}
-                                    </text>
-                                </span>
-                                <div class="mx-1 text-sm">
-                                    <text class="text-gray-900 leading-none">
-                                        {answer.fullname}
-                                    </text>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div> */}
-            {/* <button
-                onClick={handleLeave}
-                className="h-10 my-5 block ml-auto bg-black text-s text-white w-28 rounded-3xl shadow"
-            >
-                Leave
-            </button> */}
         </div>
     );
 }

@@ -10,7 +10,8 @@ import Home from "./pages/Home";
 import TaskManager from "./pages/TaskManager";
 import Profile from "./pages/Profile";
 import Roomie from "./pages/Roomie";
-import Prompts from "./pages/prompts";  // Import the Prompts component
+import RoomieProfile from "./pages/RoomieProfile";
+import Prompts from "./pages/prompts"; 
 import DefaultLayout from "./layouts/DefaultLayout";
 import TopbarOnly from "./layouts/TopbarOnly";
 import Reviews from "./pages/Reviews";
@@ -76,9 +77,17 @@ function AppRoutes() {
                 <Route
                     path="/roomie"
                     element={
-                        <TopbarOnly>
+                        <DefaultLayout>
                             <Roomie />
-                        </TopbarOnly>
+                        </DefaultLayout>
+                    }
+                />
+                <Route
+                    path="/icebreakers"
+                    element={
+                        <DefaultLayout>
+                            <RoomieProfile />
+                        </DefaultLayout>
                     }
                 />
                 {/* Add the Prompts route */}
