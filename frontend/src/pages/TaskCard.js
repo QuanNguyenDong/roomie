@@ -41,20 +41,20 @@ function TaskModal({ task, isOpen, onClose }) {
             <div className="modal-content" onClick={(e) => e.stopPropagation()}> 
                 <div className="header" style={{ background: getHeaderGradient(task.priority) }}> 
                     <div className='task-avatar2'>{task.fullname.charAt(0).toUpperCase()}</div>
-                    <button className="close-button" onClick={onClose}><CloseIcon /></button>
-                    <text className='text-3xl font-bold p-2'>{task.taskname}</text>
+                    <button className="close-button" onClick={onClose} aria-label="close"><CloseIcon /></button>
+                    <p className='text-3xl font-bold p-2'>{task.taskname}</p>
                     <div className={`priority-tag ${getPriorityClass(task.priority)}`}>
                         <p style={{marginTop:"8px"}}>{task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}</p>
                     </div>
                 </div>
 
-                <text class="text-3xl font-lato ml-10 mb-4 mt-0 font-light">Description</text>
+                <p className="text-3xl font-lato ml-10 mb-4 mt-0 font-light">Description</p>
                 <div className='description'>
-                    <p class="font-sans font-extralight text-sm">{task.description}</p>
+                    <p className="font-sans font-extralight text-sm">{task.description}</p>
                 </div>
                 <div className='content'>
                     <div className='deadline-box'>
-                    <p>
+                        <p>
                             <span className="icon-text-container">
                                 <span className="icon-text-label font-lato font-bold">
                                     <DeadlineIcon /> 
@@ -70,57 +70,39 @@ function TaskModal({ task, isOpen, onClose }) {
                         <p>
                             <span className="icon-text-container">
                                 <span className="icon-text-label font-lato font-bold">
-                                <PuzzleIcon /> 
+                                    <PuzzleIcon /> 
                                     Redistribution:
                                 </span>
-                                {/* <span className="icon-text-date">
-                                    {task.dueDate}
-                                </span> */}
                             </span>
                         </p>
-                       
                     </div>
                     <div className='frequency-box'>
-
-                    <p>
+                        <p>
                             <span className="icon-text-container">
                                 <span className="icon-text-label">
-                                <PriorityIcon /> 
-                                Priority: {task.priority}
+                                    <PriorityIcon /> 
+                                    Priority: {task.priority}
                                 </span>
-                                {/* <span className="icon-text-date">
-                                    {task.dueDate}
-                                </span> */}
                             </span>
                         </p>
                         <p>
                             <span className="icon-text-container">
                                 <span className="icon-text-label">
-                                <TaskFrequencyIcon /> 
-                                Frequency: {task.frequency} days
+                                    <TaskFrequencyIcon /> 
+                                    Frequency: {task.frequency} days
                                 </span>
-                                {/* <span className="icon-text-date">
-                                    {task.dueDate}
-                                </span> */}
                             </span>
                         </p>
-                        
                         <p>
                             <span className="icon-text-container">
                                 <span className="icon-text-label">
-                                <DurationIcon /> 
-                                Time Required: {task.duration} minutes
+                                    <DurationIcon /> 
+                                    Time Required: {task.duration} minutes
                                 </span>
-                                {/* <span className="icon-text-date">
-                                    {task.dueDate}
-                                </span> */}
                             </span>
                         </p>
-            
                     </div>
-
                 </div>
-
             </div>
         </div>
     );

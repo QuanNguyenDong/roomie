@@ -23,7 +23,8 @@ describe('TaskModal Component', () => {
     expect(screen.getByText('High')).toBeInTheDocument();
     expect(screen.getByText('2024-12-31')).toBeInTheDocument();
     expect(screen.getByText(/45\s*minutes/i)).toBeInTheDocument();
-});
+    expect(screen.getByText(/3\s*days/i)).toBeInTheDocument();
+  });
 
   test('does not render TaskModal when isOpen is false', () => {
     const { queryByText } = render(<TaskModal task={task} isOpen={false} onClose={() => {}} />);
@@ -34,12 +35,40 @@ describe('TaskModal Component', () => {
 
   test('calls onClose when clicking outside the modal', () => {
     const onCloseMock = jest.fn();
-    const { getByRole } = render(<TaskModal task={task} isOpen={true} onClose={onCloseMock} />);
     
-    fireEvent.click(screen.getByRole('dialog')); // or
-    fireEvent.click(screen.getByTestId('modal-overlay'));
-        
+    // Render the modal with `isOpen` set to true
+    render(<TaskModal task={task} isOpen={true} onClose={onCloseMock} />);
+    
+    // Click on the modal overlay (outside the modal content)
+    fireEvent.click(screen.getByText('Test Task').closest('.modal-overlay'));
+    
     // Check if onClose was called
-    expect(onCloseMock).toHaveBeenCalled();
+    expect(onCloseMock).toHaveBeenCalledTimes(1);
+  });
+
+  test('does not call onClose when clicking inside the modal', () => {
+    const onCloseMock = jest.fn();
+    
+    // Render the modal with `isOpen` set to true
+    render(<TaskModal task={task} isOpen={true} onClose={onCloseMock} />);
+    
+    // Click inside the modal content
+    fireEvent.click(screen.getByText('Test Task'));
+    
+    // Ensure onClose was not called
+    expect(onCloseMock).not.toHaveBeenCalled();
+  });
+
+  test('calls onClose when clicking the close button', () => {
+    const onCloseMock = jest.fn();
+    
+    // Render the modal with `isOpen` set to true
+    render(<TaskModal task={task} isOpen={true} onClose={onCloseMock} />);
+    
+    // Click the close button
+    fireEvent.click(screen.getByRole('button', { name: /close/i }));
+    
+    // Check if onClose was called
+    expect(onCloseMock).toHaveBeenCalledTimes(1);
   });
 });
