@@ -1,10 +1,21 @@
-import React from "react";
+import React, {useEffect, useState } from "react";
 import "../styling/Review.css";
-import CloseIcon from '../svgs/Review/CloseIcon.js'; 
+import CloseIcon from "../svgs/TaskManagement/CloseIcon.js";
 import Tile from '../components/Review/Tile';
 import { useNavigate } from 'react-router-dom';
+import getReviews from "../services/Review/getReviews.js";
 
 const Reviews = () => {
+  const [reviewData, setReviewData] = useState([]); // Store fetched tasks
+  const [username, setUsername] = useState("Angus");
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      const fetchedReviews = await getReviews(); // Fetch reviews asynchronously
+      setReviewData(fetchedReviews || []); // Set reviews or empty array if none
+    };
+    fetchReviews();
+  }, []);
     //this data needs to be calculated from other tables
   const additionalData = {
     stars: 100,
@@ -12,6 +23,7 @@ const Reviews = () => {
   };  
 
 //need a reivew data table
+/*
   const reviewData = [
     {
       title: 'Clean Backyard',
@@ -47,6 +59,7 @@ const Reviews = () => {
        reviews: [],
     },
   ];
+  */
 
   const navigate = useNavigate();
 
@@ -54,25 +67,34 @@ const Reviews = () => {
     navigate('/profile'); 
   }
 
+  const userInitial = username.charAt(0).toUpperCase();
+
   return (
     <>
     <div className="max-w-[500px] h-full mx-auto p-8">
       <div className="flex justify-between items-center m-2">
-        <div>
-          <h3 className="text-3xl font-bold">Your Reviews</h3>
-          <p className="text-gray-600">Let's see how you did...</p>
-        </div>
+      <div className="flex items-center">
+            {/* Display the initial in a styled div */}
+            <div
+              className="flex items-center justify-center bg-[#7D8D9C]
+              text-white font-regular rounded-full w-14 h-14 border-gray-300 shadow-md"
+              style={{ fontSize: '24px' }}
+            >
+              {userInitial}
+            </div>
+            <h3 className="text-2xl font-bold ml-4">Your Weekly Reviews</h3>
+          </div>
           
-        <button data-testid="close-button" 
-        onClick={handleClose} 
-        className="pb-6">
+        <button
+          onClick={handleClose}
+        >
         <CloseIcon />
         </button>
       </div>
       
       <div className="flex flex-wrap w-full">
         {/* The stars and tasksCompleted tiles */}
-        <div className="flex w-full justify-between">
+        <div className="flex w-full justify-between rounded-full">
           <Tile
             type="stars"
             title="Total Stars"

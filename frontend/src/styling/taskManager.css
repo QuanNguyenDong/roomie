@@ -177,13 +177,13 @@ h2 {
 }
 
 .task-card.High {
-  background-color: #A2BACC; /* Muted blue tone */
+  background-color: #C49191;
 }
 
 .task-card.Medium {
-  background-color: #C3B8BD; /* Muted red pink tone */
+  background-color: #D8AF8A;
 }
 
 .task-card.Low {
-  background-color: #A8B9A4; /* Muted beige tone */
+  background-color: #9DB492;
 }/*# sourceMappingURL=taskManager.css.map */

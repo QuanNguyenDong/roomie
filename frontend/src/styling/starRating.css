@@ -1,0 +1,14 @@
+.starsContainer {
+    display: flex;
+  }
+  
+  .star {
+    cursor: pointer;
+    transition: all 0.1s linear;
+  }
+  
+@media (hover: hover) {
+  .star:hover {
+    transform: scale(1.1);
+  }
+}

@@ -14,6 +14,7 @@ module.exports = {
       fontFamily: {
         lexend: ['Lexend', 'sans-serif'],
         poppins: ['Poppins', 'sans-serif'],
+        lato: ['Lato', 'sans-serif'],
       },
       colors: {
         secGrey: '#E3E3E3',
@@ -22,8 +23,26 @@ module.exports = {
       },
       borderRadius : {
         'reviews': '22px',
-      }
+        'submission': '50px',
+      },
+      fontSize: {
+        'xxs': '0.9rem',
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        '.scrollbar-hide': {
+          /* Hide scrollbar for Chrome, Safari and Opera */
+          '-webkit-overflow-scrolling': 'touch', // smooth scrolling for iOS
+          '-ms-overflow-style': 'none', /* IE and Edge */
+          'scrollbar-width': 'none', /* Firefox */
+        },
+        '.scrollbar-hide::-webkit-scrollbar': {
+          display: 'none', /* Chrome, Safari and Opera */
+        },
+      });
+    },
+  ],
 }

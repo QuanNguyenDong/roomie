@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -19,19 +20,17 @@ import {
 } from 'date-fns';
 
 import { getAllActiveTaskAssignment } from "../services/Task/getActiveTaskAssignment.js";
+import { getEvents } from "../services/Event/getEvents.js";
+import { initGoogleApiClient, syncCalendarEvents } from '../services/Event/syncCalendar.js';
 
-// const events = [
-//     { id: 1, name: 'Leslie Alexander', imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2024-09-11T13:00', endDatetime: '2024-09-11T14:30' },
-//     { id: 2, name: 'Michael Foster', imageUrl: 'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2024-09-11T13:00', endDatetime: '2024-09-11T14:30' },
-//     { id: 3, name: 'Dries Vincent', imageUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2024-09-11T13:00', endDatetime: '2024-09-11T14:30' },
-//     { id: 45, name: 'Michael Foster', imageUrl: 'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2024-09-11T13:00', endDatetime: '2024-09-11T14:30' },
-//     { id: 5, name: 'John Doe', imageUrl: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2022-05-22T12:00', endDatetime: '2022-05-22T13:30' },
-//     { id: 6, name: 'Jane Smith', imageUrl: 'https://images.unsplash.com/photo-1530577197743-7adf14294584?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2022-05-25T10:00', endDatetime: '2022-05-25T11:30' },
-//     { id: 7, name: 'Samuel Green', imageUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2022-05-30T15:00', endDatetime: '2022-05-30T16:30' },
-//     { id: 8, name: 'Nina Brown', imageUrl: 'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80', startDatetime: '2022-06-02T09:00', endDatetime: '2022-06-02T10:30' },
-// ];
-  
+import SyncIcon from "../svgs/Calendar/Sync.js";
+
 let colClasses = ['', 'col-start-2', 'col-start-3', 'col-start-4', 'col-start-5', 'col-start-6', 'col-start-7'];
+
+const labelColours = [
+    "#3176A8", "#42A079", "#7742A0", "#A04842", "#A07542",
+    "#DA70D6", "#8A2BE2", "#20B2AA", "#FF6347", "#4682B4"
+];
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -47,26 +46,114 @@ const getDaySuffix = (day) => {
     }
 };
 
+const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 function Calendar() {
     const [tasks, setTasks] = useState([]);
+    const [filteredTasks, setFilteredTasks] = useState([]);
+    const [events, setEvents] = useState([]);
+    const [filteredEvents, setFilteredEvents] = useState([]);
+    const [selectedUser, setSelectedUser] = useState('All');
+    const [users, setUsers] = useState([]);
+    const [selectedDay, setSelectedDay] = useState(startOfToday());
+    const [currentMonth, setCurrentMonth] = useState(format(startOfToday(), 'MMM-yyyy'));
+    const [modalState, setModalState] = useState({ open: false, expanded: false });
 
     useEffect(() => {
-        getAllActiveTaskAssignment().then((fetchedTasks) => {
-            if (fetchedTasks) {
-                fetchedTasks = fetchedTasks.map((task) => {
-                    var endDate = new Date(task.startDate);
-                    endDate.setTime(endDate.getTime() + task.duration * 60 * 1000);
-                    task["endDate"] = endDate.toISOString();
-                    return task;
-                });
+        const initializeGoogleApi = async () => {
+            try {
+                await initGoogleApiClient();
+            } catch (error) {
+                console.error("Failed to initialize Google API client", error);
             }
-            setTasks(fetchedTasks || []);
-        });
+        };
+        initializeGoogleApi();
     }, []);
 
-    let [selectedDay, setSelectedDay] = useState(startOfToday());
-    let [currentMonth, setCurrentMonth] = useState(format(startOfToday(), 'MMM-yyyy'));
-    let [modalState, setModalState] = useState({ open: false, expanded: false });
+    const fetchAndSetData = useCallback(async () => {
+        try {
+            const fetchedTasks = await getAllActiveTaskAssignment();
+            const fetchedEvents = await getEvents();
+
+            const formattedTasks = fetchedTasks.map(task => {
+                task.dueDate = calculateDueDate(task.startDate, task.frequency);
+                task.endDate = new Date(new Date(task.startDate).getTime() + task.duration * 60 * 1000).toISOString();
+                return task;
+            });
+
+            const uniqueUsers = ['All', ...new Set(formattedTasks.map(task => task.username))];
+
+            setUsers(uniqueUsers);
+            setTasks(formattedTasks);
+            setFilteredTasks(formattedTasks);
+
+            const formattedEvents = fetchedEvents.map(event => ({
+                eventname: event.eventname,
+                startDate: event.startDate,
+                endDate: event.endDate,
+                user: event.user,
+            }));
+
+            setEvents(formattedEvents);
+            setFilteredEvents(formattedEvents);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchAndSetData();
+    }, [fetchAndSetData]);
+
+    const syncCalendar = async () => {
+        try {
+            await syncCalendarEvents();
+
+            const updatedEvents = await getEvents();
+
+            const formattedEvents = updatedEvents.map(event => ({
+                eventname: event.eventname,
+                startDate: event.startDate,
+                endDate: event.endDate,
+                user: event.user,
+            }));
+
+            setEvents(formattedEvents);
+            setFilteredEvents(formattedEvents);
+        } catch (error) {
+            console.error('Error syncing calendar:', error);
+        }
+    };
+
+    const filterByUser = (user) => {
+        setSelectedUser(user);
+        if (user === 'All') {
+            fetchAndSetData();
+        } else {
+            const filteredTasks = tasks.filter(task => task.username === user);
+            const filteredEvents = events.filter(event => event.user.username === user);
+            setFilteredTasks(filteredTasks);
+            setFilteredEvents(filteredEvents);
+        }
+    };
+
+    const combineAndSortItems = (tasks, events) => {
+        const combinedItems = [...tasks, ...events];
+        return combinedItems.sort((a, b) => {
+            const dateA = parseISO(a.dueDate || a.startDate);
+            const dateB = parseISO(b.dueDate || b.startDate);
+            return dateA - dateB;
+        });
+    };
+
+    const calculateDueDate = (startDate, frequency) => {
+        const start = new Date(startDate);
+        const dueDate = new Date(start);
+        dueDate.setDate(start.getDate() + frequency);
+        return dueDate.toISOString();
+    };
 
     const handleDayClick = (day) => {
         if (!modalState.open) {
@@ -81,6 +168,22 @@ function Calendar() {
         }
     };
 
+    const handleDatesChange = (direction) => {
+        if (modalState.expanded && modalState.open) {
+            const newSelectedDay = add(selectedDay, { days: direction * 7 });
+            setSelectedDay(newSelectedDay);
+
+            const newMonth = format(newSelectedDay, 'MMM-yyyy');
+            if (newMonth !== currentMonth) {
+                setCurrentMonth(newMonth);
+            }
+
+        } else {
+            const newMonth = add(firstDayCurrentMonth, { months: direction });
+            setCurrentMonth(format(newMonth, 'MMM-yyyy'));
+        }
+    };
+
     const closeModal = () => {
         setModalState({ open: false, expanded: false });
     };
@@ -92,14 +195,6 @@ function Calendar() {
         }));
     };
 
-    // const handleMouseEnter = () => {
-    //     setModalState({ open: true, expanded: true });
-    // };
-
-    // const handleMouseLeave = () => {
-    //     setModalState({ open: true, expanded: false });
-    // };
-
     let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
 
     const day = format(selectedDay, 'd');
@@ -110,32 +205,48 @@ function Calendar() {
         const endOfSelectedWeek = endOfWeek(selectedDay, { weekStartsOn: 0 });
         return eachDayOfInterval({ start: startOfSelectedWeek, end: endOfSelectedWeek });
     };
-    
+
     let days = (modalState.open && modalState.expanded) ? getSelectedWeekDays() : eachDayOfInterval({
         start: firstDayCurrentMonth,
         end: endOfMonth(firstDayCurrentMonth),
     });
 
-    const handleDatesChange = (direction) => {
-        if (modalState.expanded && modalState.open) {
-            const newSelectedDay = add(selectedDay, { days: direction * 7 });
-            setSelectedDay(newSelectedDay);
+    const getUnderline = (day) => {
+        const hasTasks = filteredTasks.some(task => isSameDay(parseISO(task.dueDate), day));
+        const hasEvents = filteredEvents.some(event => isSameDay(parseISO(event.startDate), day));
 
-            const newMonth = format(newSelectedDay, 'MMM-yyyy');
-            if (newMonth !== currentMonth) {
-                setCurrentMonth(newMonth);
-            }
-            
-        } else {
-            const newMonth = add(firstDayCurrentMonth, { months: direction });
-            setCurrentMonth(format(newMonth, 'MMM-yyyy'));
+        if (hasTasks && hasEvents) {
+            return 'bg-gradient-to-r from-sky-500 to-purple-500 h-1 w-[32px]';
+        } else if (hasTasks) {
+            return 'bg-sky-500 h-1 w-[32px]';
+        } else if (hasEvents) {
+            return 'bg-purple-500 h-1 w-[32px]';
         }
+        return 'h-1 w-full';
     };
+
 
     return (
         <div className="max-w-[520px] mx-auto h-full text-black">
             <div className="flex justify-between h-10 mb-6 mx-8">
                 <text className="text-4xl font-bold font-lexend">Calendar</text>
+            </div>
+
+            <div className="flex overflow-x-auto mx-8 space-x-2 mb-4 scrollbar-hide">
+                {users.map((user, idx) => {
+                    const bgColor = labelColours[idx % labelColours.length];
+
+                    return (
+                        <button
+                            key={user}
+                            onClick={() => filterByUser(user)}
+                            className="flex items-center rounded-full bg-teal-400/10 px-6 py-1 text-xs font-medium leading-5 text-selected"
+                            style={{ backgroundColor: selectedUser === user ? bgColor : '#cdcdcd' }}
+                        >
+                            {capitalizeFirstLetter(user)}
+                        </button>
+                    );
+                })}
             </div>
 
             <div className="pt-4">
@@ -166,26 +277,29 @@ function Calendar() {
                             </button>
                         </div>
                     </div>
-                    <div className="relative grid grid-cols-7 mt-10 text-xs font-semibold leading-6 text-center text-black z-2"
-                        style={{ zIndex: 1 }}>
+
+                    <div className="relative grid grid-cols-7 mt-10 text-xs font-semibold leading-6 text-center text-black">
                         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((dayName, idx) => (
                             <div
                                 key={idx}
                                 className={classNames(
-                                    modalState.open && modalState.expanded && getDay(selectedDay) === idx ? 'text-white' : 'text-black'
+                                    modalState.open && modalState.expanded && getDay(selectedDay) === idx
+                                        ? 'text-white z-10 relative'
+                                        : 'text-black z-0'
                                 )}
                             >
                                 {dayName}
                             </div>
                         ))}
                     </div>
+
                     <div className="grid grid-cols-7 mt-2 text-sm">
                         {days.map((day, dayIdx) => (
                             <div
                                 key={day.toString()}
                                 className={classNames(
                                     dayIdx === 0 && colClasses[getDay(day)],
-                                    'py-1.5'
+                                    'py-1.5 relative'
                                 )}
                             >
                                 <button
@@ -207,8 +321,8 @@ function Calendar() {
                                 >
                                     <div
                                         className={`flex items-center justify-center h-full w-full ${modalState.expanded && isEqual(day, selectedDay) && modalState.open
-                                                ? 'translate-y-[23%]'
-                                                : ''
+                                            ? 'translate-y-[23%]'
+                                            : ''
                                             }`}
                                     >
                                         <time dateTime={format(day, 'yyyy-MM-dd')}>
@@ -216,32 +330,31 @@ function Calendar() {
                                         </time>
                                     </div>
                                 </button>
-                                
-                                <div className="w-1 h-1 mx-auto mt-1">
-                                    {tasks.some((event) =>
-                                        isSameDay(parseISO(event.startDate), day)
-                                    ) && (
-                                            <div className="`w-1 h-1 rounded-full bg-sky-500"/>
-                                        )}
-                                </div>
+
+                                <div className={`${getUnderline(day)} absolute w-[32px] bottom-0 left-[15px]`} />
+
                             </div>
                         ))}
                     </div>
+
+                    <div className="flex justify-center mt-7">
+                        <button onClick={syncCalendar}>
+                            <SyncIcon fill="black" />
+                        </button>
+                    </div>
                 </div>
-                
+
                 <AnimatePresence>
                     {modalState.open && (
                         <motion.div
                             className="max-w-[520px] mx-auto fixed bottom-0 left-0 right-0 rounded-t-[2.5rem] bg-black text-white font-poppins"
                             initial={{ y: "100%" }}
-                            animate={{ y: "0%", height: modalState.expanded ? "60%" : "33%" }}
+                            animate={{ y: "0%", height: modalState.expanded ? "55%" : "33%" }}
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                            // onMouseEnter={() => setModalState({ ...modalState, expanded: true })}
-                            // onMouseLeave={() => setModalState({ ...modalState, expanded: false })}
                             onClick={toggleExpandModal}
                         >
-                            <div 
+                            <div
                                 className="flex justify-between items-center px-10 pt-4 cursor-pointer">
                                 <h3 className="text-md">
                                     {format(selectedDay, `eeee, `)}{dayWithSuffix} {format(selectedDay, 'MMMM')}
@@ -253,19 +366,18 @@ function Calendar() {
                             </div>
 
                             <div className="rounded-t-[2.5rem] mt-5 space-y-4 bg-white h-full pt-10 pb-44 px-10 overflow-y-auto">
-                                {tasks.filter(event => isSameDay(parseISO(event.startDate), selectedDay)).length > 0 ? (
-                                    tasks.filter(event => isSameDay(parseISO(event.startDate), selectedDay)).map(event => (
-                                        <div key={event.id} className="p-4 border-l-[8px] h-24 border-[1px] border-blue-500 bg-white shadow-md rounded-2xl">
+                                {combineAndSortItems(filteredTasks, filteredEvents).filter(item => isSameDay(parseISO(item.dueDate || item.startDate), selectedDay)).length > 0 ? (
+                                    combineAndSortItems(filteredTasks, filteredEvents).filter(item => isSameDay(parseISO(item.dueDate || item.startDate), selectedDay)).map(item => (
+                                        <div key={item.id} className={`p-4 border-l-[8px] border-[1px] h-24 ${item.eventname ? 'border-purple-500' : 'border-blue-500'} bg-white shadow-md rounded-2xl`}>
                                             <div className="flex items-center space-x-4">
-                                                {/* <img src={event.imageUrl} alt={event.name} className="w-12 h-12 rounded-full" /> */}
                                                 <div className="bg-[#7D8D9C] w-8 h-8 rounded-full mt-2 flex items-center justify-center">
                                                     <text className="text-base font-semibold">
-                                                        {event.fullname.charAt(0).toUpperCase()}
+                                                        {item.user?.fullname?.charAt(0)?.toUpperCase() || item.fullname?.charAt(0)?.toUpperCase()}
                                                     </text>
                                                 </div>
                                                 <div>
-                                                    <h4 className="text-lg font-bold text-black">{event.taskname}</h4>
-                                                    <p className="text-sm text-black">{format(parseISO(event.startDate), 'p')} - {format(parseISO(event.endDate), 'p')}</p>
+                                                    <h4 className="text-lg font-bold text-black">{item.eventname || item.taskname}</h4>
+                                                    <p className="text-sm text-black">{format(parseISO(item.dueDate || item.startDate), 'p')} - {format(parseISO(item.endDate || item.endDate), 'p')}</p>
                                                 </div>
                                             </div>
                                         </div>

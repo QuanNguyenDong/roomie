@@ -5,6 +5,7 @@ const Task = require("../models/task");
 const User = require("../models/user");
 const JoinHouse = require("../models/joinHouse");
 const AssignTask = require("../models/assignTask");
+const { allocateTask } = require("../allocate_tasks.js");
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.post("/tasks/create", currentUser, async (req, res) => {
         return;
     }
 
-    const { title, description, frequency, time, priority } = req.body;
+    const { taskname, description, frequency, duration, priority } = req.body;
 
     const joinHouse = await JoinHouse.findOne({ user: req.currentUser?.id });
     if (!joinHouse) {
@@ -24,15 +25,18 @@ router.post("/tasks/create", currentUser, async (req, res) => {
     }
 
     const task = await Task.create({
-        title,
+        taskname,
         description,
         frequency,
-        time,
+        duration,
         priority,
         house: joinHouse.house,
     });
 
     res.send({ task });
+
+    // Allocate task
+    allocateTask(task);
 });
 
 router.get("/tasks/assigned", currentUser, async (req, res) => {
@@ -141,9 +145,10 @@ router.get("/tasks/all/active", currentUser, async (req, res) => {
     var assignedTasks = await AssignTask.find({ task: { $in: taskIds } })
         .populate("task")
         .populate("user");
-    assignedTasks = assignedTasks.map((task) => task.toJSON());
+    assignedTasks = assignedTasks.map((task) => task.toJSON());    
 
     assignedTasks = assignedTasks.map(({ user, task, ...assign }) => ({
+        userId: user.userId,
         username: user.username,
         fullname: user.fullname,
         ...task,
@@ -153,25 +158,31 @@ router.get("/tasks/all/active", currentUser, async (req, res) => {
     let activeAssignment = assignedTasks.filter((assignedTask) => {
         const startDate = new Date(assignedTask.startDate);
         const endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + assignedTask.frequency); // Add task frequency to get the end date
-
+        endDate.setDate(startDate.getDate() + assignedTask.frequency); // Add task frequency to get the end date        
         return currentDate >= startDate && currentDate <= endDate;
-    });
+    });    
 
-    if (!activeAssignment) {
-        const futureTasks = assignedTasks.filter((assignedTask) => {
+    if (activeAssignment.length === 0) {
+        const futureAssignments = {};
+
+        // Iterate through the assigned tasks
+        assignedTasks.forEach((assignedTask) => {
             const startDate = new Date(assignedTask.startDate);
-            return startDate > currentDate;
+            const taskId = assignedTask.taskId.toString();
+
+            // Only consider future tasks
+            if (startDate > currentDate) {
+                // If we haven't stored an assignment for this task yet, or the current one is sooner
+                if (!futureAssignments[taskId] || startDate < new Date(futureAssignments[taskId].startDate)) {
+                    futureAssignments[taskId] = assignedTask; // Store the assignment
+                }
+            }
         });
 
-        if (futureTasks.length > 0) {
-            futureTasks.sort(
-                (a, b) => new Date(a.startDate) - new Date(b.startDate)
-            );
-            activeAssignment = futureTasks[0]; // Get the closest one
-        }
-    }
-
+        // Convert the futureAssignments object back to an array
+        activeAssignment = Object.values(futureAssignments);
+    }    
+    
     return res.status(200).send({ activeAssignment });
 });
 
