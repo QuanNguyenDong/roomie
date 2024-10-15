@@ -1,6 +1,6 @@
 // Import necessary libraries and modules
 import axios from 'axios';
-import { getUserTask, getTasks } from '../getTasks';
+import { getUserTask } from '../getTasks'; // Only import getUserTask
 
 jest.mock('axios');
 
