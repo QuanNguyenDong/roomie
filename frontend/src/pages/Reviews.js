@@ -22,45 +22,6 @@ const Reviews = () => {
     tasksCompleted: 5,
   };  
 
-//need a reivew data table
-/*
-  const reviewData = [
-    {
-      title: 'Clean Backyard',
-      reviews: [
-        { reviewText: 'Great job!' },
-        { reviewText: 'Needs improvement.'},
-        { reviewText: 'could be better' },
-        { reviewText: 'How did you get it so clean...no really'}
-      ],
-    },
-    {
-      title: 'Wipe TV',
-      reviews: [
-        { reviewText: 'Clean better bro' },
-      ],
-    },
-    {
-      title: 'Cook Chicken',
-      reviews: [
-        { reviewText: 'Wow so much chicken'},
-        { reviewText: 'Excellent work remembering'},
-      ],
-    },
-    {
-       title: 'Kitchen Cleaning',
-       reviews: [
-        { reviewText: 'Please make sure you clean the countertops after you finish next time!'},
-        { reviewText: 'Excellent work.'},
-       ],
-    },
-    {
-       title: 'Feather Dusting',
-       reviews: [],
-    },
-  ];
-  */
-
   const navigate = useNavigate();
 
   const handleClose = () => {
@@ -84,33 +45,38 @@ const Reviews = () => {
         </button>
       </div>
       
-      <div className="flex flex-wrap w-full">
-        {/* The stars and tasksCompleted tiles */}
-        <div className="flex w-full justify-between">
-          <Tile
-            type="stars"
-            title="Total Stars"
-            stars={additionalData.stars}
-            />
-          <Tile
-            type="tasksCompleted"
-            title="Tasks Completed"
-            tasksCompleted={additionalData.tasksCompleted}
-            />
-        </div>
-
-        {/*task tiles */}
-        <div className="w-full">
-          {reviewData.map((tile, index) => (
+      {reviewData.length > 0 ? (
+        <div className="flex flex-wrap w-full">
+          {/* The stars and tasksCompleted tiles */}
+          <div className="flex w-full justify-between">
             <Tile
-              key={index}
-              type="task"
-              title={tile.title}
-              reviews={tile.reviews}
-            />
-          ))}
+              type="stars"
+              title="Total Stars"
+              stars={additionalData?.stars}
+              />
+            <Tile
+              type="tasksCompleted"
+              title="Tasks Completed"
+              tasksCompleted={additionalData?.tasksCompleted}
+              />
+          </div>
+          {/*task tiles */}
+          <div className="w-full">
+              {reviewData.map((tile, index) => (
+                <Tile
+                  key={index}
+                  type="task"
+                  title={tile.title}
+                  reviews={tile.reviews}
+                />
+              ))}
+            </div>
         </div>
-      </div>
+      ) : ( 
+          <div className= "flex justify-center items-center mt-10">
+            <p className = "text-2xl font-bold">No Reviews yet!</p>
+          </div> 
+      )}
     </div>
   </>
 );
