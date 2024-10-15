@@ -73,6 +73,50 @@ const allocateTasks = async (house) => {
     });
 };
 
+const allocateTask = async (task) => {
+    // Fetch users from the house where this task belongs
+    const users = await JoinHouse.find({ house: task.house });
+
+    // Fetch all existing task assignments for this house
+    const assignTasks = await AssignTask.find({ house: task.house });
+
+    // Create task allocation object for each user, summing up their total allocated work
+    let taskAllocations = users.map(user => ({
+        user: user.user,
+        totalDuration: assignTasks
+            .filter(assignTask => String(assignTask.user) === String(user.user))
+            .reduce((acc, assignTask) => acc + task.duration, 0)
+    }));
+
+    // Get the next Sunday from today
+    const today = new Date();
+    const nextSunday = addDays(today, 7 - today.getDay());
+
+    // Sort taskAllocations by totalDuration (least assigned work first)
+    taskAllocations.sort((a, b) => a.totalDuration - b.totalDuration);
+
+    // Loop to assign the task as many times as necessary based on its frequency
+    for (let date = today; date <= nextSunday; date = addDays(date, task.frequency)) {
+        // Re-sort to ensure the user with the least amount of work gets the next task
+        taskAllocations.sort((a, b) => a.totalDuration - b.totalDuration);
+
+        // Assign the current task to the user with the least amount of work
+        const taskAllocation = {
+            task: task._id,
+            user: taskAllocations[0].user,            
+            status: "inactive",
+            assignedDate: new Date(),
+            startDate: date,
+        };
+
+        // Save the task allocation to the database
+        await AssignTask.create(taskAllocation);
+
+        // Update the user's total work after the task is assigned
+        taskAllocations[0].totalDuration += task.duration;        
+    }
+};
+
 
 function taskSort(task) {
     return task.duration;
@@ -93,3 +137,5 @@ const start = async () =>
 };
 
 start();
+
+module.exports = { allocateTask };

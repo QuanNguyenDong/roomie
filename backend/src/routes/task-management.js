@@ -5,6 +5,7 @@ const Task = require("../models/task");
 const User = require("../models/user");
 const JoinHouse = require("../models/joinHouse");
 const AssignTask = require("../models/assignTask");
+const { allocateTask } = require("../allocate_tasks.js");
 
 const router = express.Router();
 
@@ -33,6 +34,9 @@ router.post("/tasks/create", currentUser, async (req, res) => {
     });
 
     res.send({ task });
+
+    // Allocate task
+    allocateTask(task);
 });
 
 router.get("/tasks/assigned", currentUser, async (req, res) => {
