@@ -5,14 +5,12 @@ import '@testing-library/jest-dom';
 import axios from 'axios';
 import { MemoryRouter } from 'react-router-dom';
 
-jest.mock('axios'); // Mock axios
+jest.mock('axios');
 
-// Mock localStorage
-global.localStorage = {
-  setItem: jest.fn(),
-  getItem: jest.fn(),
-  clear: jest.fn(),
-};
+// Mock localStorage before each test
+beforeEach(() => {
+  jest.spyOn(Storage.prototype, 'setItem');
+});
 
 describe('Signup Component', () => {
   beforeAll(() => {
