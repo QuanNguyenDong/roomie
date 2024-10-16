@@ -20,7 +20,7 @@ import {
 } from 'date-fns';
 
 import { getAllActiveTaskAssignment } from "../services/Task/getActiveTaskAssignment.js";
-import { getEvents } from "../services/Event/getEvents.js";
+import { getHomeEvents } from "../services/Event/getEvents.js";
 import { initGoogleApiClient, syncCalendarEvents } from '../services/Event/syncCalendar.js';
 
 import SyncIcon from "../svgs/Calendar/Sync.js";
@@ -75,7 +75,7 @@ function Calendar() {
     const fetchAndSetData = useCallback(async () => {
         try {
             const fetchedTasks = await getAllActiveTaskAssignment();
-            const fetchedEvents = await getEvents();
+            const fetchedEvents = await getHomeEvents();
 
             const formattedTasks = fetchedTasks.map(task => {
                 task.dueDate = calculateDueDate(task.startDate, task.frequency);
@@ -112,7 +112,7 @@ function Calendar() {
         try {
             await syncCalendarEvents();
 
-            const updatedEvents = await getEvents();
+            const updatedEvents = await getHomeEvents();
 
             const formattedEvents = updatedEvents.map(event => ({
                 eventname: event.eventname,
@@ -362,7 +362,7 @@ function Calendar() {
                                 {/* <button onClick={toggleExpandModal} className="text-white">
                                     {modalState.expanded ? 'v' : '^'}
                                 </button> */}
-                                <button onClick={closeModal} className="text-red-400">x</button>
+                                <button onClick={closeModal} className="text-red-400 w-5">x</button>
                             </div>
 
                             <div className="rounded-t-[2.5rem] mt-5 space-y-4 bg-white h-full pt-10 pb-44 px-10 overflow-y-auto">

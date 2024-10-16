@@ -58,9 +58,7 @@ router.get("/events/all/active", currentUser, async (req, res) => {
     userIds = users.map((user) => user._id);
 
     var events = await Event.find({ user: { $in: userIds } }).populate("user");
-    // eventIds = events.map((event) => event._id);
     
-    console.log(userIds);
     return res.status(200).json(events);
 });
 
