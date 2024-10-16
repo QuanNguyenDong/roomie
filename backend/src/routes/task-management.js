@@ -104,7 +104,7 @@ router.get("/user/tasks", currentUser, async (req, res) => {
     return res.status(200).send({ assignedTasks });
 });
 
-router.get("/house/tasks", currentUser, async (req, res) => {
+router.get("/house/tasks/current-week", currentUser, async (req, res) => {
     const user = await User.findById(req.currentUser?.id);
     if (!user) {
         res.status(401).send({ message: "Unauthorized" });
@@ -139,6 +139,57 @@ router.get("/house/tasks", currentUser, async (req, res) => {
         endDate.setDate(startDate.getDate() + assignedTask.frequency); // Add task frequency to get the end date
         return currentDate >= startDate && currentDate <= endDate;
     });
+
+    if (activeAssignment.length === 0) {
+        const futureAssignments = {};
+        assignedTasks.forEach((assignedTask) => {
+            const startDate = new Date(assignedTask.startDate);
+            const taskId = assignedTask.taskId.toString();
+
+            if (startDate > currentDate) {
+                if (
+                    !futureAssignments[taskId] ||
+                    startDate < new Date(futureAssignments[taskId].startDate)
+                ) {
+                    futureAssignments[taskId] = assignedTask; // Store the assignment
+                }
+            }
+        });
+
+        activeAssignment = Object.values(futureAssignments);
+    }
+    
+    return res.status(200).send({ activeAssignment });
+});
+
+router.get("/house/tasks", currentUser, async (req, res) => {
+    const user = await User.findById(req.currentUser?.id);
+    if (!user) {
+        res.status(401).send({ message: "Unauthorized" });
+        return;
+    }
+    const joinHouse = await JoinHouse.findOne({
+        user: req.currentUser?.id,
+    }).populate("house");
+    
+    if (!joinHouse) return res.send({});
+    const house = joinHouse.house;
+    var tasks = await Task.find({ house: house._id });
+    taskIds = tasks.map((task) => task._id);
+    
+    const currentDate = new Date();
+    var assignedTasks = await AssignTask.find({ task: { $in: taskIds } })
+        .populate("task")
+        .populate("user");
+    assignedTasks = assignedTasks.map((task) => task.toJSON());    
+
+    let activeAssignment = assignedTasks.map(({ user, task, ...assign }) => ({
+        userId: user.userId,
+        username: user.username,
+        fullname: user.fullname,
+        ...task,
+        ...assign,
+    }));
 
     if (activeAssignment.length === 0) {
         const futureAssignments = {};

@@ -13,7 +13,7 @@ const getUserTask = async() => {
 
 const getHouseTask = async() => {
     try{
-        const res = await axios.get(global.route + `/house/tasks`, {
+        const res = await axios.get(global.route + `/house/tasks/current-week`, {
             withCredentials: true,
         });
         console.log(res.data);         
