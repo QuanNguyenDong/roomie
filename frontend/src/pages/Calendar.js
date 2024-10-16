@@ -82,13 +82,6 @@ function Calendar() {
                 task.endDate = new Date(new Date(task.startDate).getTime() + task.duration * 60 * 1000).toISOString();
                 return task;
             });
-
-            const uniqueUsers = ['All', ...new Set(formattedTasks.map(task => task.username))];
-
-            setUsers(uniqueUsers);
-            setTasks(formattedTasks);
-            setFilteredTasks(formattedTasks);
-
             const formattedEvents = fetchedEvents.map(event => ({
                 eventname: event.eventname,
                 startDate: event.startDate,
@@ -96,8 +89,20 @@ function Calendar() {
                 user: event.user,
             }));
 
+            // const uniqueUsers = ['All', ...new Set(formattedTasks.map(task => task.username))];
+
+            const uniqueTaskUsers = formattedTasks.map(task => task.username);
+            const uniqueEventUsers = formattedEvents.map(event => event.user.username);
+
+            console.log(uniqueTaskUsers, uniqueEventUsers);
+
+            const allUsers = ['All', ...new Set([...uniqueTaskUsers, ...uniqueEventUsers])];
+
+            setTasks(formattedTasks);
+            setFilteredTasks(formattedTasks);
             setEvents(formattedEvents);
             setFilteredEvents(formattedEvents);
+            setUsers(allUsers);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
