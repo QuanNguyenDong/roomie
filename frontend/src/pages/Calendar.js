@@ -246,7 +246,7 @@ function Calendar() {
                             onClick={() => filterByUser(user)}
                             className="flex items-center rounded-full bg-teal-400/10 px-6 py-1 text-xs font-bold leading-5 text-selected"
                             style={{
-                                backgroundColor: selectedUser === user ? bgColor : '#cdcdcd'
+                                backgroundColor: selectedUser === user ? bgColor : '#E3E3E3'
                             }}
                         >
                             {capitalizeFirstLetter(user)}
@@ -349,7 +349,7 @@ function Calendar() {
                         <motion.div
                             className="max-w-[520px] mx-auto fixed bottom-0 left-0 right-0 rounded-t-[2.5rem] bg-black text-white font-poppins"
                             initial={{ y: "100%" }}
-                            animate={{ y: "0%", height: modalState.expanded ? "55%" : "33%" }}
+                            animate={{ y: "0%", height: modalState.expanded ? "55%" : "40%" }}
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                             onClick={toggleExpandModal}

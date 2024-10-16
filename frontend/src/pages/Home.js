@@ -57,7 +57,7 @@ function Home() {
 
             const currentWeekEvents = events.filter(event => {
                 const eventStart = new Date(event.startDate);
-                return eventStart >= startOfWeek && eventStart <= endOfWeek;
+                return eventStart >= startOfWeek && eventStart <= endOfWeek && event.user.username === user.username;
             });
 
             setEvents(currentWeekEvents);
@@ -89,7 +89,7 @@ function Home() {
     return (
         <div className="max-w-[520px] mx-auto h-full text-black font-poppins">
             <div className="flex justify-between h-10 mb-6 mx-8">
-                <text className="text-4xl font-bold font-lexend">
+                <text className="text-3xl font-bold font-lexend">
                     Hello, {user.fullname}!
                 </text>
             </div>

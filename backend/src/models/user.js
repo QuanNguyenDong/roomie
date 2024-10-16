@@ -17,6 +17,10 @@ const userSchema = mongoose.Schema(
         },
         desc: {
             type: String,
+        },
+        stars : {
+            type: Number,
+            default: 0,
         }
     },
     {

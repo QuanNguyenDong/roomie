@@ -24,13 +24,14 @@ router.post(
     validateRequest,
     async (req, res) => {
         try {
-            const { username, password, fullname, desc } = req.body;
+            const { username, password, fullname, desc, stars } = req.body;
     
             const user = await User.create({
                 username,
                 password,
                 fullname,
                 desc,
+                stars,
             });
     
             const userJwt = jwt.sign(

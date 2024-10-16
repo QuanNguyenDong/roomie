@@ -55,4 +55,25 @@ router.post("/reviews", currentUser, async (req, res) => {
     res.send(insertedReviews);
 });
 
+router.post("/users/:userId/stars", async (req, res) => {
+    const userId = req.params.userId;
+    const { amount } = req.body;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.stars += amount;
+        await user.save();
+
+        res.status(200).json({ message: "Stars added successfully", user });
+    } catch (error) {
+        console.error("Error adding stars:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+
 module.exports = router;
