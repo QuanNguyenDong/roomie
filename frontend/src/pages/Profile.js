@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-import LogoGrey from "../svgs/Review/LogoGrey.js"; // Ensure this is the correct path for your logo
+import LogoGrey from "../svgs/Review/LogoGrey.js";
 
 function Profile() {
     const navigate = useNavigate();

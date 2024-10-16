@@ -4,8 +4,8 @@ import { useLocation } from 'react-router-dom';
 
 import getHome from "../services/Home/getHome";
 
+import LogoGrey from "../svgs/Review/LogoGrey.js";
 import CloseIcon from '../svgs/Review/CloseIcon'
-import { ArrowUturnLeftIcon } from '@heroicons/react/24/solid';
 
 function RoomieProfile() {
     const navigate = useNavigate();
@@ -52,23 +52,11 @@ function RoomieProfile() {
             <div className="my-8">
                 {userAnswers.map((answer, index) => {
                     return (
-                        <div
-                            key={index}
-                            className="py-4 px-6 my-6 bg-white border border-gray-200 rounded-lg shadow"
-                        >
-                            <p className="font-bold">{answer.question}</p>
-                            <p>{answer.answer}</p>
-                            <div class="flex items-center mt-4">
-                                <span className="mr-1 inline-flex items-center justify-center size-[25px] rounded-full bg-darkGrey leading-none">
-                                    <text className="text-sm font-semibold text-white">
-                                        {answer.fullname.substr(0, 1)}
-                                    </text>
-                                </span>
-                                <div class="mx-1 text-sm">
-                                    <text class="text-gray-900 leading-none">
-                                        {answer.fullname}
-                                    </text>
-                                </div>
+                        <div key={index} className="relative p-6 my-6 border border-dashed border-gray-300 rounded-[20px]">
+                            <p className="font-regular text-[14px] text-center z-10 relative">{answer.question}</p>
+                            <p className="font-light text-[12px] z-10 relative">{answer.answer}</p>
+                            <div className="absolute bottom-2 right-2 opacity-60 z-0">
+                                <LogoGrey />
                             </div>
                         </div>
                     );

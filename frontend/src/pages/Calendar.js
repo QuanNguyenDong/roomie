@@ -89,12 +89,8 @@ function Calendar() {
                 user: event.user,
             }));
 
-            // const uniqueUsers = ['All', ...new Set(formattedTasks.map(task => task.username))];
-
             const uniqueTaskUsers = formattedTasks.map(task => task.username);
             const uniqueEventUsers = formattedEvents.map(event => event.user.username);
-
-            console.log(uniqueTaskUsers, uniqueEventUsers);
 
             const allUsers = ['All', ...new Set([...uniqueTaskUsers, ...uniqueEventUsers])];
 
@@ -245,8 +241,10 @@ function Calendar() {
                         <button
                             key={user}
                             onClick={() => filterByUser(user)}
-                            className="flex items-center rounded-full bg-teal-400/10 px-6 py-1 text-xs font-medium leading-5 text-selected"
-                            style={{ backgroundColor: selectedUser === user ? bgColor : '#cdcdcd' }}
+                            className="flex items-center rounded-full bg-teal-400/10 px-6 py-1 text-xs font-bold leading-5 text-selected"
+                            style={{
+                                backgroundColor: selectedUser === user ? bgColor : '#cdcdcd'
+                            }}
                         >
                             {capitalizeFirstLetter(user)}
                         </button>
