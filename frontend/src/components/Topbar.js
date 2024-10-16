@@ -21,7 +21,7 @@ const Topbar = () => {
                     </div>
 
                     <div className="relative space-x-2.5">
-                        <button onClick={() => navigate("/home")}>
+                        <button>
                             <Notif className="icon" fill="#111827" />
                         </button>
                         <button onClick={() => navigate("/profile")}>

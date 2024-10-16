@@ -1,15 +1,25 @@
 import axios from "axios";
 
 const createReviews = async (reviews) => {
-    try
-    {
+    try {
         const res = await axios.post(`${global.route}/reviews`, reviews, {
             withCredentials: true,
         })
         return res.data;
-    }catch (error) {
+    } catch (error) {
         console.error(error);
     }
 };
 
-export default createReviews;
+const addStars = async (userId, amount) => {
+    try {
+        const res = await axios.post(global.route + `/users/${userId}/stars`, { amount }, {
+            withCredentials: true,
+        });
+        return res.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export { createReviews, addStars };

@@ -108,8 +108,8 @@ const Navbar = () => {
                         <button onClick={() => navigate('/tasks')}>
                             <TasksIcon fill="white" />
                         </button>
-                        <button>
-                            <SettingsIcon fill="white" />
+                        <button className="">
+                            <SettingsIcon fill="rgba(255, 255, 255, 0.5)" />
                         </button>
                     </div>
                 </div>

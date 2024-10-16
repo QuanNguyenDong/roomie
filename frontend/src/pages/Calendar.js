@@ -20,7 +20,7 @@ import {
 } from 'date-fns';
 
 import { getHouseTask } from "../services/Task/getTasks.js";
-import { getEvents } from "../services/Event/getEvents.js";
+import { getHomeEvents } from "../services/Event/getEvents.js";
 import { initGoogleApiClient, syncCalendarEvents } from '../services/Event/syncCalendar.js';
 
 import SyncIcon from "../svgs/Calendar/Sync.js";
@@ -75,7 +75,7 @@ function Calendar() {
     const fetchAndSetData = useCallback(async () => {
         try {
             const fetchedTasks = await getHouseTask();
-            const fetchedEvents = await getEvents();
+            const fetchedEvents = await getHomeEvents();
 
             const formattedTasks = fetchedTasks.map(task => {
                 task.dueDate = calculateDueDate(task.startDate, task.frequency);
@@ -112,7 +112,7 @@ function Calendar() {
         try {
             await syncCalendarEvents();
 
-            const updatedEvents = await getEvents();
+            const updatedEvents = await getHomeEvents();
 
             const formattedEvents = updatedEvents.map(event => ({
                 eventname: event.eventname,
@@ -231,6 +231,9 @@ function Calendar() {
         <div className="max-w-[520px] mx-auto h-full text-black">
             <div className="flex justify-between h-10 mb-6 mx-8">
                 <text className="text-4xl font-bold font-lexend">Calendar</text>
+                <button onClick={syncCalendar}>
+                    <SyncIcon fill="black" />
+                </button>
             </div>
 
             <div className="flex overflow-x-auto mx-8 space-x-2 mb-4 scrollbar-hide">
@@ -243,7 +246,7 @@ function Calendar() {
                             onClick={() => filterByUser(user)}
                             className="flex items-center rounded-full bg-teal-400/10 px-6 py-1 text-xs font-bold leading-5 text-selected"
                             style={{
-                                backgroundColor: selectedUser === user ? bgColor : '#cdcdcd'
+                                backgroundColor: selectedUser === user ? bgColor : '#E3E3E3'
                             }}
                         >
                             {capitalizeFirstLetter(user)}
@@ -339,12 +342,6 @@ function Calendar() {
                             </div>
                         ))}
                     </div>
-
-                    <div className="flex justify-center mt-7">
-                        <button onClick={syncCalendar}>
-                            <SyncIcon fill="black" />
-                        </button>
-                    </div>
                 </div>
 
                 <AnimatePresence>
@@ -352,7 +349,7 @@ function Calendar() {
                         <motion.div
                             className="max-w-[520px] mx-auto fixed bottom-0 left-0 right-0 rounded-t-[2.5rem] bg-black text-white font-poppins"
                             initial={{ y: "100%" }}
-                            animate={{ y: "0%", height: modalState.expanded ? "55%" : "33%" }}
+                            animate={{ y: "0%", height: modalState.expanded ? "55%" : "40%" }}
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                             onClick={toggleExpandModal}
@@ -365,7 +362,7 @@ function Calendar() {
                                 {/* <button onClick={toggleExpandModal} className="text-white">
                                     {modalState.expanded ? 'v' : '^'}
                                 </button> */}
-                                <button onClick={closeModal} className="text-red-400">x</button>
+                                <button onClick={closeModal} className="text-red-400 w-5">x</button>
                             </div>
 
                             <div className="rounded-t-[2.5rem] mt-5 space-y-4 bg-white h-full pt-10 pb-44 px-10 overflow-y-auto">

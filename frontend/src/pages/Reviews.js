@@ -38,8 +38,7 @@ const Reviews = () => {
 
   //this data needs to be calculated from other tables
   const additionalData = {
-    stars: 100,
-    tasksCompleted: 5,
+    tasksCompleted: 0,
   };  
 
 //need a reivew data table
@@ -114,7 +113,7 @@ const Reviews = () => {
           <Tile
             type="stars"
             title="Total Stars"
-            stars={additionalData.stars}
+            stars={user.stars || 0}
             />
           <Tile
             type="tasksCompleted"

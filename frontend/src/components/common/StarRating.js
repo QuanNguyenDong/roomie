@@ -6,15 +6,17 @@ const DEFAULT_ICON = "★";
 const DEFAULT_UNSELECTED_COLOR = "grey";
 const DEFAULT_COLOR = "yellow";
 
-export default function Stars({ count, initialRating, icon, color, iconSize, readOnly}) {
+export default function Stars({ count, initialRating, icon, color, iconSize, readOnly, onRatingChange}) {
   const [rating, setRating] = useState(initialRating);
 
   let stars = Array(count || DEFAULT_COUNT).fill(icon || DEFAULT_ICON);
 
-  const handleClick = (rating) => {
+  const handleClick = (index) => {
     if (!readOnly) {
-      setRating(rating);
-      // TODO: add rating to database
+      setRating(index);
+      if (onRatingChange) {
+        onRatingChange(index);
+      }
     }
   };
 
