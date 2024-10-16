@@ -1,13 +1,56 @@
 const express = require("express");
 const currentUser = require("../middlewares/current-user");
+const { format, addDays, subDays } = require("date-fns");
 
 const Task = require("../models/task");
 const User = require("../models/user");
 const JoinHouse = require("../models/joinHouse");
 const AssignTask = require("../models/assignTask");
-const { allocateTask } = require("../allocate_tasks.js");
 
 const router = express.Router();
+
+const allocateTask = async (task) => {
+    const users = await JoinHouse.find({ house: task.house });
+    const userIds = users.map((user) => user.user);
+    const assignTasks = await AssignTask.find({
+        user: { $in: userIds },
+    }).populate("task");
+
+    let taskAllocations = users.map((user) => ({
+        user: user.user,
+        totalDuration: assignTasks
+            .filter(
+                (assignTask) => String(assignTask.user) === String(user.user)
+            )
+            .reduce((acc, assignTask) => acc + assignTask.task.duration, 0),
+    }));
+
+    const today = new Date();
+    const nextSunday = addDays(today, 7 - today.getDay());
+    assignments = [];
+    for (
+        let date = today;
+        date <= nextSunday;
+        date = addDays(date, task.frequency)
+    ) {
+        taskAllocations.sort((a, b) => a.totalDuration - b.totalDuration);
+
+        const taskAllocation = {
+            task: task._id,
+            user: taskAllocations[0].user,
+            status: "inactive",
+            assignedDate: new Date(),
+            startDate: date,
+        };
+        assignments.push(taskAllocation);
+        taskAllocations[0].totalDuration += task.duration;
+    }
+    try {
+        await AssignTask.create(assignments);
+    } catch (e) {
+        console.error(e);
+    }
+};
 
 router.post("/tasks/create", currentUser, async (req, res) => {
     const user = await User.findById(req.currentUser?.id);
@@ -33,13 +76,12 @@ router.post("/tasks/create", currentUser, async (req, res) => {
         house: joinHouse.house,
     });
 
-    res.send({ task });
+    await allocateTask(task);
 
-    // Allocate task
-    allocateTask(task);
+    return res.status(200).send({ task });
 });
 
-router.get("/tasks/assigned", currentUser, async (req, res) => {
+router.get("/user/tasks", currentUser, async (req, res) => {
     const user = await User.findById(req.currentUser?.id);
     if (!user) {
         res.status(401).send({ message: "Unauthorized" });
@@ -62,85 +104,21 @@ router.get("/tasks/assigned", currentUser, async (req, res) => {
     return res.status(200).send({ assignedTasks });
 });
 
-router.post("/tasks/assign", currentUser, async (req, res) => {
+router.get("/house/tasks", currentUser, async (req, res) => {
     const user = await User.findById(req.currentUser?.id);
     if (!user) {
         res.status(401).send({ message: "Unauthorized" });
         return;
     }
-
-    // implement logic HERE
-    const assignedTask = await AssignTask.create({
-        user: req.currentUser?.id,
-        task: req.body.taskId,
-        status: "inactive",
-        assignedDate: new Date(),
-        startDate: new Date(),
-    });
-
-    res.send({ assignedTask });
-});
-
-router.get("/tasks/activeAssignment", currentUser, async (req, res) => {
-    const user = await User.findById(req.currentUser?.id);
-    if (!user) {
-        res.status(401).send({ message: "Unauthorized" });
-        return;
-    }
-
-    const taskId = req.query.task; // Use query parameters instead of body
-
-    // Get the current date
-    const currentDate = new Date();
-    const task = await Task.findById(taskId);
-    const assignedTasks = await AssignTask.find({ task: taskId });
-
-    // Find the active task assignment where the current date is in the valid range
-    // Find the active task assignment where the current date is in the valid range
-    let activeAssignment = assignedTasks.find((assignedTask) => {
-        const startDate = new Date(assignedTask.startDate);
-        const endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + task.frequency); // Add task frequency to get the end date
-
-        // Check if current date is within startDate and endDate
-        return currentDate >= startDate && currentDate <= endDate;
-    });
-
-    if (!activeAssignment) {
-        // Filter tasks with startDate in the future
-        const futureTasks = assignedTasks.filter((assignedTask) => {
-            const startDate = new Date(assignedTask.startDate);
-            return startDate > currentDate;
-        });
-
-        // Sort by startDate and get the closest one
-        if (futureTasks.length > 0) {
-            futureTasks.sort(
-                (a, b) => new Date(a.startDate) - new Date(b.startDate)
-            );
-            activeAssignment = futureTasks[0]; // Get the closest one
-        }
-    }
-    // Return the active assignment
-    return res.status(200).send({ activeAssignment });
-});
-
-router.get("/tasks/all/active", currentUser, async (req, res) => {
-    const user = await User.findById(req.currentUser?.id);
-    if (!user) {
-        res.status(401).send({ message: "Unauthorized" });
-        return;
-    }
-
     const joinHouse = await JoinHouse.findOne({
         user: req.currentUser?.id,
     }).populate("house");
-
+    
     if (!joinHouse) return res.send({});
     const house = joinHouse.house;
     var tasks = await Task.find({ house: house._id });
     taskIds = tasks.map((task) => task._id);
-
+    
     const currentDate = new Date();
     var assignedTasks = await AssignTask.find({ task: { $in: taskIds } })
         .populate("task")
@@ -158,30 +136,28 @@ router.get("/tasks/all/active", currentUser, async (req, res) => {
     let activeAssignment = assignedTasks.filter((assignedTask) => {
         const startDate = new Date(assignedTask.startDate);
         const endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + assignedTask.frequency); // Add task frequency to get the end date        
+        endDate.setDate(startDate.getDate() + assignedTask.frequency); // Add task frequency to get the end date
         return currentDate >= startDate && currentDate <= endDate;
-    });    
+    });
 
     if (activeAssignment.length === 0) {
         const futureAssignments = {};
-
-        // Iterate through the assigned tasks
         assignedTasks.forEach((assignedTask) => {
             const startDate = new Date(assignedTask.startDate);
             const taskId = assignedTask.taskId.toString();
 
-            // Only consider future tasks
             if (startDate > currentDate) {
-                // If we haven't stored an assignment for this task yet, or the current one is sooner
-                if (!futureAssignments[taskId] || startDate < new Date(futureAssignments[taskId].startDate)) {
+                if (
+                    !futureAssignments[taskId] ||
+                    startDate < new Date(futureAssignments[taskId].startDate)
+                ) {
                     futureAssignments[taskId] = assignedTask; // Store the assignment
                 }
             }
         });
 
-        // Convert the futureAssignments object back to an array
         activeAssignment = Object.values(futureAssignments);
-    }    
+    }
     
     return res.status(200).send({ activeAssignment });
 });

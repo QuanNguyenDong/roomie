@@ -3,11 +3,11 @@ import "../styling/taskManager.scss";
 import TileIcon from "../svgs/Home/Tasks/TileIcon.js";
 import FrequencyIcon from "../svgs/TaskManagement/FrequencyIcon.js";
 import TaskModal from "./TaskCard.js";
-import { getAllActiveTaskAssignment } from "../services/Task/getActiveTaskAssignment.js";
+import { getHouseTask } from "../services/Task/getTasks.js";
 import PriorityDropdown from "../svgs/TaskManagement/PriorityDropdown.js";
 
 function TaskManager() {
-    const [tasks, setTasks] = useState([]); 
+    const [tasks, setTasks] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null);
     const [priorityFilter, setPriorityFilter] = useState("All");
     const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false);
@@ -16,7 +16,7 @@ function TaskManager() {
     const priorityButtonRef = useRef(null);
 
     useEffect(() => {
-        getAllActiveTaskAssignment().then((fetchedTasks) => {
+        getHouseTask().then((fetchedTasks) => {
             if (fetchedTasks)
                 fetchedTasks = fetchedTasks.map((task) => {
                     task["dueDate"] = calculateDueDate(

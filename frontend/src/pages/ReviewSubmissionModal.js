@@ -6,7 +6,7 @@ import CloseIcon from '../svgs/Review/CloseIcon.js';
 import StarRating from "../components/common/StarRating.js"; 
 import Progressbar from "../components/common/Progressbar.js";
 
-import { getAllActiveTaskAssignment } from "../services/Task/getActiveTaskAssignment.js";
+import { getHouseTask } from "../services/Task/getTasks.js";
 import createReviews from "../services/Review/createReviews.js";
 
 const ReviewModal = () => {
@@ -42,7 +42,7 @@ const ReviewModal = () => {
         }
 
         const fetchActiveTasks = async () => {
-            const fetchedActiveTasks = await getAllActiveTaskAssignment();
+            const fetchedActiveTasks = await getHouseTask();
             setActiveTasks(fetchedActiveTasks || []);
 
             // Extract unique users, excluding the logged-in user

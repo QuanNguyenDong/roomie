@@ -70,7 +70,7 @@ const Navbar = () => {
         };
     }, [isModalOpen]);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
       const taskData = {
           taskname: taskName,
           description: description,
@@ -80,7 +80,7 @@ const Navbar = () => {
       };
       
       // You can replace the above line with any logic to send taskData to your backend or handle it as needed
-      createTask(taskData);
+      await createTask(taskData);
       // Reset the form after submission
       setTaskName('');
       setDescription('');
