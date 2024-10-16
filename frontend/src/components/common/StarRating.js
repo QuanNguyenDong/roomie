@@ -1,5 +1,5 @@
 import "../../styling/starRating.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const DEFAULT_COUNT = 5;
 const DEFAULT_ICON = "★";
@@ -8,6 +8,10 @@ const DEFAULT_COLOR = "yellow";
 
 export default function Stars({ count, initialRating, icon, color, iconSize, readOnly, onRatingChange}) {
   const [rating, setRating] = useState(initialRating);
+
+  useEffect(() => {
+    setRating(initialRating);
+  }, [initialRating]);
 
   let stars = Array(count || DEFAULT_COUNT).fill(icon || DEFAULT_ICON);
 

@@ -12,11 +12,11 @@ import { createReviews, addStars } from "../services/Review/createReviews.js";
 const ReviewModal = () => {
     const [user, setUser] = useState({});
     const [users, setUsers] = useState([]);
-    const [activeTasks, setActiveTasks] = useState([]);
     const [tasks, setTasks] = useState([]);
+    const [activeTasks, setActiveTasks] = useState([]);
     const [reviewUserIndex, setCurrentUserIndex] = useState(0);
     const [reviews, setReviews] = useState([]);
-    const [stars, setStars] = useState(0);
+    const [stars, setStars] = useState({});
     const [modalState, setModalState] = useState({ open: true });
 
     const navigate = useNavigate();
@@ -80,16 +80,19 @@ const ReviewModal = () => {
     const handleClose = () => {
         setModalState({ open: false });
         navigate('/profile');
-    };
-
-    const handleSubmit = () => {
         createReviews(reviews);
-        addStars(reviewUser.userId, stars);
-        handleClose();
-    }
+        
+        for (const userId in stars) {
+            addStars(userId, stars[userId]);
+        }
+    };
 
     const handleNext = () => {
         if (reviewUserIndex < users.length - 1) {
+            setStars((prevStars) => ({
+                ...prevStars,
+                [users[reviewUserIndex + 1].userId]: prevStars[users[reviewUserIndex + 1].userId] || 0
+            }));
             setCurrentUserIndex(reviewUserIndex + 1);
         }
     };
@@ -106,6 +109,10 @@ const ReviewModal = () => {
             }
             return [...prevReviews, { userId, taskId, reviewText }];
         });
+    };
+
+    const handleStarChange = (userId, newStars) => {
+        setStars((prevStars) => ({ ...prevStars, [userId]: newStars }));
     };
 
     const renderUserInitials = (fullname) => {
@@ -151,7 +158,12 @@ const ReviewModal = () => {
                                         </p>
                                     </span>
                                     <div className="m-1">
-                                        <StarRating iconSize={36} initialRating={stars} readOnly={false} onRatingChange={setStars} />
+                                            <StarRating
+                                                iconSize={36}
+                                                initialRating={stars[reviewUser?.userId] || 0} // Use stars state for current user
+                                                readOnly={false}
+                                                onRatingChange={(newStars) => handleStarChange(reviewUser?.userId, newStars)} // Update stars for current user
+                                            />
                                     </div>
                                 </div>
                             )}
@@ -193,7 +205,7 @@ const ReviewModal = () => {
                                             </button>
                                         ) : (
                                             <button
-                                                onClick={handleSubmit}
+                                                onClick={handleClose}
                                                 className="mt-6 mb-2 bg-[#C5EE6F] text-black text-base font-semibold w-32 h-12 rounded-3xl"
                                             >
                                                 Complete
