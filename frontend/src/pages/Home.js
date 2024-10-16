@@ -6,7 +6,7 @@ import Tile from "../components/Home/Tile";
 import Event from "../components/Home/Event";
 
 import { getUserTask } from "../services/Task/getTasks";
-import { getEvents } from "../services/Event/getEvents";
+import { getEvents, getHomeEvents } from "../services/Event/getEvents";
 
 function Home() {
     const [user, setUser] = useState({});
@@ -29,7 +29,7 @@ function Home() {
                 .catch((error) => navigate("/"));
         } else {
             setUser(storedUser);
-            fetchEvents(storedUser.id);
+            fetchEvents();
         }
 
         getUserTask()
@@ -47,16 +47,15 @@ function Home() {
             .catch((error) => {});
     }, [navigate]);
 
-    const fetchEvents = async (userId) => {
+    const fetchEvents = async () => {
         try {
-            const fetchedEvents = await getEvents();
-            const userEvents = fetchedEvents.filter(event => event.user.id === userId);
+            const events = await getHomeEvents();
 
             const thisWeek = new Date();
             const startOfWeek = new Date(thisWeek.getFullYear(), thisWeek.getMonth(), thisWeek.getDate() - thisWeek.getDay());
             const endOfWeek = new Date(thisWeek.getFullYear(), thisWeek.getMonth(), thisWeek.getDate() + (7 - thisWeek.getDay()));
 
-            const currentWeekEvents = userEvents.filter(event => {
+            const currentWeekEvents = events.filter(event => {
                 const eventStart = new Date(event.startDate);
                 return eventStart >= startOfWeek && eventStart <= endOfWeek;
             });

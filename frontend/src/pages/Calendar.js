@@ -231,6 +231,9 @@ function Calendar() {
         <div className="max-w-[520px] mx-auto h-full text-black">
             <div className="flex justify-between h-10 mb-6 mx-8">
                 <text className="text-4xl font-bold font-lexend">Calendar</text>
+                <button onClick={syncCalendar}>
+                    <SyncIcon fill="black" />
+                </button>
             </div>
 
             <div className="flex overflow-x-auto mx-8 space-x-2 mb-4 scrollbar-hide">
@@ -338,12 +341,6 @@ function Calendar() {
 
                             </div>
                         ))}
-                    </div>
-
-                    <div className="flex justify-center mt-7">
-                        <button onClick={syncCalendar}>
-                            <SyncIcon fill="black" />
-                        </button>
                     </div>
                 </div>
 

@@ -3,6 +3,7 @@ const currentUser = require("../middlewares/current-user");
 
 const Event = require("../models/event");
 const User = require("../models/user");
+const JoinHouse = require("../models/joinHouse");
 
 const router = express.Router();
 
@@ -33,6 +34,34 @@ router.get("/events/all", currentUser, async (req, res) => {
         console.error('Error fetching events:', error);
         res.status(500).send({ message: 'Internal Server Error' });
     }
+});
+
+router.get("/events/all/active", currentUser, async (req, res) => {
+    const user = await User.findById(req.currentUser?.id);
+    if (!user) {
+        res.status(401).send({ message: "Unauthorized" });
+        return;
+    }
+
+    const joinHouse = await JoinHouse.findOne({
+        user: req.currentUser?.id,
+    })
+
+    if (!joinHouse) 
+        return res.send({});
+    
+    const house = joinHouse.house;
+
+    let users = await JoinHouse.find({ house: house }).populate("user");
+    users = users.filter((user) => user.user);
+    users = users.map((user) => user.user);
+    userIds = users.map((user) => user._id);
+
+    var events = await Event.find({ user: { $in: userIds } }).populate("user");
+    // eventIds = events.map((event) => event._id);
+    
+    console.log(userIds);
+    return res.status(200).json(events);
 });
 
 router.get("/events/check", currentUser, async (req, res) => {
