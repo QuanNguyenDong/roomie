@@ -19,7 +19,7 @@ import {
     endOfWeek,
 } from 'date-fns';
 
-import { getHouseTask } from "../services/Task/getTasks.js";
+import { getAllTasks } from "../services/Task/getTasks.js";
 import { getHomeEvents } from "../services/Event/getEvents.js";
 import { initGoogleApiClient, syncCalendarEvents } from '../services/Event/syncCalendar.js';
 
@@ -74,7 +74,7 @@ function Calendar() {
 
     const fetchAndSetData = useCallback(async () => {
         try {
-            const fetchedTasks = await getHouseTask();
+            const fetchedTasks = await getAllTasks();
             const fetchedEvents = await getHomeEvents();
 
             const formattedTasks = fetchedTasks.map(task => {
