@@ -9,6 +9,11 @@ import Progressbar from "../components/common/Progressbar.js";
 import { getHouseTask } from "../services/Task/getTasks.js";
 import { createReviews, addStars } from "../services/Review/createReviews.js";
 
+const labelColours = [
+    "#3176A8", "#42A079", "#7742A0", "#A04842", "#A07542",
+    "#DA70D6", "#8A2BE2", "#20B2AA", "#FF6347", "#4682B4"
+];
+
 const ReviewModal = () => {
     const [user, setUser] = useState({});
     const [users, setUsers] = useState([]);
@@ -81,7 +86,7 @@ const ReviewModal = () => {
         setModalState({ open: false });
         navigate('/profile');
         createReviews(reviews);
-        
+
         for (const userId in stars) {
             addStars(userId, stars[userId]);
         }
@@ -152,18 +157,21 @@ const ReviewModal = () => {
                                 </div>
                             ) : (
                                 <div className="flex flex-col justify-center items-center mt-6">
-                                    <span className="inline-flex items-center justify-center size-[75px] rounded-full bg-darkGrey text-lg font-semibold text-white leading-none">
-                                        <p className="text-3xl">
-                                            {renderUserInitials(reviewUser?.fullname)}
-                                        </p>
-                                    </span>
+                                    <div className="flex flex-row">
+                                        <div
+                                                className="text-white text-3xl font-semibold size-[75px] rounded-full flex items-center justify-center"
+                                                style={{ background: `linear-gradient(135deg, ${labelColours[reviewUserIndex % labelColours.length]} 70%, #df9 100%)` }}
+                                        >
+                                            {renderUserInitials(reviewUser?.fullname).toUpperCase()}
+                                        </div>
+                                    </div>
                                     <div className="m-1">
-                                            <StarRating
-                                                iconSize={36}
-                                                initialRating={stars[reviewUser?.userId] || 0} // Use stars state for current user
-                                                readOnly={false}
-                                                onRatingChange={(newStars) => handleStarChange(reviewUser?.userId, newStars)} // Update stars for current user
-                                            />
+                                        <StarRating
+                                            iconSize={36}
+                                            initialRating={stars[reviewUser?.userId] || 0} // Use stars state for current user
+                                            readOnly={false}
+                                            onRatingChange={(newStars) => handleStarChange(reviewUser?.userId, newStars)} // Update stars for current user
+                                        />
                                     </div>
                                 </div>
                             )}
@@ -173,18 +181,18 @@ const ReviewModal = () => {
                         {users.length === 0 ? null : (
                             <div className="h-2/3 bg-black rounded-t-submission p-4 flex flex-col">
                                 <>
-                                    <h2 className="text-2-1 italic text-white mt-7 ml-9 mb-8">Enter review for each task</h2>
+                                    <text className="text-2xl font-bold text-white mt-7 text-center">Review each task..</text>
 
                                     {/* Scrollable Reviews Container */}
-                                    <div className="flex-grow overflow-y-auto bg-black p-5">
+                                    <div className="flex-grow overflow-y-auto p-5">
                                         {userTasks.length > 0 ? (
                                             userTasks.map((task) => (
-                                                <div key={task.taskId} className="mb-5 bg-[#F9F9F9] pt-2 pl-10 pr-10 rounded-2xl">
-                                                    <h3 className="text-lg font-semibold text-black">{task?.taskname}</h3>
+                                                <div key={task.taskId} className="mb-5 bg-[#444444] bg-opacity-50 pt-2 pl-10 pr-10 rounded-2xl">
+                                                    <h3 className="text-lg font-medium text-white">{task?.taskname}</h3>
                                                     <textarea
                                                         rows="2"
                                                         placeholder="Write your review..."
-                                                        className="w-full text-sm bg-transparent mt-2 resize-none"
+                                                        className="w-full text-sm text-white bg-transparent mt-2 resize-none outline-none"
                                                         onChange={(e) => handleReviewChange(task.taskId, reviewUser?.userId, e.target.value)}
                                                     />
                                                 </div>
@@ -195,18 +203,18 @@ const ReviewModal = () => {
                                     </div>
 
                                     {/* Navigation Buttons */}
-                                    <div className="flex justify-center mt-4">
+                                    <div className="flex justify-center">
                                         {reviewUserIndex < users.length - 1 ? (
                                             <button
                                                 onClick={handleNext}
-                                                className="mt-6 bg-white text-base font-semibold w-32 h-12 rounded-3xl"
+                                                className="mt-6 bg-black border-2 border-white text-white text-base font-semibold w-32 h-12 rounded-3xl"
                                             >
                                                 Next
                                             </button>
                                         ) : (
                                             <button
                                                 onClick={handleClose}
-                                                className="mt-6 mb-2 bg-[#C5EE6F] text-black text-base font-semibold w-32 h-12 rounded-3xl"
+                                                className="mt-6 bg-[#C5EE6F] text-black text-base font-semibold w-32 h-12 rounded-3xl"
                                             >
                                                 Complete
                                             </button>
