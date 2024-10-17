@@ -27,6 +27,7 @@ const Navbar = () => {
   const [selected, setSelected] = useState({ priority: "Select", frequency: "Select", time: "Select" });
   const [taskName, setTaskName] = useState('');
   const [description, setDescription] = useState('');
+  const [error, setError] = useState('');
 
   const toggleDropdown = (type) => {
     setDropdowns((prev) => ({
@@ -66,6 +67,13 @@ const Navbar = () => {
   }, [isModalOpen]);
 
   const handleSubmit = async () => {
+    if (!taskName || !description || selected.priority === "Select" || selected.frequency === "Select" || selected.time === "Select") {
+      setError('Please fill out all fields.');
+      return;
+    }
+    
+    setError('');
+
     const taskData = {
       taskname: taskName,
       description: description,
@@ -186,6 +194,8 @@ const Navbar = () => {
                     </div>
                   ))}
                 </div>
+                
+                {error && <p className="absolute left-14 text-red-600 py-1">{error}</p>}
 
                 <button
                   onClick={handleSubmit}
