@@ -6,7 +6,7 @@ import Tile from "../components/Home/Tile";
 import Event from "../components/Home/Event";
 
 import { getUserTask } from "../services/Task/getTasks";
-import { getEvents, getHomeEvents } from "../services/Event/getEvents";
+import { getHomeEvents } from "../services/Event/getEvents";
 
 function Home() {
     const [user, setUser] = useState({});
@@ -50,17 +50,7 @@ function Home() {
     const fetchEvents = async () => {
         try {
             const events = await getHomeEvents();
-
-            const thisWeek = new Date();
-            const startOfWeek = new Date(thisWeek.getFullYear(), thisWeek.getMonth(), thisWeek.getDate() - thisWeek.getDay());
-            const endOfWeek = new Date(thisWeek.getFullYear(), thisWeek.getMonth(), thisWeek.getDate() + (7 - thisWeek.getDay()));
-
-            const currentWeekEvents = events.filter(event => {
-                const eventStart = new Date(event.startDate);
-                return eventStart >= startOfWeek && eventStart <= endOfWeek && event.user.username === user.username;
-            });
-
-            setEvents(currentWeekEvents);
+            setEvents(events);
         } catch (error) {
             console.error("Failed to fetch events:", error);
         }
@@ -85,6 +75,27 @@ function Home() {
             return true;
         }
     });
+
+    const filteredEvents = events.filter((event) => {
+        const today = new Date();
+
+        const startOfWeek = new Date(today);
+        const endOfWeek = new Date(today);
+
+        const dayOfWeek = today.getDay();
+        const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+        startOfWeek.setDate(today.getDate() - diffToMonday);
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        const diffToSunday = 7 - dayOfWeek;
+        endOfWeek.setDate(today.getDate() + diffToSunday);
+        endOfWeek.setHours(23, 59, 59, 999);
+
+        const eventStartDate = new Date(event.startDate);
+
+        return eventStartDate >= startOfWeek && eventStartDate <= endOfWeek && eventStartDate >= today;
+    });
+
 
     return (
         <div className="max-w-[520px] mx-auto h-full text-black font-poppins">
@@ -116,7 +127,7 @@ function Home() {
             <div className="flex flex-nowrap overflow-x-auto w-100vw h-56 mb-8">
                 {filteredTasks.length == 0 ? (
                     <div className="bg-secGrey text-center text-xl w-full py-24 mx-8 rounded-3xl">
-                        <span>You don't have any tasks</span>
+                        <span>You don't have any {taskFilter === 'all' ? '' : taskFilter} tasks</span>
                     </div>
                 ) : (
                     <div className="flex flex-nowrap space-x-6 ml-8">
@@ -134,14 +145,23 @@ function Home() {
             <div className="mx-8">
                 <text className="text-xl font-semibold">Events this week</text>
                 <div className="flex flex-col space-y-4 my-4">
-                    {events.length === 0 ? (
+                    {filteredEvents.length === 0 ? (
                         <div className="bg-secGrey text-center text-xl w-full py-24 rounded-3xl">
                             <span>You don't have any events this week</span>
                         </div>
                     ) : (
-                        events.map((event, index) => (
-                            <Event key={index} event={event} username={event.user.username} eventname={event.eventname} startDate={event.startDate} endDate={event.endDate} />
-                        ))
+                        filteredEvents
+                            .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+                            .map((event, index) => (
+                                <Event
+                                    key={index}
+                                    event={event}
+                                    username={event.user.username}
+                                    eventname={event.eventname}
+                                    startDate={event.startDate}
+                                    endDate={event.endDate}
+                                />
+                            ))
                     )}
                 </div>
             </div>
