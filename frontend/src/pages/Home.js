@@ -124,13 +124,13 @@ function Home() {
                     Completed
                 </button>
             </div>
-            <div className="flex flex-nowrap overflow-x-auto w-100vw h-56 mb-8">
+            <div className="flex flex-nowrap overflow-x-auto w-100vw h-60 mb-8">
                 {filteredTasks.length == 0 ? (
                     <div className="bg-secGrey text-center text-xl w-full py-24 mx-8 rounded-3xl">
                         <span>You don't have any {taskFilter === 'all' ? '' : taskFilter} tasks</span>
                     </div>
                 ) : (
-                    <div className="flex flex-nowrap space-x-6 ml-8">
+                    <div className="flex flex-nowrap space-x-6 mx-8">
                         {filteredTasks
                             .sort(
                                 (a, b) =>

@@ -30,7 +30,7 @@ const Tile = ({ task }) => {
 
     return (
         <div 
-            className="text-white w-[247px] h-full rounded-3xl relative"
+            className="text-white w-[247px] h-56 my-auto rounded-3xl relative cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out"
             style={{ backgroundColor: priorityColors[task.priority] }}
             onClick={() => openTaskModal(task)}>
             <div className="p-5 h-full flex flex-col justify-between">
