@@ -48,7 +48,7 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
     };
 
     const handleCheckboxChange = async () => {
-        if (!isChecked && taskuser === user.userId) {
+        if (!isChecked && taskuser === user.userId && !task.status === 'completed') {
             setIsChecked(true);
             handleFlip();
 
@@ -92,7 +92,7 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
 
                     <div className="flex flex-row justify-between">
                         <text className='text-3xl font-bold p-2'>{task.taskname}</text>
-                        {taskuser === user?.userId && (
+                        {taskuser === user?.userId && task.status !== 'completed' && (
                             <div className="bg-white w-20 h-8 rounded-3xl mt-2.5">
                                 <CustomCheckbox isChecked={isChecked} onChange={handleCheckboxChange} />
                             </div>    

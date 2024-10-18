@@ -46,7 +46,7 @@ function Home() {
                 });
                 setTasks(tasks);
             })
-            .catch((error) => {});
+            .catch((error) => { });
     }, [navigate]);
 
     const fetchEvents = async () => {
@@ -66,13 +66,10 @@ function Home() {
     };
 
     const filteredTasks = tasks.filter((task) => {
-        const today = new Date();
-        const taskDueDate = new Date(task.dueDate);
-
         if (taskFilter === "upcoming") {
-            return taskDueDate > today && !task.completed;
+            return task.status !== "completed"; 
         } else if (taskFilter === "completed") {
-            return today > taskDueDate;
+            return task.status === "completed";
         } else {
             return true;
         }
@@ -113,22 +110,22 @@ function Home() {
                     Hello, {user.fullname}!
                 </text>
             </div>
-            <div className="flex justify-between h-10 mb-6 mx-8">
+            <div className="flex justify-left space-x-8 h-10 mb-6 mx-8 ">
                 <button
                     className={`${taskFilter === "all" ? "bg-white" : "bg-secGrey"
-                        } text-black text-xs w-28 rounded-3xl`}
+                        } text-black text-xs w-28 h-9 rounded-3xl shadow-sm`}
                     onClick={() => setTaskFilter("all")}>
                     My Tasks
                 </button>
                 <button
                     className={`${taskFilter === "upcoming" ? "bg-white" : "bg-secGrey"
-                        } text-black text-xs w-28 rounded-3xl`}
+                        } text-black text-xs w-28 h-9 rounded-3xl shadow-sm`}
                     onClick={() => setTaskFilter("upcoming")}>
                     Upcoming
                 </button>
                 <button
                     className={`${taskFilter === "completed" ? "bg-white" : "bg-secGrey "
-                        } text-black text-xs w-28 rounded-3xl`}
+                        } text-black text-xs w-28 h-9 rounded-3xl shadow-sm`}
                     onClick={() => setTaskFilter("completed")}>
                     Completed
                 </button>
