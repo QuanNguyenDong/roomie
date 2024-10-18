@@ -14,14 +14,18 @@ import TaskModal from "./TaskCard.js";
 function TaskManager() {
     const [user, setUser] = useState({});
     const [tasks, setTasks] = useState([]);
+    const [users, setUsers] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null);
     const [priorityFilter, setPriorityFilter] = useState("All");
+    const [selectedUser, setSelectedUser] = useState("All");
     const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false);
+    const [isAllTasksDropdownOpen, setAllTasksDropdownOpen] = useState(false);
 
     let navigate = useNavigate();
 
     const dropdownRef = useRef(null);
     const priorityButtonRef = useRef(null);
+    const allTasksButtonRef = useRef(null);
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -38,8 +42,13 @@ function TaskManager() {
             setUser(storedUser);
         }
 
+        // Fetch tasks and set them along with users
         getHouseTask().then((fetchedTasks) => {
-            if (fetchedTasks)
+            if (fetchedTasks) {
+                // Extract unique users from tasks and set them in state
+                const uniqueUsers = [...new Set(fetchedTasks.map(task => task.fullname))];
+                setUsers(uniqueUsers);
+
                 fetchedTasks = fetchedTasks.map((task) => {
                     task["dueDate"] = calculateDueDate(
                         task.startDate,
@@ -47,6 +56,7 @@ function TaskManager() {
                     );
                     return task;
                 });
+            }
             setTasks(fetchedTasks || []);
         });
 
@@ -54,9 +64,11 @@ function TaskManager() {
             if (
                 dropdownRef.current &&
                 !dropdownRef.current.contains(event.target) &&
-                !priorityButtonRef.current.contains(event.target)
+                !priorityButtonRef.current.contains(event.target) &&
+                !allTasksButtonRef.current.contains(event.target)
             ) {
                 setPriorityDropdownOpen(false);
+                setAllTasksDropdownOpen(false);
             }
         };
 
@@ -78,16 +90,37 @@ function TaskManager() {
         setPriorityDropdownOpen(false);
     };
 
+    const handleUserFilterChange = (user) => {
+        setSelectedUser(user);
+        setAllTasksDropdownOpen(false);
+    };
+
     const togglePriorityDropdown = () => {
-        setPriorityDropdownOpen(!isPriorityDropdownOpen);
+        if (isPriorityDropdownOpen) {
+            setPriorityDropdownOpen(false);
+        } else {
+            setPriorityDropdownOpen(true);
+            setAllTasksDropdownOpen(false);
+        }
+    };
+
+    const toggleAllTasksDropdown = () => {
+        if (isAllTasksDropdownOpen) {
+            setAllTasksDropdownOpen(false);
+        } else {
+            setAllTasksDropdownOpen(true);
+            setPriorityDropdownOpen(false);
+        }
     };
 
     const filteredTasks = tasks
         .filter((task) => task.status !== "completed")
         .filter((task) => {
             return (
-                priorityFilter === "All" ||
-                task.priority.toLowerCase() === priorityFilter.toLowerCase()
+                (priorityFilter === "All" ||
+                    task.priority.toLowerCase() ===
+                    priorityFilter.toLowerCase()) &&
+                (selectedUser === "All" || task.fullname === selectedUser)
             );
         });
 
@@ -102,17 +135,38 @@ function TaskManager() {
     const calculateDueDate = (startDate, frequency) => {
         const start = new Date(startDate);
         const dueDate = new Date(start);
-        dueDate.setDate(start.getDate() + frequency); // Add frequency (in days) to start date
-        return dueDate.toDateString(); // Return a human-readable format
+        dueDate.setDate(start.getDate() + frequency);
+        return dueDate.toDateString();
     };
 
     return (
         <div className="task-manager max-w-[500px] mx-auto">
             <h2 style={{ fontSize: "32px", fontWeight: "600" }}>Tasks</h2>
             <div className="task-filter-buttons">
-                <button onClick={() => setPriorityFilter("All")}>
-                    All Tasks
+                <button
+                    onClick={toggleAllTasksDropdown}
+                    ref={allTasksButtonRef}
+                >
+                    All Tasks<PriorityDropdown />
                 </button>
+                {isAllTasksDropdownOpen && (
+                    <div ref={dropdownRef} className="dropdown-menu">
+                        <ul>
+                            <li onClick={() => handleUserFilterChange("All")}>
+                                All Users
+                            </li>
+                            {users.map((user, index) => (
+                                <li
+                                    key={index}
+                                    onClick={() => handleUserFilterChange(user)}
+                                >
+                                    {user}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
                 <button
                     onClick={togglePriorityDropdown}
                     ref={priorityButtonRef}
@@ -153,7 +207,6 @@ function TaskManager() {
                             onClick={() => openTaskModal(task)}
                         >
                             <div className="logoicon">
-                                {" "}
                                 <TileIcon
                                     fill={priorityColors[task.priority]}
                                 />
@@ -187,6 +240,7 @@ function TaskManager() {
 }
 
 export default TaskManager;
+
 
 /*
 
