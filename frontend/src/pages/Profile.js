@@ -48,9 +48,9 @@ function Profile() {
     }, []);
 
     return (
-        <div className="text-black font-lexend">
+        <div className="max-w-[520px] mx-auto absolute top-0 text-black font-lexend bg-[#F6F6F6]">
             <div className="flex flex-col items-center justify-center bg-gradient-to-b from-[#7D8D9C] to-[#F6F6F6]">
-                <span className="inline-flex items-center justify-center size-[99px] rounded-full bg-darkGrey text-lg font-semibold text-white leading-none shadow-inner shadow-[inset_0_-4px_6px_rgba(0,0,0,0.2)]">
+                <span className="inline-flex items-center justify-center mt-20 size-[99px] rounded-full bg-darkGrey text-lg font-semibold text-white leading-none shadow-inner shadow-[inset_0_-4px_6px_rgba(0,0,0,0.2)]">
                     <span className="text-3xl">
                         {user.fullname
                             ?.split(" ")
@@ -90,7 +90,7 @@ function Profile() {
                 ))}
             </div>
             
-            <div className="m-6 text-center">
+            <div className="mb-28 text-center">
                 <button
                     className="bg-[#C40808] text-white text-[14px] w-28 h-10 rounded-3xl"
                     onClick={() => signout()}>

@@ -91,7 +91,7 @@ const Navbar = () => {
 
   return (
     <div className="flex justify-center ">
-      <div className="fixed bottom-0 w-[500px] px-7 mb-8">
+      <div className="fixed bottom-0 w-[500px] px-7 mb-8 z-40">
         <div className="bg-black text-white rounded-[50px]">
           <div className="h-16 flex flex-row justify-center space-x-16 sm:space-x-16 z-20">
             <button onClick={() => navigate('/home')}><HomeIcon fill="white" /></button>
