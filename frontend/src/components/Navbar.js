@@ -106,7 +106,7 @@ const Navbar = () => {
       <AnimatePresence>
         {isModalOpen && (
           <motion.div
-            className="max-w-[520px] border-2 border-b-0 border-slate-950/80 mx-auto fixed bottom-0 left-0 right-0 rounded-t-[1.5rem] bg-[#f6f6f6] text-white font-poppins overflow-y-auto overflow-x-hidden"
+            className="max-w-[520px] border-2 border-b-0 border-slate-950/80 mx-auto fixed bottom-0 left-0 right-0 rounded-t-[1.5rem] bg-[#f6f6f6] text-white font-poppins overflow-y-auto overflow-x-hidden z-50"
             initial={{ y: "100%" }}
             animate={{ y: "0%", opacity: 1, height: "92vh" }}
             exit={{ y: "100%" }}
