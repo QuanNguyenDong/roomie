@@ -146,7 +146,7 @@ function Roomie() {
                     <button
                         className="flex items-center justify-center rounded-full bg-black text-white text-xs w-20 mr-4 h-7"
                         onClick={handleLeave}>
-                        Leave
+                        Leave 
                     </button>
                     <button onClick={toggleExpand}>
                         <ChevronDownIcon
