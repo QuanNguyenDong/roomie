@@ -53,7 +53,7 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
             handleFlip();
 
             try {
-                await completeTask(task.taskId);
+                await completeTask(task.assignId);
             } catch (error) {
                 console.error("Failed to complete task:", error);
             }

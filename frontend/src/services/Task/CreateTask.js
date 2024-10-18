@@ -11,9 +11,9 @@ export const createTask = async (newTask) => {
     }
 };
 
-export const completeTask = async (taskId) => {
+export const completeTask = async (assignId) => {
     try {
-        const response = await axios.put(`${global.route}/tasks/${taskId}/complete`, {}, {
+        const response = await axios.put(`${global.route}/tasks/${assignId}/complete`, {}, {
             withCredentials: true,
         });
 
