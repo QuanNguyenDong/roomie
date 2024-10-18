@@ -24,6 +24,7 @@ import { getHomeEvents } from "../services/Event/getEvents.js";
 import { initGoogleApiClient, syncCalendarEvents } from '../services/Event/syncCalendar.js';
 
 import SyncIcon from "../svgs/Calendar/Sync.js";
+import CloseIconWhite from "../svgs/Calendar/CloseIconWhite.js";
 
 let colClasses = ['', 'col-start-2', 'col-start-3', 'col-start-4', 'col-start-5', 'col-start-6', 'col-start-7'];
 
@@ -217,11 +218,11 @@ function Calendar() {
         const hasEvents = filteredEvents.some(event => isSameDay(parseISO(event.startDate), day));
 
         if (hasTasks && hasEvents) {
-            return 'bg-gradient-to-r from-sky-500 to-purple-500 h-1 w-[32px]';
+            return 'bg-gradient-to-r from-sky-500 to-purple-500 h-1 w-[30px] rounded-lg';
         } else if (hasTasks) {
-            return 'bg-sky-500 h-1 w-[32px]';
+            return 'bg-sky-500 h-1 w-[30px] rounded-lg';
         } else if (hasEvents) {
-            return 'bg-purple-500 h-1 w-[32px]';
+            return 'bg-purple-500 h-1 w-[30px] rounded-lg';
         }
         return 'h-1 w-full';
     };
@@ -230,9 +231,9 @@ function Calendar() {
     return (
         <div className="max-w-[520px] mx-auto h-full text-black">
             <div className="flex justify-between h-10 mb-6 mx-8">
-                <text className="text-4xl font-bold font-lexend">Calendar</text>
-                <button onClick={syncCalendar}>
-                    <SyncIcon fill="black" />
+                <text className="text-4xl font-bold font-lexend ml-5">Calendar</text>
+                <button onClick={syncCalendar} className="mr-60 mt-[8px]">
+                    <SyncIcon/>
                 </button>
             </div>
 
@@ -362,7 +363,9 @@ function Calendar() {
                                 {/* <button onClick={toggleExpandModal} className="text-white">
                                     {modalState.expanded ? 'v' : '^'}
                                 </button> */}
-                                <button onClick={closeModal} className="text-red-400 w-5">x</button>
+                                <button onClick={closeModal}> 
+                                    <CloseIconWhite/>
+                                </button>
                             </div>
 
                             <div className="rounded-t-[2.5rem] mt-5 space-y-4 bg-white h-full pt-10 pb-44 px-10 overflow-y-auto">

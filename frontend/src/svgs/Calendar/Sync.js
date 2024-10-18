@@ -1,32 +1,23 @@
 import React from "react";
 
-const Icon = (props) => {
-    return (
-        <div className="transition-opacity duration-10 opacity-100 hover:opacity-50">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="35"
-                height="35"
-                fill="none"
-                viewBox="0 0 35 35"
-            >
-                <g clipPath="url(#clip0_542_1736)">
-                    <path
-                        stroke={props.fill}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="4"
-                        d="M11.667 24.792l5.833 5.833m0 0l5.833-5.833M17.5 30.625V17.5m12.95 8.881a7.292 7.292 0 00-4.2-13.256h-1.837A11.668 11.668 0 104.375 23.756"
-                    ></path>
-                </g>
-                <defs>
-                    <clipPath id="clip0_542_1736">
-                        <path fill={props.fill} d="M0 0H35V35H0z"></path>
-                    </clipPath>
-                </defs>
-            </svg>
-        </div>
-    );
+function Icon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="21"
+      height="18"
+      fill="none"
+      viewBox="0 0 21 18"
+    >
+      <path
+        stroke="#1E1E1E"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M7.333 12.75l3.167 3m0 0l3.167-3m-3.167 3V9m7.03 4.568a3.775 3.775 0 001.474-1.869c.269-.755.277-1.572.023-2.332a3.765 3.765 0 00-1.437-1.894 4.108 4.108 0 00-2.34-.723h-.997a5.895 5.895 0 00-1.303-2.388 6.318 6.318 0 00-2.273-1.61 6.64 6.64 0 00-5.527.189 6.248 6.248 0 00-2.145 1.76 5.842 5.842 0 00-1.119 2.47 5.695 5.695 0 00.132 2.685 5.913 5.913 0 001.357 2.361"
+      ></path>
+    </svg>
+  );
 }
 
 export default Icon;
