@@ -17,7 +17,7 @@ import TaskFrequencyIcon from "../svgs/TaskManagement/TaskFrequencyIcon";
 import DurationIcon from "../svgs/TaskManagement/DurationIcon";
 import DropdownIcon from "../svgs/Navbar/DropdownIcon";
 
-import createTask from '../services/Task/CreateTask';
+import { createTask } from '../services/Task/CreateTask';
 
 const Navbar = () => {
   const navigate = useNavigate();

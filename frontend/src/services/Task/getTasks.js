@@ -15,7 +15,7 @@ const getHouseTask = async() => {
     try{
         const res = await axios.get(global.route + `/house/tasks/current-week`, {
             withCredentials: true,
-        });       
+        });
         return res.data.activeAssignment;
     } catch (error) {
         console.error(error); 

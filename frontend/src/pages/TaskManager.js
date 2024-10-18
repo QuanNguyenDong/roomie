@@ -1,21 +1,43 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styling/taskManager.scss";
-import TileIcon from "../svgs/Home/Tasks/TileIcon.js";
-import FrequencyIcon from "../svgs/TaskManagement/FrequencyIcon.js";
-import TaskModal from "./TaskCard.js";
+
+import getUserProfile from "../services/User/getUserProfile";
 import { getHouseTask } from "../services/Task/getTasks.js";
 import PriorityDropdown from "../svgs/TaskManagement/PriorityDropdown.js";
 
+import TileIcon from "../svgs/Home/Tasks/TileIcon.js";
+import FrequencyIcon from "../svgs/TaskManagement/FrequencyIcon.js";
+
+import TaskModal from "./TaskCard.js";
+
 function TaskManager() {
+    const [user, setUser] = useState({});
     const [tasks, setTasks] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null);
     const [priorityFilter, setPriorityFilter] = useState("All");
     const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false);
 
+    let navigate = useNavigate();
+
     const dropdownRef = useRef(null);
     const priorityButtonRef = useRef(null);
 
     useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        if (!storedUser) {
+            getUserProfile()
+                .then((user) => {
+                    if (user) {
+                        localStorage.setItem("user", JSON.stringify(user));
+                        setUser(user);
+                    } else navigate("/");
+                })
+                .catch((error) => navigate("/"));
+        } else {
+            setUser(storedUser);
+        }
+
         getHouseTask().then((fetchedTasks) => {
             if (fetchedTasks)
                 fetchedTasks = fetchedTasks.map((task) => {
@@ -60,12 +82,14 @@ function TaskManager() {
         setPriorityDropdownOpen(!isPriorityDropdownOpen);
     };
 
-    const filteredTasks = tasks.filter((task) => {
-        return (
-            priorityFilter === "All" ||
-            task.priority.toLowerCase() === priorityFilter.toLowerCase()
-        );
-    });
+    const filteredTasks = tasks
+        .filter((task) => task.status !== "completed")
+        .filter((task) => {
+            return (
+                priorityFilter === "All" ||
+                task.priority.toLowerCase() === priorityFilter.toLowerCase()
+            );
+        });
 
     const openTaskModal = async (task) => {
         setSelectedTask(task);
@@ -152,6 +176,7 @@ function TaskManager() {
                     ))}
             </div>
             <TaskModal
+                user={user}
                 task={selectedTask}
                 isOpen={!!selectedTask}
                 onClose={closeTaskModal}

@@ -213,4 +213,39 @@ router.get("/house/tasks", currentUser, async (req, res) => {
     return res.status(200).send({ activeAssignment });
 });
 
+router.put("/tasks/:taskId/complete", currentUser, async (req, res) => {
+    const user = await User.findById(req.currentUser?.id);
+    if (!user) {
+        return res.status(401).send({ message: "Unauthorized" });
+    }
+
+    const { taskId } = req.params;
+
+    try {
+        const assignTask = await AssignTask.findOne({
+            user: req.currentUser?.id,
+            task: taskId
+        })
+            .populate("user")
+            .populate("task");
+
+        if (!assignTask) {
+            return res.status(404).send({ message: "Task not found" });
+        }
+
+        if (!String(assignTask.user) === String(user._id)) {
+            return res.status(403).send({ message: "Forbidden" });
+        }
+
+        assignTask.status = "completed";
+        await assignTask.save();
+
+        return res.status(200).send({ message: "Task marked as complete", assignTask });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ message: "Server error" });
+    }
+});
+
+
 module.exports = router;

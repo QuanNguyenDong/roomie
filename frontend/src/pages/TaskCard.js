@@ -1,5 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+
+import { completeTask } from '../services/Task/CreateTask';
+
 import "../styling/taskCard.scss"
+import TickIcon from "../svgs/TaskManagement/TickIcon";
 import CloseIcon from "../svgs/TaskManagement/CloseIcon";
 import PriorityIcon from "../svgs/TaskManagement/PriorityIcon";
 import TaskFrequencyIcon from "../svgs/TaskManagement/TaskFrequencyIcon";
@@ -9,7 +14,11 @@ import DeadlineIcon from "../svgs/TaskManagement/DeadlineIcon";
 
 import CustomCheckbox from '../components/common/CustomCheckbox';
 
-function TaskModal({ task, isOpen, onClose }) {
+function TaskModal({ user, task, isOpen, onClose }) {
+    const [flipped, setFlipped] = useState(false);
+    const [bgColor, setBgColor] = useState('bg-gray-400');
+    const [isChecked, setIsChecked] = useState(false);
+
     if (!isOpen || !task) return null;
 
     const getHeaderGradient = (priority) => {
@@ -38,25 +47,64 @@ function TaskModal({ task, isOpen, onClose }) {
         }
     };
 
+    const handleCheckboxChange = async () => {
+        if (!isChecked && task.userId === user.userId) {
+            setIsChecked(true);
+            handleFlip();
+
+            try {
+                await completeTask(task.taskId);
+            } catch (error) {
+                console.error("Failed to complete task:", error);
+            }
+        }
+    };
+
+
+    const handleFlip = () => {
+        setFlipped(!flipped);
+        setBgColor('bg-gray-400');
+
+        setTimeout(() => {
+            if (!flipped) {
+                setBgColor('bg-[#58AF70]');
+            }
+        }, 200);
+    };
+
     return (
         <div className="modal-overlay text-black" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="header" style={{ background: getHeaderGradient(task.priority) }}>
-                    <div className='task-avatar2'>{task.fullname.charAt(0).toUpperCase()}</div>
+                    <motion.div
+                        className=""
+                        animate={{ rotateY: flipped ? 180 : 0 }}
+                        transition={{ duration: 0.6 }}
+                        style={{ perspective: 1000 }}
+                    >
+                        <div className={`mt-5 w-[120px] h-[120px] rounded-full ${bgColor} flex justify-center items-center my-5 mx-auto text-5xl text-white shadow-lg`}>
+                            {bgColor === 'bg-gray-400' && task.fullname.charAt(0).toUpperCase()}
+                            {bgColor === 'bg-[#58AF70]' && <TickIcon />}
+                        </div>
+                    </motion.div>
+
                     <button className="close-button" onClick={onClose}><CloseIcon /></button>
+
                     <div className="flex flex-row justify-between">
                         <text className='text-3xl font-bold p-2'>{task.taskname}</text>
-                        <div className="bg-white w-16 h-7 rounded-3xl">
-                            <CustomCheckbox/>
-                        </div>
+                        {task?.userId === user?.userId && (
+                            <div className="bg-white w-20 h-8 rounded-3xl mt-2.5">
+                                <CustomCheckbox isChecked={isChecked} onChange={handleCheckboxChange} />
+                            </div>    
+                        )}
                     </div>
-                    
+
                     <div className={`priority-tag ${getPriorityClass(task.priority)}`}>
                         <p style={{ marginTop: "8px" }}>{task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}</p>
                     </div>
                 </div>
 
-                <text class="text-3xl font-lato ml-10 mb-4 mt-0 font-light">Description</text>
+                <text class="text-3xl font-lato ml-10 mb-4 mt-4 font-light">Description</text>
                 <div className='description'>
                     <p class="font-sans font-extralight text-sm">{task.description}</p>
                 </div>
