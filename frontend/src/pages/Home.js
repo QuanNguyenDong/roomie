@@ -181,7 +181,7 @@ function Home() {
             </div>
             <TaskModal
                 user={user}
-                taskuser={user}
+                taskuser={user?.userId}
                 task={selectedTask}
                 isOpen={!!selectedTask}
                 onClose={closeTaskModal}

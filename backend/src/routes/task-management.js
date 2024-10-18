@@ -237,6 +237,7 @@ router.put("/tasks/:taskId/complete", currentUser, async (req, res) => {
             return res.status(403).send({ message: "Forbidden" });
         }
 
+        console.log("HIII", assignTask);
         assignTask.status = "completed";
         await assignTask.save();
 

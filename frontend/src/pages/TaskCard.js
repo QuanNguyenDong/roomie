@@ -48,7 +48,7 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
     };
 
     const handleCheckboxChange = async () => {
-        if (!isChecked && taskuser.userId === user.userId) {
+        if (!isChecked && taskuser === user.userId) {
             setIsChecked(true);
             handleFlip();
 
@@ -69,7 +69,7 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
             if (!flipped) {
                 setBgColor('bg-[#58AF70]');
             }
-        }, 200);
+        }, 100);
     };
 
     return (
@@ -79,7 +79,7 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
                     <motion.div
                         className=""
                         animate={{ rotateY: flipped ? 180 : 0 }}
-                        transition={{ duration: 0.6 }}
+                        transition={{ duration: 0.3 }}
                         style={{ perspective: 1000 }}
                     >
                         <div className={`mt-5 w-[120px] h-[120px] rounded-full ${bgColor} flex justify-center items-center my-5 mx-auto text-5xl text-white shadow-lg`}>
@@ -92,7 +92,7 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
 
                     <div className="flex flex-row justify-between">
                         <text className='text-3xl font-bold p-2'>{task.taskname}</text>
-                        {taskuser?.userId === user?.userId && (
+                        {taskuser === user?.userId && (
                             <div className="bg-white w-20 h-8 rounded-3xl mt-2.5">
                                 <CustomCheckbox isChecked={isChecked} onChange={handleCheckboxChange} />
                             </div>    
