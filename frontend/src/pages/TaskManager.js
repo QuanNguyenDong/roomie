@@ -177,6 +177,7 @@ function TaskManager() {
             </div>
             <TaskModal
                 user={user}
+                taskuser={selectedTask?.userId}
                 task={selectedTask}
                 isOpen={!!selectedTask}
                 onClose={closeTaskModal}

@@ -14,7 +14,7 @@ import DeadlineIcon from "../svgs/TaskManagement/DeadlineIcon";
 
 import CustomCheckbox from '../components/common/CustomCheckbox';
 
-function TaskModal({ user, task, isOpen, onClose }) {
+function TaskModal({ user, task, taskuser, isOpen, onClose }) {
     const [flipped, setFlipped] = useState(false);
     const [bgColor, setBgColor] = useState('bg-gray-400');
     const [isChecked, setIsChecked] = useState(false);
@@ -48,7 +48,7 @@ function TaskModal({ user, task, isOpen, onClose }) {
     };
 
     const handleCheckboxChange = async () => {
-        if (!isChecked && task.userId === user.userId) {
+        if (!isChecked && taskuser.userId === user.userId) {
             setIsChecked(true);
             handleFlip();
 
@@ -92,7 +92,7 @@ function TaskModal({ user, task, isOpen, onClose }) {
 
                     <div className="flex flex-row justify-between">
                         <text className='text-3xl font-bold p-2'>{task.taskname}</text>
-                        {task?.userId === user?.userId && (
+                        {taskuser?.userId === user?.userId && (
                             <div className="bg-white w-20 h-8 rounded-3xl mt-2.5">
                                 <CustomCheckbox isChecked={isChecked} onChange={handleCheckboxChange} />
                             </div>    
