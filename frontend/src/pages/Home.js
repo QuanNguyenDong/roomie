@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import getUserProfile from "../services/User/getUserProfile";
 import { useNavigate } from "react-router-dom";
 
+import TaskModal from "./TaskCard.js";
 import Tile from "../components/Home/Tile";
 import Event from "../components/Home/Event";
 
@@ -13,6 +14,7 @@ function Home() {
     const [tasks, setTasks] = useState([]);
     const [events, setEvents] = useState([]);
     const [taskFilter, setTaskFilter] = useState("all");
+    const [selectedTask, setSelectedTask] = useState(null);
 
     let navigate = useNavigate();
 
@@ -96,6 +98,13 @@ function Home() {
         return eventStartDate >= startOfWeek && eventStartDate <= endOfWeek && eventStartDate >= today;
     });
 
+    const openTaskModal = async (task) => {
+        setSelectedTask(task);
+    };
+
+    const closeTaskModal = () => {
+        setSelectedTask(null);
+    };
 
     return (
         <div className="max-w-[520px] mx-auto h-full text-black font-poppins">
@@ -137,7 +146,12 @@ function Home() {
                                     new Date(a.dueDate) - new Date(b.dueDate)
                             )
                             .map((task, index) => (
-                                <Tile key={index} task={task} />
+                                <div
+                                    className="mt-2"
+                                    key={index}
+                                    onClick={() => openTaskModal(task)}>
+                                    <Tile task={task} />
+                                </div>
                             ))}
                     </div>
                 )}
@@ -165,6 +179,11 @@ function Home() {
                     )}
                 </div>
             </div>
+            <TaskModal
+                task={selectedTask}
+                isOpen={!!selectedTask}
+                onClose={closeTaskModal}
+            />
         </div>
     );
 }
