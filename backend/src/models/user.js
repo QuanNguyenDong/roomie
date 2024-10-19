@@ -21,6 +21,10 @@ const userSchema = mongoose.Schema(
         stars : {
             type: Number,
             default: 0,
+        },
+        taskscompleted: {
+            type: Number,
+            default: 0,
         }
     },
     {

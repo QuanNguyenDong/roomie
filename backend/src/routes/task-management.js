@@ -213,19 +213,15 @@ router.get("/house/tasks", currentUser, async (req, res) => {
     return res.status(200).send({ activeAssignment });
 });
 
-// it's setting the wrong value by marking an older version of the same task as complete
-// there are different assign tasks with the same user and task ids so to find the correct one,
-// we cannot use the user and task ids, we have to use assigntask directly, or ALSO use the start/assigned Date to verify
 router.put("/tasks/:assignId/complete", currentUser, async (req, res) => {
     const user = await User.findById(req.currentUser?.id);
     if (!user) {
         return res.status(401).send({ message: "Unauthorized" });
     }
 
-    const { assignId } = req.params; // assignTask ID from URL
+    const { assignId } = req.params;
 
     try {
-        // Directly find the task by assignTask ID
         const assignTask = await AssignTask.findById(assignId)
             .populate("user")
             .populate("task");
@@ -234,13 +230,14 @@ router.put("/tasks/:assignId/complete", currentUser, async (req, res) => {
             return res.status(404).send({ message: "AssignTask not found" });
         }
 
-        // Check if the current user matches the user in assignTask
         if (String(assignTask.user._id) !== String(user._id)) {
             return res.status(403).send({ message: "Forbidden" });
         }
 
-        // Mark the task as complete
         assignTask.status = "completed";
+        user.taskscompleted += 1;
+
+        await user.save();
         await assignTask.save();
 
         return res.status(200).send({ message: "Task marked as complete", assignTask });

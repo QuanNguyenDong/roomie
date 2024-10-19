@@ -35,6 +35,12 @@ const labelColours = [
     "#DA70D6", "#8A2BE2", "#20B2AA", "#FF6347", "#4682B4"
 ];
 
+const priorityColors = {
+    High: "#C49191",
+    Medium: "#D8AF8A",
+    Low: "#9DB492",
+};
+
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
 }
@@ -286,7 +292,7 @@ function Calendar() {
                             {format(firstDayCurrentMonth, 'yyyy')}
                         </text>
                     </div>
-                    <div className="flex flex-row">
+                    <div className="flex flex-row z-20">
                         <button
                             type="button"
                             onClick={() => handleDatesChange(-1)}
@@ -312,8 +318,7 @@ function Calendar() {
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
                 <div className="pt-4">
-                    <div className="max-w-md px-4 mx-auto">
-
+                    <div className="max-w-md px-4 mx-auto z-10">
                         <div className="overflow-hidden">
                             <motion.div
                                 initial={{ y: 0 }}
@@ -435,7 +440,8 @@ function Calendar() {
                                 combineAndSortItems(filteredTasks, filteredEvents).filter(item => isSameDay(parseISO(item.dueDate || item.startDate), selectedDay)).map(item => (
                                     <div
                                         key={item.id}
-                                        className={`p-4 border-l-[8px] border-[1px] h-24 ${item.eventname ? 'border-purple-500' : 'border-blue-500'} bg-white shadow-md rounded-2xl ${item.taskname ? 'cursor-pointer' : ''}`}
+                                        className={`p-4 border-l-[8px] border-[1px] h-24 bg-white shadow-md rounded-2xl ${item.taskname ? 'cursor-pointer' : ''}`}
+                                        style={{ borderColor: item.taskname ? priorityColors[item.priority] : (item.eventname ? '#7742A0' : '#3176A8') }}
                                         onClick={() => {
                                             if (item.taskname)
                                                 openTaskModal(item);

@@ -36,11 +36,6 @@ const Reviews = () => {
     fetchReviews();
   }, [navigate]);
 
-  //this data needs to be calculated from other tables
-  const additionalData = {
-    tasksCompleted: 0,
-  };  
-
 //need a reivew data table
 /*
   const reviewData = [
@@ -118,7 +113,7 @@ const Reviews = () => {
           <Tile
             type="tasksCompleted"
             title="Tasks Completed"
-            tasksCompleted={additionalData.tasksCompleted}
+            tasksCompleted={user.taskscompleted}
             />
         </div>
 

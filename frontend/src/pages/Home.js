@@ -75,8 +75,6 @@ function Home() {
         }
     });
 
-    console.log(events);
-
     const filteredEvents = events.filter((event) => {
         const today = new Date();
 

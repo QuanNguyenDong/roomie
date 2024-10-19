@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 
 import { completeTask } from '../services/Task/CreateTask';
@@ -108,13 +109,28 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
                         {taskuser === user?.userId && task.status !== 'completed' && (
                             <div className="bg-white w-20 h-8 rounded-3xl mt-2.5">
                                 <CustomCheckbox isChecked={isChecked} onChange={handleCheckboxChange} />
-                            </div>    
+                            </div>
                         )}
                     </div>
 
-                    <div className={`priority-tag ${getPriorityClass(task.priority)}`}>
-                        <p style={{ marginTop: "8px" }}>{task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}</p>
-                    </div>
+                    {
+                        task.status !== "completed" ? (
+                            <div className={`priority-tag ${getPriorityClass(task.priority)}`}>
+                                <p className="mt-3">{task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}</p>
+                            </div>
+                        ) : (
+                            task.status === "completed" && (
+                                <div className="completed-tag bg-white">
+                                    <div className="absolute bg-[#7D8D9C] size-6 left-10 rounded-full flex items-center justify-center">
+                                        <text className="text-xs font-medium">
+                                            {task.fullname.charAt(0).toUpperCase()}
+                                        </text>
+                                    </div>
+                                    <p className="text-black text-xs font-light mt-3 ml-6">Completed</p>
+                                </div>
+                            )
+                        )
+                    }
                 </div>
 
                 <text class="text-3xl font-lato ml-10 mb-4 mt-4 font-light">Description</text>
@@ -130,7 +146,7 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
                                     Deadline:
                                 </span>
                                 <span className="font-sans font-extralight">
-                                    {task.dueDate}
+                                    {format(task.dueDate, 'hh:mm a - dd MM yyyy')}
                                 </span>
                             </span>
                         </p>
