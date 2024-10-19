@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 import { completeTask } from '../services/Task/CreateTask';
@@ -18,6 +18,18 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
     const [flipped, setFlipped] = useState(false);
     const [bgColor, setBgColor] = useState('bg-gray-400');
     const [isChecked, setIsChecked] = useState(false);
+
+    useEffect(() => {
+        if (isOpen && task) {
+            if (task.status === "completed") {
+                setBgColor('bg-[#58AF70]');
+                setFlipped(true);
+            } else {
+                setBgColor('bg-gray-400');
+                setFlipped(false);
+            }
+        }
+    }, [isOpen, task]);
 
     if (!isOpen || !task) return null;
 
@@ -48,7 +60,8 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
     };
 
     const handleCheckboxChange = async () => {
-        if (!isChecked && taskuser === user.userId && !task.status === 'completed') {
+        console.log(!isChecked, taskuser, user.userId, task.status);
+        if (!isChecked && taskuser === user.userId && task.status !== 'completed') {
             setIsChecked(true);
             handleFlip();
 
