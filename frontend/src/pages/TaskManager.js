@@ -139,6 +139,13 @@ function TaskManager() {
         return dueDate.toDateString();
     };
 
+    const displayFrequency = (frequency) => {
+        if (frequency === 1) return "Daily";
+        if (frequency === 7) return "Weekly";
+        if (frequency === 30) return "Monthly";
+        return `${frequency} days`;
+    };
+
     return (
         <div className="task-manager max-w-[500px] mx-auto">
             <h2 style={{ fontSize: "32px", fontWeight: "600" }}>Tasks</h2>
@@ -147,7 +154,8 @@ function TaskManager() {
                     onClick={toggleAllTasksDropdown}
                     ref={allTasksButtonRef}
                 >
-                    All Tasks<PriorityDropdown />
+                    <span className="priority-text">All Tasks</span>
+                    <PriorityDropdown />
                 </button>
                 {isAllTasksDropdownOpen && (
                     <div ref={dropdownRef} className="dropdown-menu">
@@ -212,18 +220,18 @@ function TaskManager() {
                                 />
                             </div>
                             <div className="task-header">
-                                <h3>{task.taskname}</h3>
+                                <text className="font-poppins font-bold max-w-full text-xl overflow-ellipses line-clamp-1">{task.taskname}</text> 
                                 <div className="task-avatar">
                                     {task.fullname.charAt(0).toUpperCase()}
                                 </div>
                             </div>
-                            <p className="task-subtext">{task.description}</p>
+                            <p className="task-subtext max-w-60 text-white line-clamp-3">{task.description}</p>
                             <div className="task-footer">
                                 <p>
                                     {task.dueDate}
-                                    <FrequencyIcon /> {task.frequency} days
+                                    <FrequencyIcon /> {displayFrequency(task.frequency)}
                                 </p>
-                                <p>{task.duration} minutes</p>
+                                <p className="font-medium">{task.duration} Min</p>
                             </div>
                         </div>
                     ))}
