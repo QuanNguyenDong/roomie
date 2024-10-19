@@ -148,7 +148,9 @@ function TaskManager() {
 
     return (
         <div className="task-manager max-w-[500px] mx-auto">
-            <h2 style={{ fontSize: "32px", fontWeight: "600" }}>Tasks</h2>
+            <text className="text-3xl font-bold font-lexend">
+                Tasks
+            </text>
             <div className="task-filter-buttons">
                 <button
                     onClick={toggleAllTasksDropdown}
