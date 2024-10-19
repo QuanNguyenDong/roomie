@@ -322,22 +322,28 @@ function Calendar() {
                                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                 className="flex overflow-x-auto w-full space-x-2 mt-2"
                             >
-                                {users.map((user, idx) => {
-                                    const bgColor = labelColours[idx % labelColours.length];
+                                {users.length === 0 ? (
+                                    <button className="flex items-center rounded-full bg-gray-400/10 px-6 py-1 text-xs font-bold leading-5 text-gray-500" disabled>
+                                        You
+                                    </button>
+                                ) : (
+                                    users.map((user, idx) => {
+                                        const bgColor = labelColours[idx % labelColours.length];
 
-                                    return (
-                                        <button
-                                            key={user}
-                                            onClick={() => filterByUser(user)}
-                                            className="flex items-center rounded-full bg-teal-400/10 px-6 py-1 text-xs font-bold leading-5 text-selected"
-                                            style={{
-                                                backgroundColor: selectedUser === user ? bgColor : '#E3E3E3'
-                                            }}
-                                        >
-                                            {capitalizeFirstLetter(user)}
-                                        </button>
-                                    );
-                                })}
+                                        return (
+                                            <button
+                                                key={user}
+                                                onClick={() => filterByUser(user)}
+                                                className="flex items-center rounded-full bg-teal-400/10 px-6 py-1 text-xs font-bold leading-5 text-selected"
+                                                style={{
+                                                    backgroundColor: selectedUser === user ? bgColor : '#E3E3E3'
+                                                }}
+                                            >
+                                                {capitalizeFirstLetter(user)}
+                                            </button>
+                                        );
+                                    })
+                                )}
                             </motion.div>
                         </div>
 

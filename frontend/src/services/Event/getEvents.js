@@ -18,9 +18,10 @@ const getHomeEvents = async () => {
             withCredentials: true,
         });
         
-        return res.data;
+        return Array.isArray(res.data) ? res.data : [];
     } catch (error) {
         console.error(error);
+        return [];
     }
 }
 
