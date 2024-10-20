@@ -1,6 +1,6 @@
 const express = require("express");
 const currentUser = require("../middlewares/current-user");
-const { format, addDays, subDays } = require("date-fns");
+const { addDays } = require("date-fns");
 
 const Task = require("../models/task");
 const User = require("../models/user");
@@ -22,11 +22,11 @@ const allocateTask = async (task) => {
             .filter(
                 (assignTask) => String(assignTask.user) === String(user.user)
             )
-            .reduce((acc, assignTask) => acc + assignTask.task.duration, 0),
+            .reduce((acc, assignTask) => acc + (assignTask.task?.duration ?? 0), 0),
     }));
 
-    const today = new Date();
-    const nextSunday = addDays(today, 7 - today.getDay());
+    const today = addDays(new Date(), - task.frequency);
+    const nextSunday = addDays(new Date(), 7);
     assignments = [];
     for (
         let date = today;
@@ -100,7 +100,7 @@ router.get("/user/tasks", currentUser, async (req, res) => {
         ...task,
         ...assign,
     }));
-    
+
     return res.status(200).send({ assignedTasks });
 });
 
@@ -113,17 +113,16 @@ router.get("/house/tasks/current-week", currentUser, async (req, res) => {
     const joinHouse = await JoinHouse.findOne({
         user: req.currentUser?.id,
     }).populate("house");
-    
+
     if (!joinHouse) return res.send({});
     const house = joinHouse.house;
     var tasks = await Task.find({ house: house._id });
     taskIds = tasks.map((task) => task._id);
-    
-    const currentDate = new Date();
+
     var assignedTasks = await AssignTask.find({ task: { $in: taskIds } })
         .populate("task")
         .populate("user");
-    assignedTasks = assignedTasks.map((task) => task.toJSON());    
+    assignedTasks = assignedTasks.map((task) => task.toJSON());
 
     assignedTasks = assignedTasks.map(({ user, task, ...assign }) => ({
         userId: user.userId,
@@ -135,13 +134,16 @@ router.get("/house/tasks/current-week", currentUser, async (req, res) => {
 
     let activeAssignment = assignedTasks.filter((assignedTask) => {
         const startDate = new Date(assignedTask.startDate);
-        const endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + assignedTask.frequency); // Add task frequency to get the end date
-        return currentDate >= startDate && currentDate <= endDate;
+        const endDate = addDays(startDate, assignedTask.frequency); // Add task frequency to get the end date
+        left = addDays(new Date(), -1);
+        right = addDays(new Date(), 7);
+        return left <= endDate && endDate <= right;
     });
 
     if (activeAssignment.length === 0) {
         const futureAssignments = {};
+        const currentDate = new Date();
+
         assignedTasks.forEach((assignedTask) => {
             const startDate = new Date(assignedTask.startDate);
             const taskId = assignedTask.taskId.toString();
@@ -158,7 +160,7 @@ router.get("/house/tasks/current-week", currentUser, async (req, res) => {
 
         activeAssignment = Object.values(futureAssignments);
     }
-    
+
     return res.status(200).send({ activeAssignment });
 });
 
@@ -171,17 +173,17 @@ router.get("/house/tasks", currentUser, async (req, res) => {
     const joinHouse = await JoinHouse.findOne({
         user: req.currentUser?.id,
     }).populate("house");
-    
+
     if (!joinHouse) return res.send({});
     const house = joinHouse.house;
     var tasks = await Task.find({ house: house._id });
     taskIds = tasks.map((task) => task._id);
-    
+
     const currentDate = new Date();
     var assignedTasks = await AssignTask.find({ task: { $in: taskIds } })
         .populate("task")
         .populate("user");
-    assignedTasks = assignedTasks.map((task) => task.toJSON());    
+    assignedTasks = assignedTasks.map((task) => task.toJSON());
 
     let activeAssignment = assignedTasks.map(({ user, task, ...assign }) => ({
         userId: user.userId,
@@ -209,7 +211,7 @@ router.get("/house/tasks", currentUser, async (req, res) => {
 
         activeAssignment = Object.values(futureAssignments);
     }
-    
+
     return res.status(200).send({ activeAssignment });
 });
 
@@ -240,13 +242,13 @@ router.put("/tasks/:assignId/complete", currentUser, async (req, res) => {
         await user.save();
         await assignTask.save();
 
-        return res.status(200).send({ message: "Task marked as complete", assignTask });
+        return res
+            .status(200)
+            .send({ message: "Task marked as complete", assignTask });
     } catch (error) {
         console.error(error);
         return res.status(500).send({ message: "Server error" });
     }
 });
-
-
 
 module.exports = router;
