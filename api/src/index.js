@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
 const cookieSession = require("cookie-session");
 const cors = require("cors");
-require("./bin/www");
 
 const authRouter = require("./routes/auth");
 const currentUserRouter = require("./routes/profile");
@@ -62,10 +61,12 @@ app.use(questionRouter);
 app.use(eventRouter);
 app.use(reviewRouter);
 
-app.use("/api", (req, res) => {
+app.use("/", (req, res) => {
     res.send("Hello world");
 });
 
 app.listen(port, () => {
     console.log(`App listening on port http://localhost:${port}`);
 });
+
+module.exports = app;
