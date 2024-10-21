@@ -174,7 +174,7 @@ function Roomie() {
                                         <div className="flex flex-row">
                                             <div
                                                 className="text-white text-sm mr-2 font-semibold w-6 h-6 rounded-full flex items-center justify-center"
-                                                style={{ background: `linear-gradient(135deg, ${bgColor} 70%, #df9 100%)` }}
+                                                style={{ background: `${bgColor}` }}
                                             >
                                                 {user.username[0].toUpperCase()}
                                             </div>

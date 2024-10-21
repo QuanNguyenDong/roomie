@@ -160,7 +160,7 @@ const ReviewModal = () => {
                                     <div className="flex flex-row">
                                         <div
                                                 className="text-white text-3xl font-semibold size-[75px] rounded-full flex items-center justify-center"
-                                                style={{ background: `linear-gradient(135deg, ${labelColours[reviewUserIndex % labelColours.length]} 70%, #df9 100%)` }}
+                                                style={{ background: `${labelColours[reviewUserIndex % labelColours.length]}` }}
                                         >
                                             {renderUserInitials(reviewUser?.fullname).toUpperCase()}
                                         </div>

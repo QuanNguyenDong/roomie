@@ -251,6 +251,9 @@ function Calendar() {
         const hasTasks = filteredTasks.some(task => isSameDay(parseISO(task.dueDate), day));
         const hasEvents = filteredEvents.some(event => isSameDay(parseISO(event.startDate), day));
 
+        if (modalState.open && modalState.expanded)
+            return 'bg-transparent h-1 w-[30px] rounded-lg'
+
         if (hasTasks && hasEvents) {
             return 'bg-gradient-to-r from-sky-500 to-purple-500 h-1 w-[30px] rounded-lg';
         } else if (hasTasks) {
@@ -317,7 +320,7 @@ function Calendar() {
                 exit={{ y: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-                <div className="pt-4">
+                <div className="pt-2">
                     <div className="max-w-md px-4 mx-auto z-10">
                         <div className="overflow-hidden">
                             <motion.div

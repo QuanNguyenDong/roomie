@@ -42,10 +42,8 @@ function TaskManager() {
             setUser(storedUser);
         }
 
-        // Fetch tasks and set them along with users
         getHouseTask().then((fetchedTasks) => {
             if (fetchedTasks) {
-                // Extract unique users from tasks and set them in state
                 const uniqueUsers = [...new Set(fetchedTasks.map(task => task.fullname))];
                 setUsers(uniqueUsers);
 
