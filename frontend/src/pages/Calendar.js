@@ -339,7 +339,7 @@ function Calendar() {
                                             <button
                                                 key={user}
                                                 onClick={() => filterByUser(user)}
-                                                className="flex items-center rounded-full bg-teal-400/10 px-6 py-1 text-xs font-bold leading-5 text-selected"
+                                                className="flex items-center rounded-full bg-teal-400/10 px-5 py-1 text-xs font-bold leading-5 text-selected"
                                                 style={{
                                                     backgroundColor: selectedUser === user ? bgColor : '#E3E3E3',
                                                     color: selectedUser === user ? "#fff" : "#000",
