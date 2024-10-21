@@ -31,7 +31,7 @@ import CloseIconWhite from "../svgs/Calendar/CloseIconWhite.js";
 let colClasses = ['', 'col-start-2', 'col-start-3', 'col-start-4', 'col-start-5', 'col-start-6', 'col-start-7'];
 
 const labelColours = [
-    "#3176A8", "#42A079", "#7742A0", "#A04842", "#A07542",
+    "#7ABAE9", "#8CCDB2", "#AC8BC6", "#C57F7B", "#E0BDA9",
     "#DA70D6", "#8A2BE2", "#20B2AA", "#FF6347", "#4682B4"
 ];
 
@@ -264,7 +264,7 @@ function Calendar() {
     return (
         <div className="max-w-[520px] mx-auto h-full text-black">
             <div className="flex h-10 mb-2 mx-8">
-                <text className="text-3xl font-bold font-lexend">
+                <text className="text-3xl font-bold font-lexend ml-[45px]">
                     Calendar
                 </text>
                 <button onClick={syncCalendar} className="ml-2">
@@ -341,7 +341,9 @@ function Calendar() {
                                                 onClick={() => filterByUser(user)}
                                                 className="flex items-center rounded-full bg-teal-400/10 px-6 py-1 text-xs font-bold leading-5 text-selected"
                                                 style={{
-                                                    backgroundColor: selectedUser === user ? bgColor : '#E3E3E3'
+                                                    backgroundColor: selectedUser === user ? bgColor : '#E3E3E3',
+                                                    color: selectedUser === user ? "#fff" : "#000",
+                                                    fontWeight:"500"
                                                 }}
                                             >
                                                 {capitalizeFirstLetter(user)}
@@ -447,14 +449,22 @@ function Calendar() {
                                                 openTaskModal(item);
                                         }}>
                                         <div className="flex items-center space-x-4">
-                                            <div className="bg-[#7D8D9C] w-8 h-8 rounded-full mt-2 flex items-center justify-center">
-                                                <text className="text-base font-semibold">
-                                                    {item.user?.fullname?.charAt(0)?.toUpperCase() || item.fullname?.charAt(0)?.toUpperCase()}
+                                            <div className="bg-[#7D8D9C] w-12 h-12 rounded-full mt-2 flex items-center justify-center">
+                                                <text className="text-base text-lg font-semibold">
+                                                { 
+                                                    item.user?.fullname
+                                                        ? item.user.fullname.split(' ')
+                                                        .map(name => name.charAt(0).toUpperCase())
+                                                        .join('')
+                                                        : item.fullname.split(' ')
+                                                        .map(name => name.charAt(0).toUpperCase())
+                                                        .join('')
+                                                    }
                                                 </text>
                                             </div>
                                             <div>
-                                                <h4 className="text-lg font-bold text-black">{item.eventname || item.taskname}</h4>
-                                                <p className="text-sm text-black">{format(parseISO(item.dueDate || item.startDate), 'p')} - {format(parseISO(item.endDate || item.endDate), 'p')}</p>
+                                                <h4 className="text-[14px] mt-2 font-bold text-black">{item.eventname || item.taskname}</h4>
+                                                <p className="text-[12px] mt-1 text-black">{format(parseISO(item.dueDate || item.startDate), 'p')} - {format(parseISO(item.endDate || item.endDate), 'p')}</p>
                                             </div>
                                         </div>
                                     </div>
