@@ -267,11 +267,11 @@ function Calendar() {
     return (
         <div className="max-w-[520px] mx-auto h-full text-black">
             <div className="flex h-10 mb-2 mx-8">
-                <text className="text-3xl font-bold font-lexend ml-[45px]">
+                <text className="text-3xl font-bold font-lexend ml-10">
                     Calendar
                 </text>
                 <button onClick={syncCalendar} className="ml-2">
-                    <SyncIcon/>
+                    <SyncIcon />
                 </button>
             </div>
             <div className="max-w-md px-4 mx-auto">
@@ -285,33 +285,6 @@ function Calendar() {
                         <text className="text-md font-light ml-2">Events</text>
                     </div>
                 </div>
-                
-                <div className="flex items-center justify-between mx-6">
-                    <div className="flex flex-row">
-                        <span className="text-xl font-medium mr-3">
-                            {format(firstDayCurrentMonth, 'MMMM')}
-                        </span>
-                        <text className="text-xl font-thin">
-                            {format(firstDayCurrentMonth, 'yyyy')}
-                        </text>
-                    </div>
-                    <div className="flex flex-row z-20">
-                        <button
-                            type="button"
-                            onClick={() => handleDatesChange(-1)}
-                            className="-my-1.5 p-1.5 text-[#111827] hover:text-gray-500"
-                        >
-                            <ChevronLeftIcon className="w-4 h-4" aria-hidden="true" />
-                        </button>
-                        <button
-                            onClick={() => handleDatesChange(1)}
-                            type="button"
-                            className="-my-1.5 -mr-1.5 ml-2 p-1.5 text-[#111827] hover:text-gray-500"
-                        >
-                            <ChevronRightIcon className="w-4 h-4" aria-hidden="true" />
-                        </button>
-                    </div>
-                </div>
             </div>
 
             <motion.div
@@ -320,9 +293,9 @@ function Calendar() {
                 exit={{ y: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-                <div className="pt-2">
+                <div className="">
                     <div className="max-w-md px-4 mx-auto z-10">
-                        <div className="overflow-hidden">
+                        <div className="overflow-hidden mx-6">
                             <motion.div
                                 initial={{ y: 0 }}
                                 animate={{ y: modalState.expanded && modalState.open ? -60 : 0 }}
@@ -335,29 +308,65 @@ function Calendar() {
                                         You
                                     </button>
                                 ) : (
-                                    users.map((user, idx) => {
-                                        const bgColor = labelColours[idx % labelColours.length];
+                                    (() => {
+                                        const currentUserIndex = users.indexOf(user.username);
+                                        let reorderedUsers = [...users];
+                                        if (currentUserIndex !== -1) {
+                                            reorderedUsers.splice(currentUserIndex, 1);
+                                            reorderedUsers.splice(1, 0, user.username);
+                                        }
+                                        return reorderedUsers.map((usr, idx) => {
+                                            const bgColor = labelColours[idx % labelColours.length];
+                                            const strName = (usr === user.username ? "You" : usr);
 
-                                        return (
-                                            <button
-                                                key={user}
-                                                onClick={() => filterByUser(user)}
-                                                className="flex items-center rounded-full bg-teal-400/10 px-5 py-1 text-xs font-bold leading-5 text-selected"
-                                                style={{
-                                                    backgroundColor: selectedUser === user ? bgColor : '#E3E3E3',
-                                                    color: selectedUser === user ? "#fff" : "#000",
-                                                    fontWeight:"500"
-                                                }}
-                                            >
-                                                {capitalizeFirstLetter(user)}
-                                            </button>
-                                        );
-                                    })
+                                            return (
+                                                <button
+                                                    key={usr}
+                                                    onClick={() => filterByUser(usr)}
+                                                    className="flex items-center rounded-full bg-teal-400/10 px-5 py-1 text-xs font-bold leading-5 text-selected"
+                                                    style={{
+                                                        backgroundColor: selectedUser === usr ? bgColor : '#E3E3E3',
+                                                        color: selectedUser === usr ? "#fff" : "#000",
+                                                        fontWeight: "500"
+                                                    }}
+                                                >
+                                                    {capitalizeFirstLetter(strName)}
+                                                </button>
+                                            );
+                                        });
+                                    })()
                                 )}
                             </motion.div>
                         </div>
 
-                        <div className="relative grid grid-cols-7 mt-6 text-xs font-semibold leading-6 text-center text-black">
+                        <div className="flex items-center justify-between mx-6 mt-4">
+                            <div className="flex flex-row">
+                                <span className="text-xl font-medium mr-3">
+                                    {format(firstDayCurrentMonth, 'MMMM')}
+                                </span>
+                                <text className="text-xl font-thin">
+                                    {format(firstDayCurrentMonth, 'yyyy')}
+                                </text>
+                            </div>
+                            <div className="flex flex-row z-20">
+                                <button
+                                    type="button"
+                                    onClick={() => handleDatesChange(-1)}
+                                    className="-my-1.5 p-1.5 text-[#111827] hover:text-gray-500"
+                                >
+                                    <ChevronLeftIcon className="w-4 h-4" aria-hidden="true" />
+                                </button>
+                                <button
+                                    onClick={() => handleDatesChange(1)}
+                                    type="button"
+                                    className="-my-1.5 -mr-1.5 ml-2 p-1.5 text-[#111827] hover:text-gray-500"
+                                >
+                                    <ChevronRightIcon className="w-4 h-4" aria-hidden="true" />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="relative grid grid-cols-7 mt-4 text-xs font-semibold leading-6 text-center text-black">
                             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((dayName, idx) => (
                                 <div
                                     key={idx}
@@ -454,14 +463,14 @@ function Calendar() {
                                         <div className="flex items-center space-x-4">
                                             <div className="bg-[#7D8D9C] w-12 h-12 rounded-full mt-2 flex items-center justify-center">
                                                 <text className="text-base text-lg font-semibold">
-                                                { 
-                                                    item.user?.fullname
-                                                        ? item.user.fullname.split(' ')
-                                                        .map(name => name.charAt(0).toUpperCase())
-                                                        .join('')
-                                                        : item.fullname.split(' ')
-                                                        .map(name => name.charAt(0).toUpperCase())
-                                                        .join('')
+                                                    {
+                                                        item.user?.fullname
+                                                            ? item.user.fullname.split(' ')
+                                                                .map(name => name.charAt(0).toUpperCase())
+                                                                .join('')
+                                                            : item.fullname.split(' ')
+                                                                .map(name => name.charAt(0).toUpperCase())
+                                                                .join('')
                                                     }
                                                 </text>
                                             </div>
