@@ -315,6 +315,7 @@ function Calendar() {
                                             reorderedUsers.splice(currentUserIndex, 1);
                                             reorderedUsers.splice(1, 0, user.username);
                                         }
+                                        
                                         return reorderedUsers.map((usr, idx) => {
                                             const bgColor = labelColours[idx % labelColours.length];
                                             const strName = (usr === user.username ? "You" : usr);
