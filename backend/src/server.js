@@ -44,6 +44,7 @@ app.use(
         secure: false,
     })
 );
+
 app.use(
     cors({
         origin: ["http://localhost:3000", "https://roomie-frontend.vercel.app/"],

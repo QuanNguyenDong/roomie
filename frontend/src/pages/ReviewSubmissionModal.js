@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import CloseIcon from '../svgs/Review/CloseIcon.js';
+import CloseIcon from "../svgs/TaskManagement/CloseIcon.js"
 import StarRating from "../components/common/StarRating.js";
 import Progressbar from "../components/common/Progressbar.js";
 
@@ -133,12 +133,12 @@ const ReviewModal = () => {
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="bg-white w-full h-full max-w-lg rounded-lg relative flex flex-col">
                         {/* Upper White Section */}
-                        <div className="h-1/3 pt-6 px-7">
+                        <div className="h-1/2 pt-6 px-7">
                             {/* Header */}
                             <div className="flex justify-between items-center m-2 mb-4">
                                 <div>
-                                    <h1 className="text-3xl font-bold m-0 p-0">
-                                        {users.length > 0 ? `Review ${reviewUser?.fullname}` : 'Review'}
+                                    <h1 className="text-3xl m-0 p-0">
+                                        {users.length > 0 ? `Write a Review ` : 'Write a Review'}
                                     </h1>
                                 </div>
                                 <button onClick={handleClose}>
@@ -147,10 +147,10 @@ const ReviewModal = () => {
                             </div>
                             {users.length === 0 ? (
                                 <div className="flex flex-col justify-center items-center mt-6">
-                                    <p className="text-lg text-center">There are no users to review.</p>
+                                    <p className="text-lg text-center mt-48">There are no users to review.</p>
                                     <button
                                         onClick={handleClose}
-                                        className="mt-4 bg-[#C5EE6F] text-black text-base font-semibold w-32 h-12 rounded-3xl"
+                                        className="mt-4 bg-black text-white text-base font-semibold w-32 h-12 rounded-3xl"
                                     >
                                         Close
                                     </button>
@@ -160,17 +160,19 @@ const ReviewModal = () => {
                                     <div className="flex flex-row">
                                         <div
                                                 className="text-white text-3xl font-semibold size-[75px] rounded-full flex items-center justify-center"
-                                                style={{ background: `linear-gradient(135deg, ${labelColours[reviewUserIndex % labelColours.length]} 70%, #df9 100%)` }}
+                                                style={{ background: `${labelColours[reviewUserIndex % labelColours.length]}` }}
                                         >
                                             {renderUserInitials(reviewUser?.fullname).toUpperCase()}
                                         </div>
                                     </div>
+                                    <text className="text-[30px] font-bold mt-4">{reviewUser?.fullname}</text>
                                     <div className="m-1">
                                         <StarRating
-                                            iconSize={36}
+                                            iconSize={32}
                                             initialRating={stars[reviewUser?.userId] || 0} // Use stars state for current user
                                             readOnly={false}
                                             onRatingChange={(newStars) => handleStarChange(reviewUser?.userId, newStars)} // Update stars for current user
+                                            
                                         />
                                     </div>
                                 </div>
@@ -181,14 +183,14 @@ const ReviewModal = () => {
                         {users.length === 0 ? null : (
                             <div className="h-2/3 bg-black rounded-t-submission p-4 flex flex-col">
                                 <>
-                                    <text className="text-2xl font-bold text-white mt-7 text-center">Review each task..</text>
+                                    <text className="text-2xl font-bold text-white mt-7 text-center">Review Each Task...</text>
 
                                     {/* Scrollable Reviews Container */}
                                     <div className="flex-grow overflow-y-auto p-5">
                                         {userTasks.length > 0 ? (
                                             userTasks.map((task) => (
                                                 <div key={task.taskId} className="mb-5 bg-[#444444] bg-opacity-50 pt-2 pl-10 pr-10 rounded-2xl">
-                                                    <h3 className="text-lg font-medium text-white">{task?.taskname}</h3>
+                                                    <h3 className="text-lg font-medium text-white mt-2">{task?.taskname}</h3>
                                                     <textarea
                                                         rows="2"
                                                         placeholder="Write your review..."
@@ -207,14 +209,14 @@ const ReviewModal = () => {
                                         {reviewUserIndex < users.length - 1 ? (
                                             <button
                                                 onClick={handleNext}
-                                                className="mt-6 bg-black border-2 border-white text-white text-base font-semibold w-32 h-12 rounded-3xl"
+                                                className="mt-6 bg-black border-2 border-white text-white text-base font-semibold w-24 h-10 rounded-3xl transition-colors duration-200 hover:bg-white hover:text-black"
                                             >
                                                 Next
                                             </button>
                                         ) : (
                                             <button
                                                 onClick={handleClose}
-                                                className="mt-6 bg-[#C5EE6F] text-black text-base font-semibold w-32 h-12 rounded-3xl"
+                                                className="mt-6 bg-white text-black text-base font-semibold w-32 h-12 rounded-3xl"
                                             >
                                                 Complete
                                             </button>

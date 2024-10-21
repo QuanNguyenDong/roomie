@@ -31,7 +31,7 @@ import CloseIconWhite from "../svgs/Calendar/CloseIconWhite.js";
 let colClasses = ['', 'col-start-2', 'col-start-3', 'col-start-4', 'col-start-5', 'col-start-6', 'col-start-7'];
 
 const labelColours = [
-    "#3176A8", "#42A079", "#7742A0", "#A04842", "#A07542",
+    "#7ABAE9", "#8CCDB2", "#AC8BC6", "#C57F7B", "#E0BDA9",
     "#DA70D6", "#8A2BE2", "#20B2AA", "#FF6347", "#4682B4"
 ];
 
@@ -251,6 +251,9 @@ function Calendar() {
         const hasTasks = filteredTasks.some(task => isSameDay(parseISO(task.dueDate), day));
         const hasEvents = filteredEvents.some(event => isSameDay(parseISO(event.startDate), day));
 
+        if (modalState.open && modalState.expanded)
+            return 'bg-transparent h-1 w-[30px] rounded-lg'
+
         if (hasTasks && hasEvents) {
             return 'bg-gradient-to-r from-sky-500 to-purple-500 h-1 w-[30px] rounded-lg';
         } else if (hasTasks) {
@@ -264,11 +267,11 @@ function Calendar() {
     return (
         <div className="max-w-[520px] mx-auto h-full text-black">
             <div className="flex h-10 mb-2 mx-8">
-                <text className="text-3xl font-bold font-lexend">
+                <text className="text-3xl font-bold font-lexend ml-10">
                     Calendar
                 </text>
                 <button onClick={syncCalendar} className="ml-2">
-                    <SyncIcon/>
+                    <SyncIcon />
                 </button>
             </div>
             <div className="max-w-md px-4 mx-auto">
@@ -282,33 +285,6 @@ function Calendar() {
                         <text className="text-md font-light ml-2">Events</text>
                     </div>
                 </div>
-                
-                <div className="flex items-center justify-between mx-6">
-                    <div className="flex flex-row">
-                        <span className="text-xl font-medium mr-3">
-                            {format(firstDayCurrentMonth, 'MMMM')}
-                        </span>
-                        <text className="text-xl font-thin">
-                            {format(firstDayCurrentMonth, 'yyyy')}
-                        </text>
-                    </div>
-                    <div className="flex flex-row z-20">
-                        <button
-                            type="button"
-                            onClick={() => handleDatesChange(-1)}
-                            className="-my-1.5 p-1.5 text-[#111827] hover:text-gray-500"
-                        >
-                            <ChevronLeftIcon className="w-4 h-4" aria-hidden="true" />
-                        </button>
-                        <button
-                            onClick={() => handleDatesChange(1)}
-                            type="button"
-                            className="-my-1.5 -mr-1.5 ml-2 p-1.5 text-[#111827] hover:text-gray-500"
-                        >
-                            <ChevronRightIcon className="w-4 h-4" aria-hidden="true" />
-                        </button>
-                    </div>
-                </div>
             </div>
 
             <motion.div
@@ -317,9 +293,9 @@ function Calendar() {
                 exit={{ y: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-                <div className="pt-4">
+                <div className="">
                     <div className="max-w-md px-4 mx-auto z-10">
-                        <div className="overflow-hidden">
+                        <div className="overflow-hidden mx-6">
                             <motion.div
                                 initial={{ y: 0 }}
                                 animate={{ y: modalState.expanded && modalState.open ? -60 : 0 }}
@@ -332,27 +308,66 @@ function Calendar() {
                                         You
                                     </button>
                                 ) : (
-                                    users.map((user, idx) => {
-                                        const bgColor = labelColours[idx % labelColours.length];
+                                    (() => {
+                                        const currentUserIndex = users.indexOf(user.username);
+                                        let reorderedUsers = [...users];
+                                        if (currentUserIndex !== -1) {
+                                            reorderedUsers.splice(currentUserIndex, 1);
+                                            reorderedUsers.splice(1, 0, user.username);
+                                        }
+                                        
+                                        return reorderedUsers.map((usr, idx) => {
+                                            const bgColor = labelColours[idx % labelColours.length];
+                                            const strName = (usr === user.username ? "You" : usr);
 
-                                        return (
-                                            <button
-                                                key={user}
-                                                onClick={() => filterByUser(user)}
-                                                className="flex items-center rounded-full bg-teal-400/10 px-6 py-1 text-xs font-bold leading-5 text-selected"
-                                                style={{
-                                                    backgroundColor: selectedUser === user ? bgColor : '#E3E3E3'
-                                                }}
-                                            >
-                                                {capitalizeFirstLetter(user)}
-                                            </button>
-                                        );
-                                    })
+                                            return (
+                                                <button
+                                                    key={usr}
+                                                    onClick={() => filterByUser(usr)}
+                                                    className="flex items-center rounded-full bg-teal-400/10 px-5 py-1 text-xs font-bold leading-5 text-selected"
+                                                    style={{
+                                                        backgroundColor: selectedUser === usr ? bgColor : '#E3E3E3',
+                                                        color: selectedUser === usr ? "#fff" : "#000",
+                                                        fontWeight: "500"
+                                                    }}
+                                                >
+                                                    {capitalizeFirstLetter(strName)}
+                                                </button>
+                                            );
+                                        });
+                                    })()
                                 )}
                             </motion.div>
                         </div>
 
-                        <div className="relative grid grid-cols-7 mt-6 text-xs font-semibold leading-6 text-center text-black">
+                        <div className="flex items-center justify-between mx-6 mt-4">
+                            <div className="flex flex-row">
+                                <span className="text-xl font-medium mr-3">
+                                    {format(firstDayCurrentMonth, 'MMMM')}
+                                </span>
+                                <text className="text-xl font-thin">
+                                    {format(firstDayCurrentMonth, 'yyyy')}
+                                </text>
+                            </div>
+                            <div className="flex flex-row z-20">
+                                <button
+                                    type="button"
+                                    onClick={() => handleDatesChange(-1)}
+                                    className="-my-1.5 p-1.5 text-[#111827] hover:text-gray-500"
+                                >
+                                    <ChevronLeftIcon className="w-4 h-4" aria-hidden="true" />
+                                </button>
+                                <button
+                                    onClick={() => handleDatesChange(1)}
+                                    type="button"
+                                    className="-my-1.5 -mr-1.5 ml-2 p-1.5 text-[#111827] hover:text-gray-500"
+                                >
+                                    <ChevronRightIcon className="w-4 h-4" aria-hidden="true" />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="relative grid grid-cols-7 mt-4 text-xs font-semibold leading-6 text-center text-black">
                             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((dayName, idx) => (
                                 <div
                                     key={idx}
@@ -447,14 +462,22 @@ function Calendar() {
                                                 openTaskModal(item);
                                         }}>
                                         <div className="flex items-center space-x-4">
-                                            <div className="bg-[#7D8D9C] w-8 h-8 rounded-full mt-2 flex items-center justify-center">
-                                                <text className="text-base font-semibold">
-                                                    {item.user?.fullname?.charAt(0)?.toUpperCase() || item.fullname?.charAt(0)?.toUpperCase()}
+                                            <div className="bg-[#7D8D9C] w-12 h-12 rounded-full mt-2 flex items-center justify-center">
+                                                <text className="text-base text-lg font-semibold">
+                                                    {
+                                                        item.user?.fullname
+                                                            ? item.user.fullname.split(' ')
+                                                                .map(name => name.charAt(0).toUpperCase())
+                                                                .join('')
+                                                            : item.fullname.split(' ')
+                                                                .map(name => name.charAt(0).toUpperCase())
+                                                                .join('')
+                                                    }
                                                 </text>
                                             </div>
                                             <div>
-                                                <h4 className="text-lg font-bold text-black">{item.eventname || item.taskname}</h4>
-                                                <p className="text-sm text-black">{format(parseISO(item.dueDate || item.startDate), 'p')} - {format(parseISO(item.endDate || item.endDate), 'p')}</p>
+                                                <h4 className="text-[14px] mt-2 font-bold text-black">{item.eventname || item.taskname}</h4>
+                                                <p className="text-[12px] mt-1 text-black">{format(parseISO(item.dueDate || item.startDate), 'p')} - {format(parseISO(item.endDate || item.endDate), 'p')}</p>
                                             </div>
                                         </div>
                                     </div>

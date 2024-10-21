@@ -13,7 +13,7 @@ const Progressbar = ({ currentUserIndex, totalUsers }) => {
                     return (
                         <div
                             key={index}
-                            className={`h-2 w-full rounded-full ${isActive ? 'bg-[#C5EE6F]' : 'bg-gray-300'} flex-1`} // if is active set to green color otherwise grye
+                            className={`h-2 w-full rounded-full ${isActive ? 'bg-[#5452C2]' : 'bg-gray-300'} flex-1`} // if is active set to green color otherwise grye
                         />
                     );
                 })}
