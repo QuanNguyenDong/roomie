@@ -110,7 +110,7 @@ function Home() {
                     Hello, {user.fullname}!
                 </text>
             </div>
-            <div className="flex justify-left space-x-8 h-10 mb-6 mx-8 ">
+            <div className="flex justify-between space-x-8 h-10 mb-6 mx-8 ">
                 <button
                     className={`${taskFilter === "all" ? "bg-white" : "bg-secGrey"
                         } text-black text-xs w-28 h-9 rounded-3xl shadow-sm`}

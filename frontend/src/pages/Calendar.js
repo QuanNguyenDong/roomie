@@ -293,7 +293,7 @@ function Calendar() {
                 exit={{ y: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-                <div className="">
+                <div className="mt-4">
                     <div className="max-w-md px-4 mx-auto z-10">
                         <div className="overflow-hidden mx-6">
                             <motion.div

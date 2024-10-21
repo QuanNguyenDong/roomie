@@ -146,7 +146,7 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
                                     Deadline:
                                 </span>
                                 <span className="font-sans font-extralight">
-                                    {format(task.dueDate, 'hh:mm a - dd MM yyyy')}
+                                    {format(task.dueDate, 'dd/MM/yyyy')}
                                 </span>
                             </span>
                         </p>
@@ -158,9 +158,9 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
                                     <PuzzleIcon />
                                     Redistribution:
                                 </span>
-                                {/* <span className="icon-text-date">
-                                    {task.dueDate}
-                                </span> */}
+                                <span className="font-sans font-extralight">
+                                    next week
+                                </span>
                             </span>
                         </p>
 
