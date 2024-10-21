@@ -14,18 +14,18 @@ import TaskModal from "./TaskCard.js";
 function TaskManager() {
     const [user, setUser] = useState({});
     const [tasks, setTasks] = useState([]);
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState([]); // State to store users
     const [selectedTask, setSelectedTask] = useState(null);
-    const [priorityFilter, setPriorityFilter] = useState("All");
-    const [selectedUser, setSelectedUser] = useState("All");
+    const [priorityFilter, setPriorityFilter] = useState("All Priority"); // Default is 'All Priority'
+    const [selectedUser, setSelectedUser] = useState("All"); // State to filter by user
     const [isPriorityDropdownOpen, setPriorityDropdownOpen] = useState(false);
-    const [isAllTasksDropdownOpen, setAllTasksDropdownOpen] = useState(false);
+    const [isAllTasksDropdownOpen, setAllTasksDropdownOpen] = useState(false); // State for 'All Tasks' dropdown
 
     let navigate = useNavigate();
 
     const dropdownRef = useRef(null);
     const priorityButtonRef = useRef(null);
-    const allTasksButtonRef = useRef(null);
+    const allTasksButtonRef = useRef(null); // Ref for 'All Tasks' button
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -47,7 +47,7 @@ function TaskManager() {
             if (fetchedTasks) {
                 // Extract unique users from tasks and set them in state
                 const uniqueUsers = [...new Set(fetchedTasks.map(task => task.fullname))];
-                setUsers(uniqueUsers);
+                setUsers(uniqueUsers); // Store users for filtering
 
                 fetchedTasks = fetchedTasks.map((task) => {
                     task["dueDate"] = calculateDueDate(
@@ -65,10 +65,10 @@ function TaskManager() {
                 dropdownRef.current &&
                 !dropdownRef.current.contains(event.target) &&
                 !priorityButtonRef.current.contains(event.target) &&
-                !allTasksButtonRef.current.contains(event.target)
+                !allTasksButtonRef.current.contains(event.target) // For 'All Tasks' button
             ) {
                 setPriorityDropdownOpen(false);
-                setAllTasksDropdownOpen(false);
+                setAllTasksDropdownOpen(false); // Close 'All Tasks' dropdown
             }
         };
 
@@ -92,24 +92,24 @@ function TaskManager() {
 
     const handleUserFilterChange = (user) => {
         setSelectedUser(user);
-        setAllTasksDropdownOpen(false);
+        setAllTasksDropdownOpen(false); // Close dropdown after selecting user
     };
 
     const togglePriorityDropdown = () => {
         if (isPriorityDropdownOpen) {
-            setPriorityDropdownOpen(false);
+            setPriorityDropdownOpen(false); // Close if already open
         } else {
-            setPriorityDropdownOpen(true);
-            setAllTasksDropdownOpen(false);
+            setPriorityDropdownOpen(true);  // Open Priority dropdown
+            setAllTasksDropdownOpen(false); // Close 'All Tasks' dropdown
         }
     };
 
     const toggleAllTasksDropdown = () => {
         if (isAllTasksDropdownOpen) {
-            setAllTasksDropdownOpen(false);
+            setAllTasksDropdownOpen(false); // Close if already open
         } else {
-            setAllTasksDropdownOpen(true);
-            setPriorityDropdownOpen(false);
+            setAllTasksDropdownOpen(true);  // Open 'All Tasks' dropdown
+            setPriorityDropdownOpen(false); // Close Priority dropdown
         }
     };
 
@@ -117,9 +117,9 @@ function TaskManager() {
         .filter((task) => task.status !== "completed")
         .filter((task) => {
             return (
-                (priorityFilter === "All" ||
+                (priorityFilter === "All Priority" || // Allow all priorities if 'All Priority' is selected
                     task.priority.toLowerCase() ===
-                    priorityFilter.toLowerCase()) &&
+                        priorityFilter.toLowerCase()) &&
                 (selectedUser === "All" || task.fullname === selectedUser)
             );
         });
@@ -135,31 +135,23 @@ function TaskManager() {
     const calculateDueDate = (startDate, frequency) => {
         const start = new Date(startDate);
         const dueDate = new Date(start);
-        dueDate.setDate(start.getDate() + frequency);
-        return dueDate.toDateString();
-    };
-
-    const displayFrequency = (frequency) => {
-        if (frequency === 1) return "Daily";
-        if (frequency === 7) return "Weekly";
-        if (frequency === 30) return "Monthly";
-        return `${frequency} days`;
+        dueDate.setDate(start.getDate() + frequency); // Add frequency (in days) to start date
+        return dueDate.toDateString(); // Return a human-readable format
     };
 
     return (
         <div className="task-manager max-w-[500px] mx-auto">
-            <text className="text-3xl font-bold font-lexend">
-                Tasks
-            </text>
+            <h2 style={{ fontSize: "32px", fontWeight: "600" }}>Tasks</h2>
             <div className="task-filter-buttons">
                 <button
                     onClick={toggleAllTasksDropdown}
                     ref={allTasksButtonRef}
+                    className="all-tasks-button"
                 >
-                    <span className="priority-text">All Tasks</span>
-                    <PriorityDropdown />
+                    All Tasks
+                    <PriorityDropdown/>
                 </button>
-                {isAllTasksDropdownOpen && (
+                {isAllTasksDropdownOpen && ( // All Tasks Dropdown Menu
                     <div ref={dropdownRef} className="dropdown-menu">
                         <ul>
                             <li onClick={() => handleUserFilterChange("All")}>
@@ -189,6 +181,9 @@ function TaskManager() {
                 {isPriorityDropdownOpen && (
                     <div ref={dropdownRef} className="dropdown-menu">
                         <ul>
+                            <li onClick={() => handleFilterChange("All Priority")}>
+                                All Priority
+                            </li>
                             <li onClick={() => handleFilterChange("High")}>
                                 High
                             </li>
@@ -222,18 +217,18 @@ function TaskManager() {
                                 />
                             </div>
                             <div className="task-header">
-                                <text className="font-poppins font-bold max-w-full text-xl overflow-ellipses line-clamp-1">{task.taskname}</text> 
+                                <h3>{task.taskname}</h3>
                                 <div className="task-avatar">
                                     {task.fullname.charAt(0).toUpperCase()}
                                 </div>
                             </div>
-                            <p className="task-subtext max-w-60 text-white line-clamp-3">{task.description}</p>
+                            <p className="task-subtext">{task.description}</p>
                             <div className="task-footer">
                                 <p>
                                     {task.dueDate}
-                                    <FrequencyIcon /> {displayFrequency(task.frequency)}
+                                    <FrequencyIcon /> {task.frequency} days
                                 </p>
-                                <p className="font-medium">{task.duration} Min</p>
+                                <p>{task.duration} minutes</p>
                             </div>
                         </div>
                     ))}
