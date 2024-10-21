@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
 const cookieSession = require("cookie-session");
 const cors = require("cors");
+require("./bin/www");
 
 const authRouter = require("./routes/auth");
 const currentUserRouter = require("./routes/profile");
