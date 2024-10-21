@@ -61,10 +61,6 @@ app.use(questionRouter);
 app.use(eventRouter);
 app.use(reviewRouter);
 
-app.use("/", (req, res) => {
-    res.send("Hello world");
-});
-
 app.use("/api", (req, res) => {
     res.send("Hello world");
 });
