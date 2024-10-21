@@ -2,11 +2,20 @@ import "../../styling/starRating.css";
 import { useState, useEffect } from "react";
 
 const DEFAULT_COUNT = 5;
-const DEFAULT_ICON = "★";
-const DEFAULT_UNSELECTED_COLOR = "grey";
-const DEFAULT_COLOR = "yellow";
+const DEFAULT_ICON = "★"; // Unicode for star
+const DEFAULT_UNSELECTED_COLOR = "white"; 
+const DEFAULT_COLOR = "#FFD43B"; // Yellow color for selected
+const DEFAULT_STROKE_COLOR = "#FFD43B"; // Yellow stroke for unselected
 
-export default function Stars({ count, initialRating, icon, color, iconSize, readOnly, onRatingChange}) {
+export default function Stars({ 
+  count, 
+  initialRating, 
+  icon, 
+  color, 
+  iconSize, 
+  readOnly, 
+  onRatingChange
+}) {
   const [rating, setRating] = useState(initialRating);
 
   useEffect(() => {
@@ -31,8 +40,10 @@ export default function Stars({ count, initialRating, icon, color, iconSize, rea
         let elementColor = "";
 
         if (isActiveColor) {
+        
           elementColor = color || DEFAULT_COLOR;
         } else {
+
           elementColor = DEFAULT_UNSELECTED_COLOR;
         }
 
@@ -43,7 +54,9 @@ export default function Stars({ count, initialRating, icon, color, iconSize, rea
             style={{
               fontSize: iconSize ? `${iconSize}px` : "14px",
               color: elementColor,
-              filter: `${isActiveColor ? "grayscale(0%)" : "grayscale(100%)"}`,
+              WebkitTextStroke: !isActiveColor ? `2px ${DEFAULT_STROKE_COLOR}` : "none", 
+              cursor: readOnly ? "default" : "pointer",
+              filter: `${isActiveColor ? "grayscale(0%)" : "grayscale(100%)"}`, // Grayscale unselected stars
             }}
             onClick={() => handleClick(index + 1)}
           >
@@ -54,3 +67,4 @@ export default function Stars({ count, initialRating, icon, color, iconSize, rea
     </div>
   );
 }
+
