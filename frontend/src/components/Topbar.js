@@ -11,7 +11,7 @@ const Topbar = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-4 absolute z-50">
             <div className="top-0 w-[500px] h-[50px] px-7 pt-4">
                 <div className="text-black flex flex-row justify-between">
                     <div>
@@ -21,7 +21,7 @@ const Topbar = () => {
                     </div>
 
                     <div className="relative space-x-2.5">
-                        <button onClick={() => navigate("/home")}>
+                        <button>
                             <Notif className="icon" fill="#111827" />
                         </button>
                         <button onClick={() => navigate("/profile")}>

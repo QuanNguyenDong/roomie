@@ -1,14 +1,16 @@
 .starsContainer {
-    display: flex;
-  }
-  
-  .star {
-    cursor: pointer;
-    transition: all 0.1s linear;
-  }
-  
-@media (hover: hover) {
-  .star:hover {
-    transform: scale(1.1);
-  }
+  display: flex; /* Ensure stars are aligned in a row */
+}
+
+.star {
+  margin: 2px; /* Remove default margin */
+  outline: none;
+  padding: 0; /* Remove default padding */
+  border: none; /* Remove any default borders */
+  cursor: pointer; /* Change cursor to pointer on hover */
+  transition: color 0.3s, filter 0.3s; /* Smooth transition */
+}
+
+.star:hover {
+  transform: scale(1.1);
 }

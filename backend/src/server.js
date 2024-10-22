@@ -12,6 +12,8 @@ const questionRouter = require("./routes/question");
 const eventRouter = require("./routes/event");
 const reviewRouter = require("./routes/review");
 
+const User = require("./models/user");
+
 if (!process.env.MONGO_URI) throw Error("MONGO_URI must be defined");
 if (!process.env.JWT_KEY) throw Error("JWT_KEY must be defined");
 
@@ -19,6 +21,12 @@ const connectDB = async () => {
     try {
         await mongoose.connect(`${process.env.MONGO_URI}/roomies`);
         console.log("Connected to MongoDb");
+
+        // Add taskscompleted field to all users
+        // await User.updateMany(
+        //     { taskscompleted: { $exists: false } }, 
+        //     { $set: { taskscompleted: 0 } } 
+        // );
     } catch (err) {
         console.error(err);
     }
@@ -36,9 +44,10 @@ app.use(
         secure: false,
     })
 );
+
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: ["http://localhost:3000", "https://roomie-frontend.vercel.app/"],
         credentials: true,
     })
 );

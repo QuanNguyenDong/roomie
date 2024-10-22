@@ -1,26 +1,40 @@
 import React, {useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
+
+import getUserProfile from "../services/User/getUserProfile";
+import getReviews from "../services/Review/getReviews.js";
+
 import "../styling/Review.css";
 import CloseIcon from "../svgs/TaskManagement/CloseIcon.js";
 import Tile from '../components/Review/Tile';
-import { useNavigate } from 'react-router-dom';
-import getReviews from "../services/Review/getReviews.js";
 
 const Reviews = () => {
+  const [user, setUser] = useState({});
   const [reviewData, setReviewData] = useState([]); // Store fetched tasks
-  const [username, setUsername] = useState("Angus");
+  
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser) {
+      getUserProfile()
+        .then((user) => {
+          if (user) {
+            localStorage.setItem("user", JSON.stringify(user));
+            setUser(user);
+          } else navigate("/");
+        })
+        .catch((error) => navigate("/"));
+    } else {
+      setUser(storedUser);
+    }
+
     const fetchReviews = async () => {
       const fetchedReviews = await getReviews(); // Fetch reviews asynchronously
       setReviewData(fetchedReviews || []); // Set reviews or empty array if none
     };
     fetchReviews();
-  }, []);
-    //this data needs to be calculated from other tables
-  const additionalData = {
-    stars: 100,
-    tasksCompleted: 5,
-  };  
+  }, [navigate]);
 
 //need a reivew data table
 /*
@@ -61,13 +75,9 @@ const Reviews = () => {
   ];
   */
 
-  const navigate = useNavigate();
-
   const handleClose = () => {
     navigate('/profile'); 
   }
-
-  const userInitial = username.charAt(0).toUpperCase();
 
   return (
     <>
@@ -80,7 +90,7 @@ const Reviews = () => {
               text-white font-regular rounded-full w-14 h-14 border-gray-300 shadow-md"
               style={{ fontSize: '24px' }}
             >
-              {userInitial}
+              {user?.fullname ? user.fullname.charAt(0).toUpperCase() : "U"}
             </div>
             <h3 className="text-2xl font-bold ml-4">Your Weekly Reviews</h3>
           </div>
@@ -99,12 +109,12 @@ const Reviews = () => {
           <Tile
             type="stars"
             title="Total Stars"
-            stars={additionalData.stars}
+            stars={user.stars || 0}
             />
           <Tile
             type="tasksCompleted"
             title="Tasks Completed"
-            tasksCompleted={additionalData.tasksCompleted}
+            tasksCompleted={user.taskscompleted}
             />
         </div>
 

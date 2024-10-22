@@ -1,25 +1,26 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 import "../../index.css";
-import TaskModal from "../../pages/TaskCard"
 
 import TileIcon from "../../svgs/Home/Tasks/TileIcon";
 
+const priorityColors = {
+    High: "#C49191",
+    Medium: "#D8AF8A",
+    Low: "#9DB492",
+};
+
+const svgColors = {
+    High: "#661717",
+    Medium: "#703320",
+    Low: "#243327",
+};
+
 const Tile = ({ task }) => {
-    const [selectedTask, setSelectedTask] = useState(null);
-
-    const openTaskModal = async (task) => {
-        setSelectedTask(task);
-    };
-
-    const closeTaskModal = () => {
-        setSelectedTask(null);
-    };
-
     return (
-        <div 
-            className="bg-tileBlue text-white w-[247px] h-full rounded-3xl relative"
-            onClick={() => openTaskModal(task)}>
+        <div
+            className="text-white w-[247px] h-56 my-auto rounded-3xl relative cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out"
+            style={{ backgroundColor: priorityColors[task.priority] }}>
             <div className="p-5 h-full flex flex-col justify-between">
                 <div className="flex flex-row justify-between">
                     <div className="w-1/2">
@@ -44,13 +45,9 @@ const Tile = ({ task }) => {
             </div>
 
             <div className="absolute bottom-3 right-3">
-                <TileIcon fill={"#426DA0"}/>
+                <TileIcon fill={svgColors[task.priority]} />
+
             </div>
-            <TaskModal
-                task={selectedTask}
-                isOpen={!!selectedTask}
-                onClose={closeTaskModal}
-            />
         </div>
     );
 };

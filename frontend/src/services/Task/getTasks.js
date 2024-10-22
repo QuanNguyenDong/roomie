@@ -1,20 +1,8 @@
 import axios from "axios";
 
-const getTasks = async() => {
-    try
-    {
-        const res = await axios.get(global.route + `/tasks/all`, {
-            withCredentials: true,
-        });                     
-        return res.data.tasks;
-    }catch (error) {
-        console.error(error);
-    }
-};
-
 const getUserTask = async() => {
     try{
-        const res = await axios.get(global.route + `/tasks/assigned`, {
+        const res = await axios.get(global.route + `/user/tasks`, {
             withCredentials: true,
         });              
         return res.data.assignedTasks;
@@ -23,4 +11,26 @@ const getUserTask = async() => {
     }    
 };
 
-export { getUserTask };
+const getHouseTask = async() => {
+    try{
+        const res = await axios.get(global.route + `/house/tasks/current-week`, {
+            withCredentials: true,
+        });
+        return res.data.activeAssignment;
+    } catch (error) {
+        console.error(error); 
+    }    
+};
+
+const getAllTasks = async () => {
+    try {
+        const res = await axios.get(global.route + `/house/tasks`, {
+            withCredentials: true,
+        });
+        return res.data.activeAssignment;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+export { getUserTask, getHouseTask, getAllTasks };

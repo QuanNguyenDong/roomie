@@ -12,4 +12,17 @@ const getEvents = async () => {
     }
 };
 
-export { getEvents };
+const getHomeEvents = async () => {
+    try {
+        const res = await axios.get(global.route + `/events/all/active`, {
+            withCredentials: true,
+        });
+        
+        return Array.isArray(res.data) ? res.data : [];
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
+export { getEvents, getHomeEvents };
