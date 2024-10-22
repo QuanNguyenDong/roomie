@@ -2,7 +2,7 @@ import React from "react";
 
 const CustomCheckbox = ({ isChecked, onChange }) => {
     return (
-        <div class="relative group">
+        <div className="relative group">
             <label className="flex cursor-pointer">
                 <input
                     type="checkbox"
