@@ -49,9 +49,11 @@ const ReviewModal = () => {
 
         const fetchActiveTasks = async () => {
             const fetchedActiveTasks = await getHouseTask();
-            setActiveTasks(fetchedActiveTasks || []);
+            const completedTasks = (fetchedActiveTasks || []).filter(task => task.status === "completed");
 
-            const uniqueUsers = (fetchedActiveTasks || []).reduce((acc, activeTask) => {
+            setActiveTasks(completedTasks || []);
+
+            const uniqueUsers = (completedTasks || []).reduce((acc, activeTask) => {
                 if (activeTask.userId !== storedUser?.userId && !acc.some(u => u.userId === activeTask.userId)) {
                     acc.push({ userId: activeTask.userId, fullname: activeTask.fullname });
                 }
@@ -59,7 +61,7 @@ const ReviewModal = () => {
             }, []);
             setUsers(uniqueUsers || []);
 
-            const uniqueTasks = (fetchedActiveTasks || []).reduce((acc, activeTask) => {
+            const uniqueTasks = (completedTasks || []).reduce((acc, activeTask) => {
                 if (!acc.some(task => task.taskId === activeTask.taskId)) {
                     acc.push({ taskId: activeTask.taskId, taskname: activeTask.taskname });
                 }
