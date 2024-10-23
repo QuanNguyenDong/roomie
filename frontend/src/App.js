@@ -27,7 +27,7 @@ function App() {
     );
 }
 function AppRoutes() {
-    global.route = "http://localhost:3001";
+    global.route = "http://172.19.141.236:3001";
     return (
         <Fragment>
             <Routes>

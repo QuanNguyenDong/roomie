@@ -37,7 +37,7 @@ export default function SignIn() {
         }
     };
     return (
-        <div className="flex flex-col justify-center py-6">
+        <div className="flex flex-col justify-center py-6 px-10">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm mt-10">
                 <div className="flex justify-center">
                     <TileIcon fill="#426DA0" />

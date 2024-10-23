@@ -103,6 +103,7 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
                     </motion.div>
 
                     <button className="close-button" onClick={onClose}><CloseIcon /></button>
+                    <text className='text-xl font-medium p-2'>{task.fullname}</text>
 
                     <div className="flex flex-row justify-between">
                         <text className='text-3xl font-bold p-2'>{task.taskname}</text>
@@ -159,7 +160,7 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
                                     Redistribution:
                                 </span>
                                 <span className="font-sans font-extralight">
-                                    next week
+                                    Next Week
                                 </span>
                             </span>
                         </p>
