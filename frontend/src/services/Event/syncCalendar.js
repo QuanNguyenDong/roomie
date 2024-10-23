@@ -1,22 +1,22 @@
 import { gapi } from 'gapi-script';
 import axios from 'axios';
 
-const CLIENT_ID = '369183942201-o4gea6oikokag055u57gv0isi7ifoa2q.apps.googleusercontent.com';
-const API_KEY = 'AIzaSyDOhaxo4_OnnoM3dHXFZ6QgrhIUl7Mi-LE';
+const CLIENT_ID = 'your-client-id';
+const API_KEY = 'your-api-key';
 const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 
-const createEvent = async (newEvent) => {
+export const createEvent = async (newEvent) => {
     try {
         const res = await axios.post(`${global.route}/events/create`, newEvent, {
             withCredentials: true,
         });
         return res.data.event;
     } catch (error) {
-        console.error(error);
+        console.error('Error creating event:', error);
     }
 };
 
-const checkEventExists = async (eventTitle, eventStart) => {
+export const checkEventExists = async (eventTitle, eventStart) => {
     try {
         const res = await axios.get(`${global.route}/events/check`, {
             params: {
@@ -25,10 +25,10 @@ const checkEventExists = async (eventTitle, eventStart) => {
             },
             withCredentials: true,
         });
-        return res.data.exists;  // Assuming API returns a boolean value 'exists'
+        return res.data.exists;
     } catch (error) {
         console.error('Error checking if event exists:', error);
-        return false;  // Default to false if an error occurs
+        return false;
     }
 };
 
@@ -53,13 +53,14 @@ export const initGoogleApiClient = () => {
 export const syncCalendarEvents = async () => {
     try {
         await gapi.auth2.getAuthInstance().signIn();
+        
         const response = await gapi.client.calendar.events.list({
             'calendarId': 'primary',
             'timeMin': (new Date()).toISOString(),
             'showDeleted': false,
             'singleEvents': true,
             'maxResults': 10,
-            'orderBy': 'startTime'
+            'orderBy': 'startTime',
         });
 
         const events = response.result.items;
@@ -69,7 +70,7 @@ export const syncCalendarEvents = async () => {
                 const eventTitle = event.summary || 'No Title';
                 const eventStart = event.start.dateTime || event.start.date;
                 const eventEnd = event.end.dateTime || event.end.date;
-                
+
                 const eventExists = await checkEventExists(eventTitle, eventStart);
 
                 if (!eventExists) {
@@ -80,8 +81,6 @@ export const syncCalendarEvents = async () => {
                     };
 
                     await createEvent(newEvent);
-                } else {
-                    // console.log(`Event "${eventTitle}" already exists. Skipping.`);
                 }
             }
         }
