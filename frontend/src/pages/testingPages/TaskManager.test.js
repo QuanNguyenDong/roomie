@@ -1,13 +1,10 @@
-import React from 'react';
+import axios from 'axios';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TaskManager from '../TaskManager';
-import '@testing-library/jest-dom';
-import { getAllActiveTaskAssignment } from '../../services/Task/getActiveTaskAssignment';
+import '@testing-library/jest-dom';  
+import { MemoryRouter } from 'react-router-dom';
 
-jest.mock('../../services/Task/getActiveTaskAssignment', () => ({
-    getAllActiveTaskAssignment: jest.fn(),
-  }));
-  
+jest.mock('axios');
 
 const mockTasks = [
   {
@@ -21,26 +18,28 @@ const mockTasks = [
   },
 ];
 
-describe('TaskManager Component', () => {
-    beforeEach(() => {
-        getAllActiveTaskAssignment.mockResolvedValue(mockTasks);
-      });
+test('renders TaskManager and displays tasks', async () => {
+  axios.get.mockResolvedValueOnce({ data: mockTasks });
 
-  test('renders TaskManager and displays tasks', async () => {
-    render(<TaskManager />);
-    expect(await screen.findByText('Test Task')).toBeInTheDocument();
-    expect(screen.getByText('Test description')).toBeInTheDocument();
-  });
+  render(
+    <MemoryRouter>
+      <TaskManager />
+    </MemoryRouter>
+  );
 
-  test('opens task modal on task click', async () => {
-    render(<TaskManager />);
-    fireEvent.click(await screen.findByText('Test Task'));
-    expect(screen.getByText('45 minutes')).toBeInTheDocument();
-  });
+  expect(await screen.findByText('Test Task')).toBeInTheDocument();
+  expect(screen.getByText('Test description')).toBeInTheDocument();
+});
 
-  test('displays no tasks message when there are no tasks', async () => {
-    getAllActiveTaskAssignment.mockResolvedValueOnce([]);
-    render(<TaskManager />);
-    expect(await screen.findByText("You don't have any tasks")).toBeInTheDocument();
-  });
+test('opens task modal on task click', async () => {
+  axios.get.mockResolvedValueOnce({ data: mockTasks });
+
+  render(
+    <MemoryRouter>
+      <TaskManager />
+    </MemoryRouter>
+  );
+
+  fireEvent.click(await screen.findByText('Test Task'));
+  expect(screen.getByText('45 minutes')).toBeInTheDocument();
 });

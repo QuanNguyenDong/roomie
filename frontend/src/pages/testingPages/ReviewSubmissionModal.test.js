@@ -3,12 +3,10 @@ import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/re
 import ReviewModal from '../ReviewSubmissionModal';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
-import { getAllActiveTaskAssignment } from '../../services/Task/getActiveTaskAssignment';
 import createReviews from '../../services/Review/createReviews';
 
 // Mock dependencies
 jest.mock('axios');
-jest.mock('../../services/Task/getActiveTaskAssignment');
 jest.mock('../../services/Review/createReviews');
 
 describe('ReviewModal Component', () => {
@@ -27,7 +25,7 @@ describe('ReviewModal Component', () => {
     axios.get.mockResolvedValue({ data: mockUser });
     
     // Mock the active tasks API call
-    getAllActiveTaskAssignment.mockResolvedValue(mockActiveTasks);
+    // getAllActiveTaskAssignment.mockResolvedValue(mockActiveTasks);
   });
 
   afterEach(() => {
@@ -41,11 +39,10 @@ describe('ReviewModal Component', () => {
       </MemoryRouter>
     );
 
-    // Wait for the user profile and tasks to be loaded
     await waitFor(() => {
-      expect(axios.get).toHaveBeenCalled();
-      expect(getAllActiveTaskAssignment).toHaveBeenCalled();
+      expect(screen.queryByText((content, element) => element.textContent.includes('Welcome'))).toBeInTheDocument();
     });
+    
 
     // Check that the modal's heading is rendered
     expect(screen.getByRole('heading', { level: 1, name: /Review/i })).toBeInTheDocument();

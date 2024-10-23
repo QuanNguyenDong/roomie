@@ -6,8 +6,13 @@ import TileIcon from "../svgs/Home/Tasks/TileIcon";
 
 export default function SignIn() {
     let navigate = useNavigate();
+
+    // Add this for managing error messages
+    const [errorMessage, setErrorMessage] = useState("");  // Add this line
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    
     useEffect(() => {
         getUserProfile()
             .then((user) => {
@@ -20,6 +25,7 @@ export default function SignIn() {
                 console.log("Error fetching user profile:", error);
             });
     }, [navigate]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -32,12 +38,12 @@ export default function SignIn() {
                 { withCredentials: true }
             );
             localStorage.setItem("user", JSON.stringify(response.data));
-            // Change: Navigate to the Prompts page after sign-in
             navigate("/home", { replace: true });
         } catch (error) {
-            setErrorMessage("Invalid username or password"); // Update state with error message
+            setErrorMessage("Invalid username or password");  // Correctly using setErrorMessage now
         }
     };
+
     return (
         <div className="flex flex-col justify-center py-6">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm mt-10">
