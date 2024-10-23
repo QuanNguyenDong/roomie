@@ -36,45 +36,6 @@ const Reviews = () => {
     fetchReviews();
   }, [navigate]);
 
-//need a reivew data table
-/*
-  const reviewData = [
-    {
-      title: 'Clean Backyard',
-      reviews: [
-        { reviewText: 'Great job!' },
-        { reviewText: 'Needs improvement.'},
-        { reviewText: 'could be better' },
-        { reviewText: 'How did you get it so clean...no really'}
-      ],
-    },
-    {
-      title: 'Wipe TV',
-      reviews: [
-        { reviewText: 'Clean better bro' },
-      ],
-    },
-    {
-      title: 'Cook Chicken',
-      reviews: [
-        { reviewText: 'Wow so much chicken'},
-        { reviewText: 'Excellent work remembering'},
-      ],
-    },
-    {
-       title: 'Kitchen Cleaning',
-       reviews: [
-        { reviewText: 'Please make sure you clean the countertops after you finish next time!'},
-        { reviewText: 'Excellent work.'},
-       ],
-    },
-    {
-       title: 'Feather Dusting',
-       reviews: [],
-    },
-  ];
-  */
-
   const handleClose = () => {
     navigate('/profile'); 
   }
@@ -116,18 +77,24 @@ const Reviews = () => {
             tasksCompleted={user.taskscompleted}
             />
         </div>
-
-        {/*task tiles */}
-        <div className="w-full">
-          {reviewData.map((tile, index) => (
-            <Tile
-              key={index}
-              type="task"
-              title={tile.title}
-              reviews={tile.reviews}
-            />
-          ))}
-        </div>
+        
+        {reviewData.length > 0 ? (
+          <div className="w-full">
+           {/*task tiles */}
+            {reviewData.map((tile, index) => (
+              <Tile
+                key={index}
+                type="task"
+                title={tile.title}
+                reviews={tile.reviews}
+              />
+            ))}
+          </div>
+        ) : ( 
+          <div className= "flex justify-center items-center mt-10">
+            <p className = "text-2xl font-bold">No Reviews yet!</p>
+          </div> 
+        )}    
       </div>
     </div>
   </>
