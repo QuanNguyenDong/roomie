@@ -18,7 +18,6 @@ import Reviews from "./pages/Reviews";
 import ReviewModal from "./pages/ReviewSubmissionModal";
 import Signup from "./pages/Signup";
 
-
 function App() {
     return (
         <Router>
@@ -26,8 +25,9 @@ function App() {
         </Router>
     );
 }
+
 function AppRoutes() {
-    global.route = "http://172.19.141.236:3001";
+    global.route = "http://localhost:3001";
     return (
         <Fragment>
             <Routes>
