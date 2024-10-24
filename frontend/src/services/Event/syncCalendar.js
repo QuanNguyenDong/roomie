@@ -6,6 +6,7 @@ const API_KEY = 'AIzaSyDOhaxo4_OnnoM3dHXFZ6QgrhIUl7Mi-LE';
 const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 
 const createEvent = async (newEvent) => {
+    console.log("hi")
     try {
         const res = await axios.post(`${global.route}/events/create`, newEvent, {
             withCredentials: true,
@@ -63,6 +64,8 @@ export const syncCalendarEvents = async () => {
         });
 
         const events = response.result.items;
+
+        console.log(events)
 
         if (events.length > 0) {
             for (const event of events) {

@@ -2,12 +2,13 @@ import axios from "axios";
 
 const getUserProfile = async () => {
     try {
-        const res = await axios.get(global.route + `/users/profile`, {
+        const response = await axios.get(global.route + `/users/profile`, {
             withCredentials: true,
         });
-        return res.data;
+        const userData = response.data;
+        return userData;
     } catch (error) {
-        // console.error(error);
+        console.error(error);
     }
 };
 

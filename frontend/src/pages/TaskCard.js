@@ -61,7 +61,6 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
     };
 
     const handleCheckboxChange = async () => {
-        console.log(!isChecked, taskuser, user.userId, task.status);
         if (!isChecked && taskuser === user.userId && task.status !== 'completed') {
             setIsChecked(true);
             handleFlip();
@@ -147,7 +146,7 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
                                     Deadline:
                                 </span>
                                 <span className="font-sans font-extralight">
-                                    {format(task.dueDate, 'dd/MM/yyyy')}
+                                    {format(task.dueDate, 'dd/MM/yyyy') || ''}
                                 </span>
                             </span>
                         </p>

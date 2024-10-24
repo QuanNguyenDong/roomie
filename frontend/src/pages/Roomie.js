@@ -97,14 +97,46 @@ function Roomie() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        getHome()
-            .then((res) => {
-                setHouse(res.house);
-                setUsers(Array.from(res.users));
-                setAnswer(Array.from(res.answers));
-            })
-            .catch((error) => { });
-    }, []);
+        fetchData();
+    }, [navigate]);
+
+    const fetchData = async () => {
+        const storedHouse = JSON.parse(localStorage.getItem("house")) || [];
+        const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+        const storedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
+
+        setUsers(storedUsers);
+        setHouse(storedHouse);
+        setAnswer(storedAnswers);
+
+        try {
+            const res = await getHome();
+            const house = res?.house || null; 
+
+            if (house && JSON.stringify(house) !== JSON.stringify(storedHouse)) {
+                localStorage.setItem("house", JSON.stringify(house));
+                setHouse(house);
+            } else if (!house) {
+                localStorage.removeItem("house");
+                setHouse(null);
+            }
+
+            const users = Array.isArray(res?.users) ? res.users : []; 
+            if (JSON.stringify(users) !== JSON.stringify(storedUsers)) {
+                localStorage.setItem("users", JSON.stringify(users));
+                setUsers(users);
+            }
+
+            const answers = Array.isArray(res?.answers) ? res.answers : []; 
+            if (JSON.stringify(answers) !== JSON.stringify(storedAnswers)) {
+                localStorage.setItem("answers", JSON.stringify(answers));
+                setAnswer(answers);
+            }
+        } catch (error) {
+            console.error("Failed to fetch home data:", error);
+        }
+    };
+
 
     const handleLeave = async () => {
         try {

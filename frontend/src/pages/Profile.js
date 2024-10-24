@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import getUserProfile from "../services/User/getUserProfile";
 import axios from "../tokenInterceptor.js";
 import { useNavigate } from 'react-router-dom';
 import LogoGrey from "../svgs/Review/LogoGrey.js";
@@ -6,6 +7,7 @@ import LogoGrey from "../svgs/Review/LogoGrey.js";
 function Profile() {
     const navigate = useNavigate();
     const [user, setUser] = useState({});
+    const [answers, setAnswer] = useState([]);
 
     const signout = async () => {
         try {
@@ -18,12 +20,37 @@ function Profile() {
             );
             if (res.status === 200) {
                 localStorage.removeItem("user");
+                localStorage.removeItem("users");
+                localStorage.removeItem("token");
+                localStorage.removeItem("alltasks");
+                localStorage.removeItem("tasks");
+                localStorage.removeItem("housetasks");
+                localStorage.removeItem("events");
+                localStorage.removeItem("house");
+                localStorage.removeItem("answers");
                 navigate("/");
             }
         } catch (error) {
             console.error(error);
         }
     };
+
+    useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        if (!storedUser) {
+            getUserProfile()
+                .then((user) => {
+                    if (user) {
+                        localStorage.setItem("user", JSON.stringify(user));
+                        setUser(user);
+                    } else navigate("/");
+                })
+                .catch((error) => navigate("/"));
+        } else {
+            setUser(storedUser);
+        }
+        fetchUserProfile();
+    }, [navigate]);
 
     const fetchUserProfile = async () => {
         try {
@@ -37,15 +64,6 @@ function Profile() {
             console.error(error);
         }
     };
-
-    useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
-        if (!storedUser || !storedUser.answers) {
-            fetchUserProfile();
-        } else {
-            setUser(storedUser);
-        }
-    }, []);
 
     return (
         <div className="max-w-[520px] mx-auto absolute top-0 text-black font-lexend bg-[#F6F6F6]">

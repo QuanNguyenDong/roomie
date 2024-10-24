@@ -40,24 +40,35 @@ function TaskManager() {
                 .catch((error) => navigate("/"));
         } else {
             setUser(storedUser);
+            fetchTasks();
         }
+    }, [navigate]);
 
-        getHouseTask().then((fetchedTasks) => {
-            if (fetchedTasks) {
-                const uniqueUsers = [...new Set(fetchedTasks.map(task => task.fullname))];
-                setUsers(uniqueUsers); // Store users for filtering
+    const fetchTasks = async () => {
+        const storedTasks = JSON.parse(localStorage.getItem("housetasks")) || [];
+        setTasks(storedTasks);
 
-                fetchedTasks = fetchedTasks.map((task) => {
-                    task["dueDate"] = calculateDueDate(
-                        task.startDate,
-                        task.frequency
-                    );
-                    return task;
-                });
+        try {
+            const tasks = await getHouseTask();
+
+            const sortedTasks = tasks.map((task) => ({   
+                ...task,
+                dueDate: calculateDueDate(task.startDate, task.frequency),
+            }));
+
+            const uniqueUsers = [...new Set(tasks.map(task => task.fullname))];
+            setUsers(uniqueUsers);
+
+            if (sortedTasks && JSON.stringify(sortedTasks) !== JSON.stringify(storedTasks)) {
+                localStorage.setItem("housetasks", JSON.stringify(sortedTasks));
+                setTasks(sortedTasks);
             }
-            setTasks(fetchedTasks || []);
-        });
+        } catch (error) {
+            console.error("Failed to fetch tasks:", error);
+        }
+    }
 
+    useEffect(() => {
         const handleClickOutside = (event) => {
             if (
                 dropdownRef.current &&

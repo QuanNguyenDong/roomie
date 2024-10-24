@@ -31,28 +31,39 @@ function Home() {
                 .catch((error) => navigate("/"));
         } else {
             setUser(storedUser);
+            fetchTasks();
             fetchEvents();
         }
-
-        getUserTask()
-            .then((tasks) => {
-                if (!tasks) return;
-                tasks.map((task) => {
-                    task.dueDate = calculateDueDate(
-                        task?.startDate,
-                        task?.frequency
-                    );
-                    return task;
-                });
-                setTasks(tasks);
-            })
-            .catch((error) => { });
     }, [navigate]);
 
+    const fetchTasks = async () => {
+        const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        setTasks(storedTasks.map(task => ({
+            ...task,
+            dueDate: calculateDueDate(task.startDate, task.frequency)
+        })));
+
+        try {
+            const tasks = await getUserTask();
+            if (tasks && JSON.stringify(tasks) !== JSON.stringify(storedTasks)) {
+                localStorage.setItem("tasks", JSON.stringify(tasks));
+                setTasks(tasks);
+            }
+        } catch (error) {
+            console.error("Failed to fetch tasks:", error);
+        }
+    };
+
     const fetchEvents = async () => {
+        const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
+        setEvents(storedEvents);
+
         try {
             const events = await getHomeEvents();
-            setEvents(events);
+            if (events && JSON.stringify(events) !== JSON.stringify(storedEvents)) {
+                localStorage.setItem("events", JSON.stringify(events));
+                setEvents(events);
+            }
         } catch (error) {
             console.error("Failed to fetch events:", error);
         }
@@ -67,7 +78,7 @@ function Home() {
 
     const filteredTasks = tasks.filter((task) => {
         if (taskFilter === "upcoming") {
-            return task.status !== "completed"; 
+            return task.status !== "completed";
         } else if (taskFilter === "completed") {
             return task.status === "completed";
         } else {
@@ -77,22 +88,18 @@ function Home() {
 
     const filteredEvents = events.filter((event) => {
         const today = new Date();
-
         const startOfWeek = new Date(today);
         const endOfWeek = new Date(today);
-
         const dayOfWeek = today.getDay();
         const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
         startOfWeek.setDate(today.getDate() - diffToMonday);
         startOfWeek.setHours(0, 0, 0, 0);
-
         const diffToSunday = 7 - dayOfWeek;
         endOfWeek.setDate(today.getDate() + diffToSunday);
         endOfWeek.setHours(23, 59, 59, 999);
-
         const eventStartDate = new Date(event.startDate);
         const eventEndDate = new Date(event.endDate);
-        
+
         return (
             (eventStartDate >= startOfWeek && eventStartDate <= endOfWeek) ||
             (eventEndDate >= startOfWeek && eventEndDate <= endOfWeek) ||
@@ -100,8 +107,7 @@ function Home() {
         );
     });
 
-
-    const openTaskModal = async (task) => {
+    const openTaskModal = (task) => {
         setSelectedTask(task);
     };
 
@@ -118,41 +124,32 @@ function Home() {
             </div>
             <div className="flex justify-between space-x-8 h-10 mb-6 mx-8 ">
                 <button
-                    className={`${taskFilter === "all" ? "bg-white" : "bg-secGrey"
-                        } text-black text-xs w-28 h-9 rounded-3xl shadow-sm`}
+                    className={`${taskFilter === "all" ? "bg-white" : "bg-secGrey"} text-black text-xs w-28 h-9 rounded-3xl shadow-sm`}
                     onClick={() => setTaskFilter("all")}>
                     My Tasks
                 </button>
                 <button
-                    className={`${taskFilter === "upcoming" ? "bg-white" : "bg-secGrey"
-                        } text-black text-xs w-28 h-9 rounded-3xl shadow-sm`}
+                    className={`${taskFilter === "upcoming" ? "bg-white" : "bg-secGrey"} text-black text-xs w-28 h-9 rounded-3xl shadow-sm`}
                     onClick={() => setTaskFilter("upcoming")}>
                     Upcoming
                 </button>
                 <button
-                    className={`${taskFilter === "completed" ? "bg-white" : "bg-secGrey "
-                        } text-black text-xs w-28 h-9 rounded-3xl shadow-sm`}
+                    className={`${taskFilter === "completed" ? "bg-white" : "bg-secGrey"} text-black text-xs w-28 h-9 rounded-3xl shadow-sm`}
                     onClick={() => setTaskFilter("completed")}>
                     Completed
                 </button>
             </div>
             <div className="flex flex-nowrap overflow-x-auto w-100vw h-60 mb-8">
-                {filteredTasks.length == 0 ? (
+                {filteredTasks.length === 0 ? (
                     <div className="bg-secGrey text-center text-xl w-full py-24 mx-8 rounded-3xl">
                         <span>You don't have any {taskFilter === 'all' ? '' : taskFilter} tasks</span>
                     </div>
                 ) : (
                     <div className="flex flex-nowrap space-x-6 mx-8">
                         {filteredTasks
-                            .sort(
-                                (a, b) =>
-                                    new Date(a.dueDate) - new Date(b.dueDate)
-                            )
+                            .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
                             .map((task, index) => (
-                                <div
-                                    className="mt-2"
-                                    key={index}
-                                    onClick={() => openTaskModal(task)}>
+                                <div className="mt-2" key={index} onClick={() => openTaskModal(task)}>
                                     <Tile task={task} />
                                 </div>
                             ))}

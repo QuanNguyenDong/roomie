@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 
+import getUserProfile from "../services/User/getUserProfile";
 import getHome from "../services/Home/getHome";
 
 import LogoGrey from "../svgs/Review/LogoGrey.js";
@@ -11,16 +12,27 @@ function RoomieProfile() {
     const navigate = useNavigate();
     const location = useLocation();
     const { user } = location.state || {};
-
     const [answers, setAnswer] = useState([]);
 
     useEffect(() => {
-        getHome()
-            .then((res) => {
-                setAnswer(Array.from(res.answers));
-            })
-            .catch((error) => { });
-    }, []);
+        fetchData();
+    }, [navigate]);
+
+    const fetchData = async () => {
+        const storedAnswers = JSON.parse(localStorage.getItem("answers")) || [];
+        setAnswer(storedAnswers);
+
+        try {
+            const res = await getHome();
+            const answers = Array.isArray(res?.answers) ? res.answers : [];
+            if (JSON.stringify(answers) !== JSON.stringify(storedAnswers)) {
+                localStorage.setItem("answers", JSON.stringify(answers));
+                setAnswer(answers);
+            }
+        } catch (error) {
+            console.error("Failed to fetch home data:", error);
+        }
+    };
 
     if (!user) {
         return(

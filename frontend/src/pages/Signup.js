@@ -24,7 +24,8 @@ export default function Signup() {
                 },
                 { withCredentials: true }
             );
-            localStorage.setItem("user", JSON.stringify(res.data));
+            localStorage.setItem("user", JSON.stringify(res.data.user));
+            localStorage.setItem("token", res.data.token);
             navigate("/prompts", { replace: true });
         } catch (error) {
             var errors = error.response.data.errors;

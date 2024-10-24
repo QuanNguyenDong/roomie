@@ -21,6 +21,7 @@ import {
 import getUserProfile from "../services/User/getUserProfile";
 import { getAllTasks } from "../services/Task/getTasks.js";
 import { getHomeEvents } from "../services/Event/getEvents.js";
+import getHome from "../services/Home/getHome";
 import { initGoogleApiClient, syncCalendarEvents } from '../services/Event/syncCalendar.js';
 
 import TaskModal from "./TaskCard.js";
@@ -75,6 +76,34 @@ function Calendar() {
     let navigate = useNavigate();
 
     useEffect(() => {
+        const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+        setUsers(storedUsers);
+
+        try {
+            getHome()
+                .then((res) => {
+                    if (res && Array.isArray(res.users)) {
+                        const users = res.users.map(user => user.username);
+                        users.unshift('All');
+
+                        if (users && JSON.stringify(users) !== JSON.stringify(storedUsers)) {
+                            localStorage.setItem("users", JSON.stringify(users));
+                            setUsers(users);
+                        }
+                    } else {
+                        console.error("Invalid response structure:", res);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Failed to fetch users:", error);
+                });
+        } catch (error) {
+            console.error("Error occurred during user fetch:", error);
+        }
+    }, []);
+
+
+    useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
         if (!storedUser) {
             getUserProfile()
@@ -87,6 +116,8 @@ function Calendar() {
                 .catch((error) => navigate("/"));
         } else {
             setUser(storedUser);
+            fetchTasks();
+            fetchEvents();
         }
 
         const initializeGoogleApi = async () => {
@@ -97,43 +128,56 @@ function Calendar() {
             }
         };
         initializeGoogleApi();
-    }, []);
+    }, [navigate]);
 
-    const fetchAndSetData = useCallback(async () => {
+    const fetchTasks = async () => {
+        const storedTasks = JSON.parse(localStorage.getItem("alltasks")) || [];
+        setTasks(storedTasks.map(task => ({
+            ...task,
+            dueDate: calculateDueDate(task.startDate, task.frequency),
+            endDate: new Date(new Date(task.startDate).getTime() + task.duration * 60 * 1000).toISOString()
+        })));
+        setFilteredTasks(storedTasks.map(task => ({
+            ...task,
+            dueDate: calculateDueDate(task.startDate, task.frequency),
+            endDate: new Date(new Date(task.startDate).getTime() + task.duration * 60 * 1000).toISOString()
+        })));
+
         try {
-            const fetchedTasks = await getAllTasks();
-            const fetchedEvents = await getHomeEvents();
+            const tasks = await getAllTasks();
 
-            const formattedTasks = fetchedTasks.map(task => {
+            const formattedTasks = tasks.map(task => {
                 task.dueDate = calculateDueDate(task.startDate, task.frequency);
                 task.endDate = new Date(new Date(task.startDate).getTime() + task.duration * 60 * 1000).toISOString();
                 return task;
             });
-            const formattedEvents = fetchedEvents.map(event => ({
-                eventname: event.eventname,
-                startDate: event.startDate,
-                endDate: event.endDate,
-                user: event.user,
-            }));
 
-            const uniqueTaskUsers = formattedTasks.map(task => task.username);
-            const uniqueEventUsers = formattedEvents.map(event => event.user.username);
-
-            const allUsers = ['All', ...new Set([...uniqueTaskUsers, ...uniqueEventUsers])];
-
-            setTasks(formattedTasks);
-            setFilteredTasks(formattedTasks);
-            setEvents(formattedEvents);
-            setFilteredEvents(formattedEvents);
-            setUsers(allUsers);
+            if (formattedTasks && JSON.stringify(formattedTasks) !== JSON.stringify(storedTasks)) {
+                localStorage.setItem("alltasks", JSON.stringify(formattedTasks));
+                setTasks(formattedTasks);
+                setFilteredTasks(formattedTasks);
+            }
         } catch (error) {
-            console.error("Error fetching data:", error);
+            console.error("Failed to fetch tasks:", error);
         }
-    }, []);
+    };
 
-    useEffect(() => {
-        fetchAndSetData();
-    }, [fetchAndSetData]);
+    const fetchEvents = async () => {
+        const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
+        setEvents(storedEvents);
+        setFilteredEvents(storedEvents);
+
+        try {
+            const events = await getHomeEvents();
+            if (events && JSON.stringify(events) !== JSON.stringify(storedEvents)) {
+                localStorage.setItem("events", JSON.stringify(events));
+                setEvents(events);
+                setFilteredEvents(events);
+            }
+        } catch (error) {
+            console.error("Failed to fetch events:", error);
+        }
+    };
 
     const syncCalendar = async () => {
         try {
@@ -158,7 +202,8 @@ function Calendar() {
     const filterByUser = (user) => {
         setSelectedUser(user);
         if (user === 'All') {
-            fetchAndSetData();
+            setFilteredTasks(tasks);
+            setFilteredEvents(events);
         } else {
             const filteredTasks = tasks.filter(task => task.username === user);
             const filteredEvents = events.filter(event => event.user.username === user);
@@ -309,14 +354,10 @@ function Calendar() {
                                     </button>
                                 ) : (
                                     (() => {
-                                        const currentUserIndex = users.indexOf(user.username);
-                                        let reorderedUsers = [...users];
-                                        if (currentUserIndex !== -1) {
-                                            reorderedUsers.splice(currentUserIndex, 1);
-                                            reorderedUsers.splice(1, 0, user.username);
-                                        }
-                                        
-                                        return reorderedUsers.map((usr, idx) => {
+                                        const sortedUsers = users.filter(usr => usr !== user.username);
+                                        sortedUsers.splice(1, 0, user.username);
+
+                                        return sortedUsers.map((usr, idx) => {
                                             const bgColor = labelColours[idx % labelColours.length];
                                             const strName = (usr === user.username ? "You" : usr);
 
@@ -339,6 +380,7 @@ function Calendar() {
                                 )}
                             </motion.div>
                         </div>
+
 
                         <div className="flex items-center justify-between mx-6 mt-4">
                             <div className="flex flex-row">
@@ -421,7 +463,6 @@ function Calendar() {
                                     </button>
 
                                     <div className={`${getUnderline(day)} absolute w-[32px] bottom-0 left-[15px]`} />
-
                                 </div>
                             ))}
                         </div>
