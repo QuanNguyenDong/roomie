@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../tokenInterceptor";
 
 const getEvents = async () => {
     try {
@@ -13,9 +13,17 @@ const getEvents = async () => {
 };
 
 const getHomeEvents = async () => {
+    // const token = localStorage.getItem('token');
+    // if (!token) {
+    //     return [];
+    // }
+
     try {
         const res = await axios.get(global.route + `/events/all/active`, {
             withCredentials: true,
+            // headers: {
+            //     'Authorization': `Bearer ${token}`
+            // }
         },);
         
         return Array.isArray(res.data) ? res.data : [];

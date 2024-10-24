@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../tokenInterceptor";
 
 const createReviews = async (reviews) => {
     try {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../tokenInterceptor";
 import TileIcon from "../svgs/Home/Tasks/TileIcon";
 
 export default function Signup() {

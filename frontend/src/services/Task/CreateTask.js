@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../tokenInterceptor";
 
 export const createTask = async (newTask) => {
     try {

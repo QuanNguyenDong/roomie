@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../tokenInterceptor";
 import getUserProfile from "../services/User/getUserProfile";
 import TileIcon from "../svgs/Home/Tasks/TileIcon";
 
@@ -30,7 +30,8 @@ export default function SignIn() {
                 { withCredentials: true },
 
             );
-            localStorage.setItem("user", JSON.stringify(response.data));
+            localStorage.setItem("user", JSON.stringify(response.data.user));
+            localStorage.setItem("token", response.data.token);
             // Change: Navigate to the Prompts page after sign-in
             navigate("/home", { replace: true });
         } catch (error) {

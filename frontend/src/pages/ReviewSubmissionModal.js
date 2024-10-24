@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../tokenInterceptor.js";
 
 import CloseIcon from "../svgs/TaskManagement/CloseIcon.js"
 import StarRating from "../components/common/StarRating.js";

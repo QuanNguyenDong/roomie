@@ -1,5 +1,5 @@
 import { gapi } from 'gapi-script';
-import axios from 'axios';
+import axios from '../../tokenInterceptor';
 
 const CLIENT_ID = '369183942201-o4gea6oikokag055u57gv0isi7ifoa2q.apps.googleusercontent.com';
 const API_KEY = 'AIzaSyDOhaxo4_OnnoM3dHXFZ6QgrhIUl7Mi-LE';
