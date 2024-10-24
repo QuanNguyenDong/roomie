@@ -90,10 +90,16 @@ function Home() {
         endOfWeek.setDate(today.getDate() + diffToSunday);
         endOfWeek.setHours(23, 59, 59, 999);
 
+        const eventStartDate = new Date(event.startDate);
         const eventEndDate = new Date(event.endDate);
-
-        return eventEndDate >= startOfWeek && eventEndDate <= endOfWeek && eventEndDate >= today;
+        
+        return (
+            (eventStartDate >= startOfWeek && eventStartDate <= endOfWeek) ||
+            (eventEndDate >= startOfWeek && eventEndDate <= endOfWeek) ||
+            (eventStartDate <= startOfWeek && eventEndDate >= endOfWeek)
+        );
     });
+
 
     const openTaskModal = async (task) => {
         setSelectedTask(task);
