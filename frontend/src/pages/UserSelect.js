@@ -27,7 +27,8 @@ export default function SignIn() {
                     username: username,
                     password: password,
                 },
-                { withCredentials: true }
+                { withCredentials: true },
+
             );
             localStorage.setItem("user", JSON.stringify(response.data));
             // Change: Navigate to the Prompts page after sign-in

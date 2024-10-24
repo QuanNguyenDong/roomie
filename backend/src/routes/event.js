@@ -37,9 +37,6 @@ router.get("/events/all", currentUser, async (req, res) => {
 });
 
 router.get("/events/all/active", currentUser, async (req, res) => {
-    console.log("req", req)
-    console.log("req.currentUser", req.currentUser)
-    console.log("req.currentUser?.id", req.currentUser?.id)
     const user = await User.findById(req.currentUser?.id);
     if (!user) {
         res.status(401).send({ message: "Unauthorized" });

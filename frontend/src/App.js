@@ -27,7 +27,9 @@ function App() {
 }
 
 function AppRoutes() {
-    global.route = "http://localhost:3001";
+    // http://localhost:3001 OR https://roomie-repo.vercel.app
+    global.route = "https://roomie-repo.vercel.app";
+    
     return (
         <Fragment>
             <Routes>
