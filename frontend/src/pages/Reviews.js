@@ -74,7 +74,7 @@ const Reviews = () => {
           <Tile
             type="tasksCompleted"
             title="Tasks Completed"
-            tasksCompleted={user.taskscompleted}
+            tasksCompleted={user.taskscompleted || 0}
             />
         </div>
         
@@ -91,9 +91,15 @@ const Reviews = () => {
             ))}
           </div>
         ) : ( 
-          <div className= "flex justify-center items-center mt-10">
-            <p className = "text-2xl font-bold">No Reviews yet!</p>
-          </div> 
+          <div className="flex flex-col justify-center items-center mt-40 w-full">
+                                    <p className="text-lg text-center mt-6">No reviews submitted.</p>
+                                    <button
+                                        onClick={handleClose}
+                                        className="mt-4 bg-black text-white text-base font-semibold w-32 h-12 rounded-3xl"
+                                    >
+                                        Close
+                                    </button>
+                                </div> 
         )}    
       </div>
     </div>
