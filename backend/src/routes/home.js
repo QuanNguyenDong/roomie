@@ -120,6 +120,11 @@ router.post(
             if (!house)
                 return res.status(400).send({ message: "Code isn't exist" });
 
+            const count = await JoinHouse.countDocuments({house: house._id});
+            if (count >= 7) {
+                return res.status(400).send({ message: "House limit is 7 people" });
+            }
+
             join = await JoinHouse.create({
                 user: user._id,
                 house: house._id,

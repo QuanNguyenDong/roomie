@@ -36,45 +36,6 @@ const Reviews = () => {
     fetchReviews();
   }, [navigate]);
 
-//need a reivew data table
-/*
-  const reviewData = [
-    {
-      title: 'Clean Backyard',
-      reviews: [
-        { reviewText: 'Great job!' },
-        { reviewText: 'Needs improvement.'},
-        { reviewText: 'could be better' },
-        { reviewText: 'How did you get it so clean...no really'}
-      ],
-    },
-    {
-      title: 'Wipe TV',
-      reviews: [
-        { reviewText: 'Clean better bro' },
-      ],
-    },
-    {
-      title: 'Cook Chicken',
-      reviews: [
-        { reviewText: 'Wow so much chicken'},
-        { reviewText: 'Excellent work remembering'},
-      ],
-    },
-    {
-       title: 'Kitchen Cleaning',
-       reviews: [
-        { reviewText: 'Please make sure you clean the countertops after you finish next time!'},
-        { reviewText: 'Excellent work.'},
-       ],
-    },
-    {
-       title: 'Feather Dusting',
-       reviews: [],
-    },
-  ];
-  */
-
   const handleClose = () => {
     navigate('/profile'); 
   }
@@ -114,21 +75,33 @@ const Reviews = () => {
           <Tile
             type="tasksCompleted"
             title="Tasks Completed"
-            tasksCompleted={user.taskscompleted}
+            tasksCompleted={user.taskscompleted || 0}
             />
         </div>
-
-        {/*task tiles */}
-        <div className="w-full">
-          {reviewData.map((tile, index) => (
-            <Tile
-              key={index}
-              type="task"
-              title={tile.title}
-              reviews={tile.reviews}
-            />
-          ))}
-        </div>
+        
+        {reviewData.length > 0 ? (
+          <div className="w-full">
+           {/*task tiles */}
+            {reviewData.map((tile, index) => (
+              <Tile
+                key={index}
+                type="task"
+                title={tile.title}
+                reviews={tile.reviews}
+              />
+            ))}
+          </div>
+        ) : ( 
+          <div className="flex flex-col justify-center items-center mt-40 w-full">
+                                    <p className="text-lg text-center mt-6">No reviews submitted.</p>
+                                    <button
+                                        onClick={handleClose}
+                                        className="mt-4 bg-black text-white text-base font-semibold w-32 h-12 rounded-3xl"
+                                    >
+                                        Close
+                                    </button>
+                                </div> 
+        )}    
       </div>
     </div>
   </>

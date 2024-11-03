@@ -55,7 +55,11 @@ const ReviewModal = () => {
 
             const uniqueUsers = (completedTasks || []).reduce((acc, activeTask) => {
                 if (activeTask.userId !== storedUser?.userId && !acc.some(u => u.userId === activeTask.userId)) {
-                    acc.push({ userId: activeTask.userId, fullname: activeTask.fullname });
+                    //It will only show users that have completed a task.  
+                    const userCompletedTasks = completedTasks.filter(task => task.userId === activeTask.userId);
+                    if (userCompletedTasks.length > 0) {
+                        acc.push({ userId: activeTask.userId, fullname: activeTask.fullname });
+                    }
                 }
                 return acc;
             }, []);
