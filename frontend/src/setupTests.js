@@ -1,10 +1,9 @@
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 
-// Polyfill for matchMedia in Jest environment
-window.matchMedia = window.matchMedia || function () {
+jest.mock("react-router-dom", () => {
+  const actual = jest.requireActual("react-router-dom");
   return {
-    matches: false,
-    addListener: function () {},
-    removeListener: function () {},
+    ...actual,
+    useNavigate: jest.fn(),
   };
-};
+});

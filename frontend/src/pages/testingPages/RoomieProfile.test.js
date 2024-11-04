@@ -2,13 +2,15 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import RoomieProfile from '../RoomieProfile';
-import { MemoryRouter, useLocation, useNavigate } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import getHome from '../../services/Home/getHome';
 
 // Mocking dependencies
+const mockNavigate = jest.fn();
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: jest.fn(),
+  useNavigate: () => mockNavigate,
   useLocation: jest.fn(),
 }));
 
@@ -27,9 +29,11 @@ const mockAnswers = [
 // Define the test suite
 describe('RoomieProfile Component', () => {
   beforeEach(() => {
-    useLocation.mockReturnValue({
+    // Mocking the location state to pass user data
+    require('react-router-dom').useLocation.mockReturnValue({
       state: { user: mockUser },
     });
+    // Mocking the getHome function to return mock answers
     getHome.mockResolvedValue({ answers: mockAnswers });
   });
 
@@ -55,7 +59,8 @@ describe('RoomieProfile Component', () => {
   });
 
   test('displays "No user data available" when no user data is passed', () => {
-    useLocation.mockReturnValueOnce({ state: null });
+    // Simulate the absence of user data in the location state
+    require('react-router-dom').useLocation.mockReturnValueOnce({ state: null });
 
     render(
       <MemoryRouter>
@@ -70,15 +75,12 @@ describe('RoomieProfile Component', () => {
     const goBackLink = screen.getByText('Go back');
     expect(goBackLink).toBeInTheDocument();
 
-    // Mock the back navigation
-    const mockNavigate = useNavigate();
+    // Simulate clicking the "Go back" link
     fireEvent.click(goBackLink);
     expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
   test('navigates back when the close button is clicked', () => {
-    const mockNavigate = useNavigate();
-
     render(
       <MemoryRouter>
         <RoomieProfile />

@@ -1,5 +1,6 @@
 import "../../styling/starRating.css";
 import { useState, useEffect } from "react";
+import React from "react";
 
 const DEFAULT_COUNT = 5;
 const DEFAULT_ICON = "★"; // Unicode for star
