@@ -135,7 +135,7 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
 
                 <text class="text-3xl font-lato ml-10 mb-4 mt-4 font-light">Description</text>
                 <div className='description'>
-                    <p class="font-sans font-extralight text-sm">{task.description}</p>
+                    <p className="font-sans font-extralight text-sm">{task.description}</p>
                 </div>
                 <div className='content'>
                     <div className='deadline-box'>
@@ -173,9 +173,6 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
                                     <PriorityIcon />
                                     Priority: {task.priority}
                                 </span>
-                                {/* <span className="icon-text-date">
-                                    {task.dueDate}
-                                </span> */}
                             </span>
                         </p>
                         <p>
@@ -184,9 +181,6 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
                                     <TaskFrequencyIcon />
                                     Frequency: {task.frequency} days
                                 </span>
-                                {/* <span className="icon-text-date">
-                                    {task.dueDate}
-                                </span> */}
                             </span>
                         </p>
 
@@ -196,9 +190,6 @@ function TaskModal({ user, task, taskuser, isOpen, onClose }) {
                                     <DurationIcon />
                                     Time Required: {task.duration} minutes
                                 </span>
-                                {/* <span className="icon-text-date">
-                                    {task.dueDate}
-                                </span> */}
                             </span>
                         </p>
                     </div>

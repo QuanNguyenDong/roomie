@@ -58,6 +58,7 @@ const Reviews = () => {
           
         <button
           onClick={handleClose}
+          data-testid="close-button"
         >
         <CloseIcon />
         </button>

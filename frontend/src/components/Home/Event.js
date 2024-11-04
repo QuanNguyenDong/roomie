@@ -26,7 +26,7 @@ const Event = ({ eventname, username, startDate, endDate}) => {
         <div className="bg-white w-fulll h-[71px] rounded-xl flex items-center">
             <div className="flex flex-row space-x-4 ml-4">
                 <div className="bg-[#7D8D9C] text-white font-semibold w-8 h-8 rounded-full flex items-center justify-center">
-                    {username[0].toUpperCase()}
+                    {username[0] ? username[0].toUpperCase() : ''}
                 </div>
                 <div className="flex flex-col">
                     <text className="text-xs">{eventname}</text>
@@ -36,6 +36,6 @@ const Event = ({ eventname, username, startDate, endDate}) => {
             </div>
         </div>
     );
-}
+};
 
 export default Event;

@@ -196,7 +196,7 @@ function TaskManager() {
                 )}
             </div>
             <div className="task-list">
-                {filteredTasks.length == 0 && (
+                {filteredTasks.length === 0 && (
                     <div className="bg-secGrey text-center text-xl w-full py-24 rounded-3xl">
                         <span>You don't have any tasks</span>
                     </div>
