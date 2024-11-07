@@ -197,18 +197,21 @@ function Calendar() {
     };
 
     const handleDatesChange = (direction) => {
+        const newSelectedDay = selectedDay || new Date();
+        const currentMonth = currentMonth || format(newSelectedDay, 'MMM-yyyy');
+    
         if (modalState.expanded && modalState.open) {
-            const newSelectedDay = add(selectedDay, { days: direction * 7 });
-            setSelectedDay(newSelectedDay);
-
-            const newMonth = format(newSelectedDay, 'MMM-yyyy');
-            if (newMonth !== currentMonth) {
-                setCurrentMonth(newMonth);
+            const updatedSelectedDay = add(newSelectedDay, { days: direction * 7 });
+            setSelectedDay(updatedSelectedDay);
+    
+            const updatedMonth = format(updatedSelectedDay, 'MMM-yyyy');
+            if (updatedMonth !== currentMonth) {
+                setCurrentMonth(updatedMonth);
             }
-
+    
         } else {
-            const newMonth = add(firstDayCurrentMonth, { months: direction });
-            setCurrentMonth(format(newMonth, 'MMM-yyyy'));
+            const updatedMonth = add(firstDayCurrentMonth, { months: direction });
+            setCurrentMonth(format(updatedMonth, 'MMM-yyyy'));
         }
     };
 
@@ -267,9 +270,9 @@ function Calendar() {
     return (
         <div className="max-w-[520px] mx-auto h-full text-black">
             <div className="flex h-10 mb-2 mx-8">
-                <text className="text-3xl font-bold font-lexend ml-10">
+                <span className="text-3xl font-bold font-lexend ml-10">
                     Calendar
-                </text>
+                </span>
                 <button onClick={syncCalendar} className="ml-2">
                     <SyncIcon />
                 </button>
@@ -278,11 +281,11 @@ function Calendar() {
                 <div className="flex flex-row mb-2">
                     <div className="flex flex-row ml-8">
                         <div className="w-2 h-2 bg-sky-500 rounded mt-2" />
-                        <text className="text-md font-light ml-2">Tasks</text>
+                        <span className="text-md font-light ml-2">Tasks</span>
                     </div>
                     <div className="flex flex-row ml-3">
                         <div className="w-2 h-2 bg-purple-500 rounded mt-2" />
-                        <text className="text-md font-light ml-2">Events</text>
+                        <span className="text-md font-light ml-2">Events</span>
                     </div>
                 </div>
             </div>
@@ -345,9 +348,9 @@ function Calendar() {
                                 <span className="text-xl font-medium mr-3">
                                     {format(firstDayCurrentMonth, 'MMMM')}
                                 </span>
-                                <text className="text-xl font-thin">
+                                <span className="text-xl font-thin">
                                     {format(firstDayCurrentMonth, 'yyyy')}
-                                </text>
+                                </span>
                             </div>
                             <div className="flex flex-row z-20">
                                 <button
@@ -463,7 +466,7 @@ function Calendar() {
                                         }}>
                                         <div className="flex items-center space-x-4">
                                             <div className="bg-[#7D8D9C] w-12 h-12 rounded-full mt-2 flex items-center justify-center">
-                                                <text className="text-base text-lg font-semibold">
+                                                <span className="text-base text-lg font-semibold">
                                                     {
                                                         item.user?.fullname
                                                             ? item.user.fullname.split(' ')
@@ -473,7 +476,7 @@ function Calendar() {
                                                                 .map(name => name.charAt(0).toUpperCase())
                                                                 .join('')
                                                     }
-                                                </text>
+                                                </span>
                                             </div>
                                             <div>
                                                 <h4 className="text-[14px] mt-2 font-bold text-black">{item.eventname || item.taskname}</h4>

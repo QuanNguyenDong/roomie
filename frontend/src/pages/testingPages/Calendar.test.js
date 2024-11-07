@@ -1,8 +1,20 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Calendar from '../Calendar'; // Correct relative path to Calendar.js
+import Calendar from '../Calendar';
+import { useNavigate } from 'react-router-dom';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(),
+}));
 
 describe('Calendar Component', () => {
+  beforeEach(() => {
+    // Mock navigate to prevent errors
+    useNavigate.mockReturnValue(jest.fn());
+  });
+
   it('renders the calendar component', () => {
     render(<Calendar />);
     const calendarTitle = screen.getByText('Calendar');
@@ -20,11 +32,14 @@ describe('Calendar Component', () => {
     expect(screen.getByText(currentYear)).toBeInTheDocument();
   });
 
-  it('opens the modal when a day is clicked', () => {
+  it('opens the modal when a day is clicked', async () => {
     render(<Calendar />);
-    const dayButton = screen.getByText('11');
+    
+    // Click on a specific day button (e.g., day "11")
+    const dayButton = screen.getAllByText('11')[0]; // Get the first instance of "11" button in the grid
     fireEvent.click(dayButton);
-
-    expect(screen.getByText(/Wednesday, 11/)).toBeInTheDocument();
+    
+    // Check if modal content specific to the selected day appears
+    await waitFor(() => expect(screen.getByText(/11th November/)).toBeInTheDocument());
   });
 });

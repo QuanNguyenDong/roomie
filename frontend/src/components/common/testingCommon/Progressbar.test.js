@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect'; // for additional matchers
+import '@testing-library/jest-dom';
 import Progressbar from '../common/Progressbar'; // Update the path based on your folder structure
 
 describe('Progressbar Component', () => {
