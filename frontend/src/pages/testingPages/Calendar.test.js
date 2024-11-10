@@ -27,7 +27,6 @@ describe('Calendar Component', () => {
     const currentYear = today.getFullYear().toString();
 
     render(<Calendar />);
-    
     expect(screen.getByText(currentMonth)).toBeInTheDocument();
     expect(screen.getByText(currentYear)).toBeInTheDocument();
   });

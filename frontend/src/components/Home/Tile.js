@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import "../../index.css";
 
-import TileIcon from "../../svgs/Home/Tasks/TileIcon";
+import TasksIcon from "../../svgs/Navbar/TasksIcon";
 
 const priorityColors = {
     High: "#C49191",
@@ -45,7 +45,7 @@ const Tile = ({ task }) => {
             </div>
 
             <div className="absolute bottom-3 right-3">
-                <TileIcon fill={svgColors[task.priority]} />
+                <TasksIcon  fill={svgColors[task.priority]} />
 
             </div>
         </div>

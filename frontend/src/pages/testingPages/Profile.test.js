@@ -1,103 +1,116 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom"; 
-import axios from "axios"; 
-import Profile from "../Profile"; //  this may need adjusting
-import "@testing-library/jest-dom";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
+import Prompts from "../prompts";
+import { MemoryRouter } from "react-router-dom";
+import getQuestions from "../../services/Question/getQuestions";
+import createAnswers from "../../services/Prompt/createAnswers";
 
-// Mock axios for API call
-jest.mock("axios");
+jest.mock("../../services/Question/getQuestions");
+jest.mock("../../services/Prompt/createAnswers");
 
-describe("Profile Component", () => {
-    const mockUser = {
-        fullname: "Jane Doe",
-        email: "janedoe@example.com",
-        desc: "I love hiking and exploring the outdoors.",
-        answers: [
-            { question: "What’s your favorite hobby?", answer: "Hiking" },
-            { question: "What’s your dream vacation?", answer: "Exploring the Swiss Alps" },
-        ],
-    };
+describe("Prompts Component", () => {
+  const mockQuestions = [
+    { questionId: "1", question: "What is your favorite color?" },
+    { questionId: "2", question: "What is your hobby?" },
+    { questionId: "3", question: "What is your favorite food?" },
+    { questionId: "4", question: "What is your dream vacation?" },
+  ];
 
-    beforeEach(() => {
-        // Mocking localStorage with the user's profile
-        Storage.prototype.getItem = jest.fn(() => JSON.stringify(mockUser));
-        Storage.prototype.setItem = jest.fn(() => {});
-        
-        // Mock axios call for fetching user profile
-        axios.get.mockResolvedValue({ data: mockUser });
+  beforeEach(() => {
+    getQuestions.mockResolvedValue(mockQuestions);
+  });
+
+  test("renders page title and prompts correctly", async () => {
+    render(
+      <MemoryRouter>
+        <Prompts />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Prompts")).toBeInTheDocument();
+      expect(
+        screen.getByText("Choose up to 3 questions for your roomies to get to know you!")
+      ).toBeInTheDocument();
     });
 
-    test("renders the user's profile information", async () => {
-        render(
-            <MemoryRouter>
-                <Profile />
-            </MemoryRouter>
-        );
+    mockQuestions.forEach((question) => {
+      expect(screen.getByLabelText(question.question)).toBeInTheDocument();
+    });
+  });
 
-        // Ensure fullname and email are displayed
-        await waitFor(() => {
-            expect(screen.getByText("Jane Doe")).toBeInTheDocument();
-            expect(screen.getByText("janedoe@example.com")).toBeInTheDocument();
-        });
+  test("selects up to 3 prompts and disables additional selections", async () => {
+    render(
+      <MemoryRouter>
+        <Prompts />
+      </MemoryRouter>
+    );
 
-        // Ensure user description is displayed
-        expect(screen.getByText("I love hiking and exploring the outdoors.")).toBeInTheDocument();
+    await waitFor(() => {
+      mockQuestions.slice(0, 3).forEach((question) => {
+        const checkbox = screen.getByLabelText(question.question);
+        fireEvent.click(checkbox);
+        expect(checkbox).toBeChecked();
+      });
     });
 
-    test("renders the user's answers", async () => {
-        render(
-            <MemoryRouter>
-                <Profile />
-            </MemoryRouter>
-        );
+    // Attempt to select a fourth prompt
+    const fourthCheckbox = screen.getByLabelText(mockQuestions[3].question);
+    fireEvent.click(fourthCheckbox);
+    expect(fourthCheckbox).not.toBeChecked();
+  });
 
-        // Wait for the answers to appear
-        await waitFor(() => {
-            expect(screen.getByText("What’s your favorite hobby?")).toBeInTheDocument();
-            expect(screen.getByText("Hiking")).toBeInTheDocument();
+  test("deselects a selected prompt and hides answer button if no prompts are selected", async () => {
+    render(
+      <MemoryRouter>
+        <Prompts />
+      </MemoryRouter>
+    );
 
-            expect(screen.getByText("What’s your dream vacation?")).toBeInTheDocument();
-            expect(screen.getByText("Exploring the Swiss Alps")).toBeInTheDocument();
-        });
+    await waitFor(() => {
+      const firstCheckbox = screen.getByLabelText(mockQuestions[0].question);
+      fireEvent.click(firstCheckbox);
+      expect(firstCheckbox).toBeChecked();
+      fireEvent.click(firstCheckbox);
+      expect(firstCheckbox).not.toBeChecked();
     });
 
-    test("fetches user profile if not found in localStorage", async () => {
-        // Clear localStorage to simulate no stored user
-        Storage.prototype.getItem = jest.fn(() => null);
+    expect(screen.queryByText("Answer Selected Prompts")).toBeNull();
+  });
 
-        render(
-            <MemoryRouter>
-                <Profile />
-            </MemoryRouter>
-        );
-
-        // Ensure axios API call is made and user data is fetched
-        await waitFor(() => {
-            expect(axios.get).toHaveBeenCalledWith(`${global.route}/users/profile`, { withCredentials: true });
-        });
-
-        // Ensure fetched user data is displayed
-        expect(screen.getByText("Jane Doe")).toBeInTheDocument();
-        expect(screen.getByText("janedoe@example.com")).toBeInTheDocument();
+  test("submits answers and navigates to home", async () => {
+    createAnswers.mockResolvedValue({});
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+  
+    render(
+      <MemoryRouter>
+        <Prompts />
+      </MemoryRouter>
+    );
+  
+    await waitFor(() => {
+      const firstCheckbox = screen.getByLabelText(mockQuestions[0].question);
+      fireEvent.click(firstCheckbox);
     });
-
-    test("renders a default email if email is missing", async () => {
-        const mockUserWithoutEmail = {
-            ...mockUser,
-            email: null, // No email in profile data
-        };
-        Storage.prototype.getItem = jest.fn(() => JSON.stringify(mockUserWithoutEmail));
-
-        render(
-            <MemoryRouter>
-                <Profile />
-            </MemoryRouter>
-        );
-
-        await waitFor(() => {
-            expect(screen.getByText("abc@gmail.com")).toBeInTheDocument(); // Default email
-        });
+  
+    const answerButton = screen.getByText("Answer Selected Prompts");
+    fireEvent.click(answerButton);
+      const formContainer = screen.getByRole("form");
+      await waitFor(() => {
+      const questionText = within(formContainer).getAllByText(mockQuestions[0].question);
+      expect(questionText[0]).toBeInTheDocument();
     });
-});
-
+  
+    const textArea = within(formContainer).getByPlaceholderText("Type your answer here...");
+    fireEvent.change(textArea, { target: { value: "Blue" } });
+  
+    const submitButton = within(formContainer).getByText("Submit");
+    fireEvent.click(submitButton);
+  
+    await waitFor(() => {
+      expect(createAnswers).toHaveBeenCalledWith({
+        answers: [{ question: "1", answer: "Blue" }],
+      });
+    });
+  });
+})

@@ -64,17 +64,20 @@ const Prompts = () => {
         
         <div className="prompt-list">
           {prompts.map((prompt, index) => (
-            <div key={index} className="prompt-item" onClick={() => togglePromptSelection(prompt)}>
+            <div key={index} className="prompt-item">
               <input
                 type="checkbox"
+                id={`checkbox-${prompt.questionId}`}
                 className="checkbox-style"
                 checked={selectedPrompts.includes(prompt)}
                 onChange={() => togglePromptSelection(prompt)}
               />
-              <label className="prompt-label">{prompt.question}</label>
+              <label htmlFor={`checkbox-${prompt.questionId}`} className="prompt-label">
+              {prompt.question}
+              </label>
             </div>
           ))}
-        </div>
+      </div>
         
         {showAnswerButton && (
           <button className="answer-btn" onClick={() => setCurrentPrompt(selectedPrompts[0])}>
@@ -86,21 +89,24 @@ const Prompts = () => {
             <div className="answer-box">
               {selectedPrompts.map((prompt, id) => (
                 <div key={id} className="mb-4">
-                  <h2 className="prompt-title">{prompt.question}</h2>
+                  <h2 className="prompt-title" data-testid={`prompt-title-${prompt.questionId}`}>
+                  {prompt.question}
+                  </h2>
                   <textarea 
                     name={prompt.questionId}
                     placeholder="Type your answer here..."
                     value={prompt.answer}
                     onChange={(e) => {
                       const { name, value } = e.target;
-                      const modified = selectedPrompts.map(prompt => {
-                        if (prompt.questionId === name) prompt.answer = value;
-                        return prompt;
-                      })
-                      setSelectedPrompts(prev => prev = modified);
+                      setSelectedPrompts((prevPrompts) =>
+                        prevPrompts.map((prompt) =>
+                          prompt.questionId === name ? { ...prompt, answer: value } : prompt
+                        )
+                      );
                     }}
                     required 
                     className="answer-textarea"
+                    data-testid={`answer-textarea-${prompt.questionId}`}
                   />
                 </div>
               ))}

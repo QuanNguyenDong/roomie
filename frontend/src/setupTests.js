@@ -1,4 +1,5 @@
-import "@testing-library/jest-dom"; // Import this only once
+import "@testing-library/jest-dom";
+import mockAxios from "jest-mock-axios"; // Import jest-mock-axios
 
 // Mocking react-router-dom’s useNavigate function
 jest.mock("react-router-dom", () => {
@@ -41,3 +42,11 @@ jest.mock('gapi-script', () => ({
     },
   },
 }));
+
+// Ensure each test starts with a fresh mock setup
+afterEach(() => {
+  mockAxios.reset();      // Reset Axios mocks after each test
+  jest.clearAllMocks();    // Clear all other mocks after each test
+});
+
+export default mockAxios;

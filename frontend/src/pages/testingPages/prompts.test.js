@@ -28,13 +28,11 @@ describe('Prompts Component', () => {
     );
 
     await waitFor(() => {
-      // Assert the prompts page is rendered
       expect(screen.getByText('Prompts')).toBeInTheDocument();
     });
 
     expect(screen.getByText('Choose up to 3 questions for your roomies to get to know you!')).toBeInTheDocument();
 
-    // Assert each prompt question is rendered
     await waitFor(() => {
       mockQuestions.forEach((question) => {
         expect(screen.getByText((content) => content.includes(question.question))).toBeInTheDocument();
@@ -53,14 +51,12 @@ describe('Prompts Component', () => {
       expect(screen.getByText(mockQuestions[0].question)).toBeInTheDocument();
     });
 
-    // Select the first three prompts
     mockQuestions.slice(0, 3).forEach((question) => {
       const checkbox = screen.getByLabelText(question.question);
       fireEvent.click(checkbox);
       expect(checkbox).toBeChecked();
     });
 
-    // Try selecting a fourth prompt (should not be selectable)
     const fourthCheckbox = screen.getByLabelText(mockQuestions[3].question);
     fireEvent.click(fourthCheckbox);
     expect(fourthCheckbox).not.toBeChecked();
@@ -77,7 +73,6 @@ describe('Prompts Component', () => {
       expect(screen.getByText(mockQuestions[0].question)).toBeInTheDocument();
     });
 
-    // Select and then deselect a prompt
     const firstCheckbox = screen.getByLabelText(mockQuestions[0].question);
     fireEvent.click(firstCheckbox);
     expect(firstCheckbox).toBeChecked();
@@ -85,7 +80,6 @@ describe('Prompts Component', () => {
     fireEvent.click(firstCheckbox);
     expect(firstCheckbox).not.toBeChecked();
 
-    // Check that the answer button is not displayed
     expect(screen.queryByText('Answer Selected Prompts')).toBeNull();
   });
 
@@ -95,21 +89,19 @@ describe('Prompts Component', () => {
         <Prompts />
       </MemoryRouter>
     );
-
+  
     await waitFor(() => {
-      expect(screen.getByText(mockQuestions[0].question)).toBeInTheDocument();
+      const firstCheckbox = screen.getByLabelText(mockQuestions[0].question);
+      fireEvent.click(firstCheckbox);
     });
-
-    // Select one prompt and click 'Answer Selected Prompts'
-    const firstCheckbox = screen.getByLabelText(mockQuestions[0].question);
-    fireEvent.click(firstCheckbox);
-
+  
     const answerButton = screen.getByText('Answer Selected Prompts');
     fireEvent.click(answerButton);
-
-    // Check that the selected prompt appears with a text area for answers
-    expect(screen.getByText(mockQuestions[0].question)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Type your answer here...')).toBeInTheDocument();
+  
+    await waitFor(() => {
+      expect(screen.getByTestId(`prompt-title-${mockQuestions[0].questionId}`)).toBeInTheDocument();
+      expect(screen.getByTestId(`answer-textarea-${mockQuestions[0].questionId}`)).toBeInTheDocument();
+    });
   });
 
   test('submits answers and navigates to home', async () => {
@@ -124,23 +116,27 @@ describe('Prompts Component', () => {
     await waitFor(() => {
       expect(screen.getByText(mockQuestions[0].question)).toBeInTheDocument();
     });
-
-    // Select and answer a prompt
     const firstCheckbox = screen.getByLabelText(mockQuestions[0].question);
     fireEvent.click(firstCheckbox);
+    
+    // Click the 'Answer Selected Prompts' button
     const answerButton = screen.getByText('Answer Selected Prompts');
     fireEvent.click(answerButton);
-
+    
+    // Target the specific text area using data-testid or placeholder
     const textArea = screen.getByPlaceholderText('Type your answer here...');
     fireEvent.change(textArea, { target: { value: 'Blue' } });
-
+    
+    // Submit the form
     const submitButton = screen.getByText('Submit');
     fireEvent.click(submitButton);
-
+    
+    // Wait for createAnswers to be called with the expected data
     await waitFor(() => {
       expect(createAnswers).toHaveBeenCalledWith({
-        answers: [{ question: '1', answer: 'Blue' }],
+        answers: [{ question: mockQuestions[0].questionId, answer: 'Blue' }],
       });
     });
   });
 });
+    
